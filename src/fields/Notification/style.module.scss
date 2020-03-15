@@ -1,0 +1,73 @@
+$box-shadow-color: 0px 1px 4px rgba(0, 0, 0, 0.16);
+$error: #f15d5c;
+$success: #00cc99;
+$warning: #f4d60e;
+
+.notifContainer {
+  position: fixed;
+  margin: auto;
+  right: 0;
+  left: 0;
+  border-radius: 5px;
+  padding: 0;
+  line-height: 25px;
+  -webkit-box-shadow: $box-shadow-color;
+  -moz-box-shadow: $box-shadow-color;
+  box-shadow: $box-shadow-color;
+}
+
+.notifBody {
+  margin: 0;
+}
+
+.notifContentContainer {
+  font-family: "Open Sans";
+  color: #fff;
+}
+
+// ----------- Dialog -----------
+.notifDialogContainer {
+  @extend .notifContainer;
+  width: 80vw;
+  top: 0;
+  bottom: 0;
+  height: 20vh;
+}
+
+.notifDialogBody {
+  @extend .notifBody;
+  padding: 20px;
+}
+
+// ----------- Alert -----------
+.notifAlertContainer {
+  @extend .notifContainer;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: bold;
+  width: 450px;
+  top: 20px;
+  min-height: 40px;
+  &.error {
+    background: $error;
+  }
+  &.success {
+    background: $success;
+  }
+  &.warning {
+    background: $warning;
+    color: #000;
+  }
+}
+
+.notifAlertBody {
+  @extend .notifBody;
+  padding: 10px 15px;
+}
+
+@media only screen and (max-width: 500px) {
+  .notifAlertContainer {
+    font-size: 1rem;
+    width: 90vw;
+  }
+}

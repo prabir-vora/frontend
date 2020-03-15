@@ -1,0 +1,35 @@
+.container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .label {
+    text-align: left;
+    &.highlighted {
+      font-weight: bold;
+    }
+  }
+  
+  .radioButton {
+    border-radius: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    height: 25px;
+    margin: 0 8px 0 0;
+    width: 25px;
+    &.checked {
+      background: #000;
+      border-color: #000;
+    }
+  }
+  
+  .circle {
+    background: #fff;
+    border-radius: 100px;
+    fill: #fff;
+    height: 13px;
+    width: 13px;
+  }

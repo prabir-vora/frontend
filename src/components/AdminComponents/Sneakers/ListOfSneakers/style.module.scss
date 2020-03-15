@@ -1,0 +1,18 @@
+.listContainer {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 20px 0;
+  }
+  
+  .itemContainer {
+    margin: 0 20px 30px 0;
+    width: 47%;
+  }
+  
+  @media only screen and (max-width: 900px) {
+    .itemContainer {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+  }

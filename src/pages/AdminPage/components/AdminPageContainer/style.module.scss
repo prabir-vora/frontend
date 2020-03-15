@@ -1,0 +1,11 @@
+.adminPageContainer {
+    margin-left: 200px;
+    position: relative;
+    padding: 60px 4vw 0 4vw;
+    width: 100%;
+    &.mobile {
+      margin-left: 0;
+    }
+  }
+
+  

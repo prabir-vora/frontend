@@ -1,0 +1,73 @@
+$focus-shadow: 0 0 0 1px rgba(50, 151, 211, 0.3),
+  0 1px 1px 0 rgba(0, 0, 0, 0.07), 0 0 0 4px rgba(50, 151, 211, 0.3);
+
+$error-shadow: 0 0 0 1px rgba(241, 93, 92, 0.3), 0 1px 1px 0 rgba(0, 0, 0, 0.07),
+  0 0 0 4px rgba(241, 93, 92, 0.3);
+
+// ---------------- FORM FIELD ----------------
+
+.field {
+  border: 1px solid #e0e0e0;
+  background: #fff;
+  border-radius: 6px;
+  min-height: 25px;
+  padding: 6px 15px;
+  width: inherit;
+  & > input,
+  textarea {
+    line-height: 25px;
+    padding: 0;
+  }
+  &.focused {
+    border-color: transparent;
+    box-shadow: $focus-shadow;
+    -webkit-box-shadow: $focus-shadow;
+  }
+  &.invalid {
+    border-color: transparent;
+    box-shadow: $error-shadow;
+    -webkit-box-shadow: $error-shadow;
+  }
+  &.readOnly {
+    background: #f7f7f7;
+    border: none;
+  }
+}
+
+.label {
+  color: #000;
+  margin-right: 10px;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.input {
+  background: inherit;
+  font-family: "Open Sans";
+  font-size: inherit;
+  padding-top: 0;
+  width: 100%;
+  &::placeholder {
+    color: #4f4f4f;
+  }
+}
+
+// ---------------- FORM FOOTER ----------------
+
+.formFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 5px;
+}
+
+.dangerText {
+  color: #c0392b;
+  font-size: 0.8rem;
+  width: 85%;
+}
+
+.requiredText {
+  color: #636e72;
+  font-size: 0.7rem;
+}

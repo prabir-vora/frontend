@@ -1,0 +1,64 @@
+@import "~styles/variables";
+
+.navBarContainer {
+    background-color: rgb(247, 250, 252);
+    position: fixed;
+    bottom: 0;
+    top: 0;
+    z-index: 100;
+    width: 200px;
+    -webkit-box-shadow: $shadow2;
+    box-shadow: $shadow2;
+  }
+
+.navBarSubContainer {
+    height: 100%;
+    padding: 15px 0 30px 0;
+    overflow: auto;
+  }
+
+.title {
+  margin-bottom: 30px;
+  text-align: center;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.itemsColumn {
+    padding-bottom: 160px;
+    overflow-y: auto;
+  }
+
+.poweredBy {
+  background-color: rgb(247, 250, 252);
+  position: absolute;
+  bottom: 0;
+  text-align: center;
+  right: 0;
+  left: 0;
+  padding: 20px 0;
+
+  & > p {
+    font-size: 6px;
+    margin: 0;
+  }
+}
+
+.menuIconContainer {
+    border-radius: 0;
+    height: 45px;
+    min-width: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: $primary;
+    position: fixed;
+    z-index: 100;
+    -webkit-box-shadow: $shadow2;
+    box-shadow: $shadow2;
+    & > svg {
+      height: 25px;
+      width: 25px;
+      fill: #fff;
+    }
+  }

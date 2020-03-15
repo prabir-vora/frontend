@@ -1,0 +1,42 @@
+.radioButtonContainer {
+    display: flex;
+    flex-direction: column;
+    margin: 20px 0px;
+}
+
+.checkboxContainer {
+    padding: 25px
+}
+
+.brandsContainer {
+    margin: 20px 0px;
+}
+
+.sizeRangeContainer {
+    margin: 20px 0px;
+}
+
+.sizeRange {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.modalTitleContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+
+
+.button {
+    color: #fff;
+    font-size: 1.15rem;
+    margin-top: 50px;
+    height: 40px;
+    width: 120px;
+  }
+  
+  .saveButton {
+    @extend .button;
+    background: #00cc99;
+  }

@@ -1,0 +1,130 @@
+// ------------------------------------- Modal -------------------------------------
+.largeCenterModalBox {
+    border-radius: 0;
+    margin-right: 0;
+    height: 100vh;
+    width: 70vw;
+  }
+  
+  .largeCenterModalContainer {
+    padding: 30px 30px 100px 30px;
+  }
+  
+  .confirmArchiveModalBox {
+    height: 310px;
+    width: 400px;
+  }
+  
+  .confirmArchiveModalContainer {
+    padding: 10px 20px;
+  }
+  
+  .moduleTitle {
+    font-size: 1.3rem;
+  }
+  
+  .moduleDescription {
+    color: rgb(117, 117, 117);
+    margin-bottom: 30px;
+  }
+  
+  // ------------------------------------- Form -------------------------------------
+  .formField {
+    margin-bottom: 25px;
+  }
+  
+  .confirmArchiveTitle {
+    font-size: 1.4rem;
+    line-height: 30px;
+    margin: 0px 0 20px 0;
+  }
+  
+  // ------------------------------------- Button -------------------------------------
+  .button {
+    color: #fff;
+    font-size: 1.15rem;
+    margin-top: 50px;
+    height: 40px;
+    width: 120px;
+  }
+  
+  .saveButton {
+    @extend .button;
+    background: #00cc99;
+  }
+  
+  .archiveButton {
+    @extend .button;
+    background: #f15d5c;
+    left: 180px;
+    margin-top: -40px;
+    position: absolute;
+    width: auto;
+    padding: 0 20px;
+    &.unarchive {
+      background: #0b2135;
+    }
+  }
+  
+  .addComponentsButton {
+    background: #f7f7f7;
+    padding: 6px 12px;
+    margin-bottom: 20px;
+  
+    &:hover {
+      background: #e5e5e5;
+    }
+  }
+  
+  .confirmArchiveButton {
+    background: #f15d5c;
+    font-size: 1.2rem;
+    color: #fff;
+    height: 40px;
+    margin-top: 30px;
+    width: 100%;
+  }
+  
+  .smallButton {
+    color: #fff;
+    margin-bottom: 35px;
+    height: 30px;
+    width: 85px;
+  }
+  
+  .selectButton {
+    @extend .smallButton;
+    background: #00cc99;
+  }
+  
+  .removeButton {
+    @extend .smallButton;
+    background: #f7f7f7;
+    color: #000;
+    &:hover {
+      background: #e5e5e5;
+    }
+  }
+  
+  // ------------------------------------- Responsive -------------------------------------
+  @media only screen and (max-width: 600px) {
+    .largeCenterModalBox {
+      height: 100%;
+      width: 100%;
+    }
+  }
+
+  //  Images
+
+  .imageContainer {
+    margin: 20px 0 30px 0;
+    text-align: center;
+  }
+  
+  .image {
+    border-radius: 4px;
+    height: 160px;
+    width: 160px;
+  }
+  
+  
