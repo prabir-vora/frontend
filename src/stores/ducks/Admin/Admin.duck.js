@@ -60,6 +60,20 @@ const actionTypes = createActionTypes({
     UPDATE_SNEAKER_IMAGE_SUCCESS: 'UPDATE_SNEAKER_IMAGE_SUCCESS',
     UPDATE_SNEAKER_IMAGE_ERROR: 'UPDATE_SNEAKER_IMAGE_ERROR',
 
+    // -------> Apparel
+    CREATE_NEW_APPAREL_REQUEST: 'CREATE_NEW_APPAREL_REQUEST',
+    CREATE_NEW_APPAREL_SUCCESS: 'CREATE_NEW_APPAREL_SUCCESS',
+    CREATE_NEW_APPAREL_ERROR: 'CREATE_NEW_APPAREL_ERROR',
+    UPDATE_EXISTING_APPAREL_REQUEST: 'UPDATE_EXISTING_APPAREL_REQUEST',
+    UPDATE_EXISTING_APPAREL_SUCCESS: 'UPDATE_EXISTING_APPAREL_SUCCESS',
+    UPDATE_EXISTING_APPAREL_ERROR: 'UPDATE_EXISTING_APPAREL_ERROR',
+    REMOVE_EXISTING_APPAREL_REQUEST: 'REMOVE_EXISTING_APPAREL_REQUEST',
+    REMOVE_EXISTING_APPAREL_SUCCESS: 'REMOVE_EXISTING_APPAREL_SUCCESS',
+    REMOVE_EXISTING_APPAREL_ERROR: 'REMOVE_EXISTING_APPAREL_ERROR',
+    UPDATE_APPAREL_IMAGE_REQUEST: 'UPDATE_APPAREL_IMAGE_REQUEST',
+    UPDATE_APPAREL_IMAGE_SUCCESS: 'UPDATE_APPAREL_IMAGE_SUCCESS',
+    UPDATE_APPAREL_IMAGE_ERROR: 'UPDATE_APPAREL_IMAGE_ERROR',
+
     //  Queries 
 
     //  -----> Brands
@@ -81,6 +95,11 @@ const actionTypes = createActionTypes({
     GET_SNEAKERS_REQUEST: 'GET_SNEAKERS_REQUEST',
     GET_SNEAKERS_SUCCESS: 'GET_SNEAKERS_SUCCESS',
     GET_SNEAKERS_ERROR: 'GET_SNEAKERS_ERROR',
+
+    //  -----> Apparel
+    GET_APPAREL_REQUEST: 'GET_APPAREL_REQUEST',
+    GET_APPAREL_SUCCESS: 'GET_APPAREL_SUCCESS',
+    GET_APPAREL_ERROR: 'GET_APPAREL_ERROR',
     
 }, duckName);
 
@@ -470,12 +489,12 @@ const updateExistingSneaker = (sneakerInfo) => dispatch => {
     })
 }
 
-const removeExistingSneaker = (brandInfo) => dispatch => {
+const removeExistingSneaker = (sneakerInfo) => dispatch => {
     dispatch(removeExistingSneakerRequest());
     return new Promise((resolve, reject) => {
         fetchGraphQL(`
             mutation {
-                removeExistingSneaker(id: "${brandInfo.id}")
+                removeExistingSneaker(id: "${sneakerInfo.id}")
             }
         `)
         .then((res) => {
@@ -518,6 +537,141 @@ const updateSneakerImage = (imageURL, sneakerInfo) => dispatch => {
     })
 }
 
+// <------------ APPAREL ----------------->
+
+const createApparelWithInputType = () => {
+
+    return `
+        mutation($apparel: ApparelInput!, ) {
+                createNewApparel(apparel: $apparel) {
+                    name
+                    id
+                }
+            }
+        `
+} 
+
+const createNewApparel = (apparelInfo) => dispatch => {   
+    dispatch(createNewApparelRequest());
+    const { name } = apparelInfo;
+    const apparelSlug = slugify(name, {
+        replacement: '-',  
+        lower: true,      // convert to lower case, defaults to `false`
+      })
+    const apparel = immutable.set(apparelInfo, "slug", apparelSlug);
+    return new Promise((resolve, reject) => {
+        fetchGraphQL(
+            createApparelWithInputType(), undefined, {
+                apparel
+            }
+        )
+        .then(res => {
+            if (res !== null && res !== undefined && res.createNewApparel !== null && res.createNewApparel !== undefined) {
+                dispatch(createNewApparelSuccess());
+                resolve({ created: true, message: "Created Apparel Successfully" });
+            } else {
+                dispatch(createNewApparelError());
+                resolve({ created: false, message: "Failed to Create Apparel" });
+            }
+            
+          })
+        .catch(err => {
+            dispatch(createNewApparelError(err.response));
+            resolve({ created: false, message: "Failed to Create Apparel" });
+        });
+    })    
+}
+
+const updateApparelWithInputType = () => {
+
+    return `
+        mutation($apparel: ApparelInput!, $id: ID!) {
+                updateExistingApparel(apparel: $apparel, id: $id) 
+            }
+        `
+} 
+
+const updateExistingApparel = (apparelInfo) => dispatch => {
+    dispatch(updateExistingApparelRequest());
+    const { name, id } = apparelInfo;
+    const apparelSlug = slugify(name, {
+        replacement: '-',  
+        lower: true,      // convert to lower case, defaults to `false`
+      })
+
+    const apparelWithUpdatedSlug = immutable.set(apparelInfo, "slug", apparelSlug);
+    const apparel = immutable.wrap(apparelWithUpdatedSlug).del('id').del('imageURL').value();
+    console.log(apparel);
+    return new Promise((resolve, reject) => {
+        fetchGraphQL(
+            updateApparelWithInputType(), undefined, {
+                apparel,
+                id
+            }
+        )
+        .then((res) => {
+            if (res !== null & res !== undefined && res.updateExistingApparel) {
+                dispatch(updateExistingApparelSuccess());
+                resolve({ updated: true, message: "Updated Apparel Successfully" });
+            } else {
+                dispatch(updateExistingApparelError("Could Not Update Apparel"));
+                resolve({ updated: false, message: "Failed to update Apparel" });
+            }  
+          })
+          .catch(err => {
+            dispatch(updateExistingApparelError(err.response));
+            resolve({ updated: false, message: "Failed to update Apparel" })
+          });
+    })
+}
+
+const removeExistingApparel = (apparelInfo) => dispatch => {
+    dispatch(removeExistingApparelRequest());
+    return new Promise((resolve, reject) => {
+        fetchGraphQL(`
+            mutation {
+                removeExistingApparel(id: "${apparelInfo.id}")
+            }
+        `)
+        .then((res) => {
+            if (res !== null && res !== undefined && res.removeExistingApparel) {
+                dispatch(removeExistingApparelSuccess());
+                resolve({ deleted: true, message: 'Deleted Apparel Successfully' });
+            } else {
+                dispatch(removeExistingApparelError("Could Not Remove Apparel"));
+                resolve({ deleted: false, message: 'Failed to delete Apparel' });
+            }
+        })
+        .catch(err => {
+            dispatch(removeExistingApparelError(err.response));
+            resolve({ deleted: false, message: 'Failed to delete Apparel' });
+          });
+    })
+}
+
+const updateApparelImage = (imageURL, apparelInfo) => dispatch => {
+    dispatch(updateApparelImageRequest());
+    return new Promise((resolve, reject) => {
+        fetchGraphQL(`
+            mutation {
+                updateApparelImage(id: "${apparelInfo.id}", imageURL: "${imageURL}")
+            }    
+        `)
+        .then((res) => {
+            if (res !== null && res !== undefined && res.updateApparelImage) {
+                dispatch(updateApparelImageSuccess())
+                resolve({ updated: true, message: "Updated Apparel Image Successfully" });
+            } else {
+                dispatch(updateApparelImageFailure("Could Not Update Apparel Image"));
+                resolve({ updated: false, message: "Failed to update Apparel Image" });
+            }
+        })
+        .catch(err => {
+            dispatch(updateApparelImageFailure(err.response));
+            resolve({ updated: false, message: "Failed to update Apparel Image" });
+        });
+    })
+}
 
 
 // ----------------> Query
@@ -605,6 +759,33 @@ const getSizing = () => dispatch => {
     })
 }
 
+// Image Upload
+
+const uploadImage = (file, typeOfUpload) => dispatch => {
+    const formData = new FormData()
+    formData.append("attachment", file);
+    formData.append("typeOfUpload", typeOfUpload);
+    const config = {
+        headers: {
+            "content-type": "multipart/form-data"
+        }
+    }
+
+    return new Promise((resolve, reject) => {
+        axios.post('http://localhost:4000/uploadMedia', formData, config)
+        .then((res) => {
+            const { status, url } = res.data;
+            if (status === "success") {
+                resolve({ success: true, imageURL: url, message: "Image upload successful" });
+            } else {
+                resolve({ success: false, imageURL: "", message: "Image upload unsuccessful" })
+            }
+        }).catch(err => {
+            resolve({ success: false, imageURL: "", message: "Image upload unsuccessful" })
+        })
+    })
+}
+
 // <----------------- Sneakers -------------->
 
 const getAllSneakers = () => dispatch => {
@@ -623,6 +804,8 @@ const getAllSneakers = () => dispatch => {
                 designer
                 gender
                 imageURL
+                releaseDate
+                colorway
             }
         }`)
         .then((res) => {
@@ -637,6 +820,45 @@ const getAllSneakers = () => dispatch => {
         .catch(err => {
             dispatch(getAllSneakersError(err.response));
             resolve({ success: false, message: "Failed to fetch sneakers"});
+        });
+    })
+}
+
+// <----------------- Apparel -------------->
+
+const getAllApparel = () => dispatch => {
+    dispatch(getAllApparelRequest());
+    return new Promise((resolve, reject) => {
+        fetchGraphQL(`
+        query {
+            getAllApparel {
+                id
+                name
+                nickName
+                description
+                sku
+                slug
+                brand
+                designer
+                gender
+                imageURL
+                releaseDate
+                colorway
+                hasSizing
+            }
+        }`)
+        .then((res) => {
+            if (res !== null && res !== undefined && res.getAllApparel !== null && res.getAllApparel !== undefined) {
+                dispatch(getAllApparelSuccess(res.getAllApparel));
+                resolve({ success: true, message: "Fetched Apparel successfully"});
+            } else {
+                dispatch(getAllApparelError("Could not fetch Apparel"));
+                resolve({ success: false, message: "Failed to fetch apparel"});
+            }
+          })
+        .catch(err => {
+            dispatch(getAllApparelError(err.response));
+            resolve({ success: false, message: "Failed to fetch apparel"});
         });
     })
 }
@@ -898,6 +1120,83 @@ const updateSneakerImageFailure = (errorMessage) => {
     }
 }
 
+// <---------------------- APPAREL ---------------->
+const createNewApparelRequest = () => {
+    return {
+        type: actionTypes.CREATE_NEW_APPAREL_REQUEST
+    }
+}
+
+const createNewApparelSuccess = () => {
+    return {
+        type: actionTypes.CREATE_NEW_APPAREL_SUCCESS,
+    }
+}
+
+const createNewApparelError = (errorMessage) => {
+    return {
+        type: actionTypes.CREATE_NEW_APPAREL_ERROR,
+        payload: { errorMessage }
+    }
+}
+
+const updateExistingApparelRequest = () => {
+    return {
+        type: actionTypes.UPDATE_EXISTING_APPAREL_REQUEST
+    }
+}
+
+const updateExistingApparelSuccess = () => {
+    return {
+        type: actionTypes.UPDATE_EXISTING_APPAREL_SUCCESS,
+    }
+}
+
+const updateExistingApparelError = (errorMessage) => {
+    return {
+        type: actionTypes.UPDATE_EXISTING_APPAREL_ERROR,
+        payload: { errorMessage }
+    }
+}
+
+const removeExistingApparelRequest = () => {
+    return {
+        type: actionTypes.REMOVE_EXISTING_APPAREL_REQUEST
+    }
+}
+
+const removeExistingApparelSuccess = () => {
+    return {
+        type: actionTypes.REMOVE_EXISTING_APPAREL_SUCCESS,
+    }
+}
+
+const removeExistingApparelError = (errorMessage) => {
+    return {
+        type: actionTypes.REMOVE_EXISTING_APPAREL_ERROR,
+        payload: { errorMessage }
+    }
+}
+
+const updateApparelImageRequest = () => {
+    return {
+        type: actionTypes.UPDATE_APPAREL_IMAGE_REQUEST
+    }
+}
+
+const updateApparelImageSuccess = () => {
+    return {
+        type: actionTypes.UPDATE_APPAREL_IMAGE_SUCCESS,
+    }
+}
+
+const updateApparelImageFailure = (errorMessage) => {
+    return {
+        type: actionTypes.UPDATE_APPAREL_IMAGE_ERROR,
+        payload: { errorMessage }
+    }
+}
+
 // QUERY Actions
 
 // brands
@@ -984,6 +1283,28 @@ const getAllSneakersError = (errorMessage) => {
     console.log(errorMessage)
     return {
         type: actionTypes.GET_SNEAKERS_ERROR,
+        payload: { errorMessage }
+    }
+}
+
+// apparel
+const getAllApparelRequest = () => {
+    return {
+        type: actionTypes.GET_APPAREL_REQUEST
+    }
+}
+
+const getAllApparelSuccess = (data) => {
+    return {
+        type: actionTypes.GET_APPAREL_SUCCESS,
+        payload: { data }
+    }
+}
+
+const getAllApparelError = (errorMessage) => {
+    console.log(errorMessage)
+    return {
+        type: actionTypes.GET_APPAREL_ERROR,
         payload: { errorMessage }
     }
 }
@@ -1084,7 +1405,7 @@ const reducer = (state = initialState, action) => {
                 sizing: Object.assign({}, state.sizing, { isMutating: false, errorMessage: action.payload.errorMessage })
             })
 
-        // Brands
+        // Sneakers
         case actionTypes.CREATE_NEW_SNEAKER_REQUEST:
             return Object.assign({}, state, {
                 sneakers: Object.assign({}, state.sneakers, { isMutating: true })
@@ -1121,6 +1442,45 @@ const reducer = (state = initialState, action) => {
         case actionTypes.REMOVE_EXISTING_SNEAKER_ERROR: 
             return Object.assign({}, state, {
                 sneakers: Object.assign({}, state.sneakers, { isMutating: false, errorMessage: action.payload.errorMessage })
+            })
+
+        // Apparel
+        case actionTypes.CREATE_NEW_APPAREL_REQUEST:
+            return Object.assign({}, state, {
+                apparel: Object.assign({}, state.apparel, { isMutating: true })
+              })
+        case actionTypes.CREATE_NEW_APPAREL_SUCCESS:
+            return Object.assign({}, state, {
+                apparel: Object.assign({}, state.apparel, { isMutating: false })
+              })
+        case actionTypes.CREATE_NEW_APPAREL_ERROR: 
+            return Object.assign({}, state, {
+                apparel: Object.assign({}, state.apparel, { isMutating: false, errorMessage: action.payload.errorMessage })
+            })
+        
+        case actionTypes.UPDATE_EXISTING_APPAREL_REQUEST:
+            return Object.assign({}, state, {
+                apparel: Object.assign({}, state.apparel, { isMutating: true })
+              })
+        case actionTypes.UPDATE_EXISTING_APPAREL_SUCCESS:
+            return Object.assign({}, state, {
+                apparel: Object.assign({}, state.apparel, { isMutating: false })
+              })
+        case actionTypes.UPDATE_EXISTING_APPAREL_ERROR: 
+            return Object.assign({}, state, {
+                apparel: Object.assign({}, state.apparel, { isMutating: false, errorMessage: action.payload.errorMessage })
+            })
+        case actionTypes.REMOVE_EXISTING_APPAREL_REQUEST:
+            return Object.assign({}, state, {
+                apparel: Object.assign({}, state.apparel, { isMutating: true })
+              })
+        case actionTypes.REMOVE_EXISTING_APPAREL_SUCCESS:
+            return Object.assign({}, state, {
+                apparel: Object.assign({}, state.apparel, { isMutating: false })
+              })
+        case actionTypes.REMOVE_EXISTING_APPAREL_ERROR: 
+            return Object.assign({}, state, {
+                apparel: Object.assign({}, state.apparel, { isMutating: false, errorMessage: action.payload.errorMessage })
             })
 
         // ----------- Query Reducers ----------------
@@ -1190,6 +1550,22 @@ const reducer = (state = initialState, action) => {
                 sneakers: Object.assign({}, state.sneakers, { data: [], isFetching: false, errorMessage: action.payload.errorMessage })
               })
         }
+             // Apparel
+        case actionTypes.GET_APPAREL_REQUEST: {
+            return Object.assign({}, state, {
+                apparel: Object.assign({}, state.apparel, { isFetching: true })
+              })
+        }
+        case actionTypes.GET_APPAREL_SUCCESS: {
+            return Object.assign({}, state, {
+                apparel: Object.assign({}, state.apparel, { data: action.payload.data || [], isFetching: false })
+              })
+        }
+        case actionTypes.GET_APPAREL_ERROR: {
+            return Object.assign({}, state, {
+                apparel: Object.assign({}, state.apparel, { data: [], isFetching: false, errorMessage: action.payload.errorMessage })
+              })
+        }
         default: 
             return state;
     }
@@ -1229,7 +1605,18 @@ export default {
             removeExistingSneaker,
             updateSneakerImage,
             // ----> Query
-            getAllSneakers
+            getAllSneakers,
+        // Apparel
+            // -----> Mutation
+            createNewApparel,
+            updateExistingApparel,
+            removeExistingApparel,
+            updateApparelImage,
+            // -----> Query
+            getAllApparel,
         
+
+        // Other
+            uploadImage
     }
 }

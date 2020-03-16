@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
-
 // Style
 import Style from "../style.module.scss";
 
@@ -11,14 +10,15 @@ import {
     CenterModal,
     ModalBackButton,
     TextInput,
-    Img
+    Img,
+    ImageUploader
 } from "fields";
 
 class ChangePhotoModal extends Component {
 
     confirmNotif = null;
 
-    state = { imageURL: "" };
+    state = { imageURL: "", pictures: [] };
 
     componentDidMount = () =>
     this.setState({
@@ -51,6 +51,14 @@ class ChangePhotoModal extends Component {
         </div>
     }
 
+   renderImageUploader = () => {
+        return <ImageUploader
+            imageURL={this.state.imageURL}
+            typeOfUpload={this.props.type}
+            onUploadImage={this.onChangeImageURL}
+        />
+   }
+
     render() {
 
         const { name } = this.props; 
@@ -70,7 +78,7 @@ class ChangePhotoModal extends Component {
             >
                 <h2>{name}</h2>
                 {this.renderImageUrlInput()}
-                {this.renderImage()}
+                {this.renderImageUploader()}
                 <Button
                 className={Style.saveButton}
                 name="save new item image url"

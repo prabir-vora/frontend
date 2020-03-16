@@ -13,6 +13,7 @@ import CheckBoxes from './CheckBoxes';
 import RadioButtons from './RadioButtons';
 import RadioButton from './RadioButton';
 import ProductTemplate from './ProductTemplate';
+import ImageUploader from './ImageUploader';
 
 
 export {
@@ -21,6 +22,7 @@ export {
     Chip, 
     CheckBox,
     CheckBoxes,
+    ImageUploader,
     Img,
     ExpansionPanel,
     FullPageModal,

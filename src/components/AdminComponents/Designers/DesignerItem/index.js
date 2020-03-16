@@ -109,6 +109,7 @@ class DesignerItem extends Component {
     renderChangePhotoModal = () => {
       return (
         <AdminModals.ChangePhotoModal
+          type="designers"
           name={this.props.designerInfo.name}
           imageURL={this.props.designerInfo.imageURL}
           onCloseModal={this.onHideChangePhotoModal}

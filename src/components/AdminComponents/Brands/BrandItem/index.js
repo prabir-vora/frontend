@@ -113,6 +113,7 @@ class BrandItem extends Component {
     renderChangePhotoModal = () => {
       return (
         <AdminModals.ChangePhotoModal
+          type="brands"
           name={this.props.brandInfo.name}
           imageURL={this.props.brandInfo.imageURL}
           onCloseModal={this.onHideChangePhotoModal}

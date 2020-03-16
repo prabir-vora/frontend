@@ -7,13 +7,13 @@ import AdminDuck from "stores/ducks/Admin/Admin.duck";
 
 // Components
 import { CenterModal, ModalBackButton } from "fields";
-import SneakerFormFields from "./sneakerFormFields";
+import ApparelFormFields from "./apparelFormFields";
 import ConfirmArchiveModal from "../ConfirmArchiveModal";
 
 // Style
 import ModalStyle from "../style.module.scss";
 
-class SneakersModal extends Component {
+class ApparelModal extends Component {
     state = {
         showLoadingModal: false
     }
@@ -29,29 +29,29 @@ class SneakersModal extends Component {
     this.setState({ showConfirmArchiveModal: true });
 
     renderModalTitle = () => {
-        return <h1>{this.props.isInEditMode ? "Edit" : "Create"} Sneaker</h1>;
+        return <h1>{this.props.isInEditMode ? "Edit" : "Create"} Apparel</h1>;
       };
 
-    onSubmitSneakerInfo = async (sneakerInfo) => {
+    onSubmitApparelInfo = async (apparelInfo) => {
         if (this.props.isInEditMode) {
             const { actionCreators } = AdminDuck;
-            const { updateExistingSneaker } = actionCreators;
-            const res = await this.props.dispatch(updateExistingSneaker(sneakerInfo));
+            const { updateExistingApparel } = actionCreators;
+            const res = await this.props.dispatch(updateExistingApparel(apparelInfo));
             console.log(res);  
-            this.props.onUpdateAfterSneakerSaved(res);
+            this.props.onUpdateAfterApparelSaved(res);
         } else { 
             const { actionCreators } = AdminDuck;
-            const { createNewSneaker } = actionCreators;
-            const res = await this.props.dispatch(createNewSneaker(sneakerInfo));
-            this.props.onUpdateAfterSneakerCreated(res);
+            const { createNewApparel } = actionCreators;
+            const res = await this.props.dispatch(createNewApparel(apparelInfo));
+            this.props.onUpdateAfterApparelCreated(res);
         }
     }
 
-    onArchiveSneaker = async () => {
+    onArchiveApparel = async () => {
         const { actionCreators } = AdminDuck;
-        const { removeExistingSneaker } = actionCreators;
-        const res = await this.props.dispatch(removeExistingSneaker(this.props.sneakerInfo));
-        this.props.onUpdateAfterSneakerArchived(res);
+        const { removeExistingApparel } = actionCreators;
+        const res = await this.props.dispatch(removeExistingApparel(this.props.apparelInfo));
+        this.props.onUpdateAfterApparelArchived(res);
     }
 
     // Render methods
@@ -72,7 +72,7 @@ class SneakersModal extends Component {
 
     render() {
         
-        const { isInEditMode, sneakerInfo } = this.props;
+        const { isInEditMode, apparelInfo } = this.props;
         const { showConfirmArchiveModal } = this.state;
         return (
           <CenterModal
@@ -87,9 +87,9 @@ class SneakersModal extends Component {
           >
             {showConfirmArchiveModal && (
               <ConfirmArchiveModal
-                name={sneakerInfo.name}
+                name={apparelInfo.name}
                 onArchive={() =>
-                  this.onArchiveSneaker()
+                  this.onArchiveApparel()
                 }
                 onCloseModal={this.onHideConfirmArchiveModal}
               />
@@ -98,42 +98,41 @@ class SneakersModal extends Component {
               <div>Loading...</div>
             )}
             {this.renderModalTitle()}
-            <SneakerFormFields
+            <ApparelFormFields
               isInEditMode={isInEditMode}  
-              onSubmit={this.onSubmitSneakerInfo}
+              onSubmit={this.onSubmitApparelInfo}
               brands={this.props.brands}
               designers={this.props.designers}
-              sneakerInfo={this.props.sneakerInfo}
+              apparelInfo={this.props.apparelInfo}
             />
             {isInEditMode && this.renderArchiveItemButton()}
           </CenterModal>
         );
       }
-
 }
 
-SneakersModal.propTypes = {
+ApparelModal.propTypes = {
     isInEditMode: PropTypes.bool,
     isMutating: PropTypes.bool,
-    sneakerInfo: PropTypes.object,
-    sneakerID: PropTypes.string,
+    apparelInfo: PropTypes.object,
+    apparelID: PropTypes.string,
     onCloseModal: PropTypes.func.isRequired,
-    onUpdateAfterSneakerArchived: PropTypes.func,
-    onUpdateAfterSneakerCreated: PropTypes.func,
-    onUpdateAfterSneakerSaved: PropTypes.func
+    onUpdateAfterApparelArchived: PropTypes.func,
+    onUpdateAfterApparelCreated: PropTypes.func,
+    onUpdateAfterApparelSaved: PropTypes.func
   };
 
-SneakersModal.defaultProps = {
+ApparelModal.defaultProps = {
     isInEditMode: false
 }
 
 const mapStateToProps = state => {
   const { duckName } = AdminDuck;
   return {
-    isMutating: state[duckName].sneakers.isMutating,
+    isMutating: state[duckName].apparel.isMutating,
     brands: state[duckName].brands.data,
     designers: state[duckName].designers.data
   };
 };
 
-export default connect(mapStateToProps)(SneakersModal);
+export default connect(mapStateToProps)(ApparelModal);

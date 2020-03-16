@@ -23,7 +23,7 @@ import {
 // import Style from "../style.module.scss";
 import Style from "./style.module.scss";
 
-class SneakerItem extends Component {
+class ApparelItem extends Component {
 
     confirmNotif = null;
 
@@ -33,7 +33,7 @@ class SneakerItem extends Component {
 
     onShowEditItemModal = () => this.setState({ showEditItemModal: true });
 
-    onUpdateAfterSneakerSaved = ({updated, message}) => {
+    onUpdateAfterApparelSaved = ({updated, message}) => {
       if (updated) {
         this.confirmNotif = ShowConfirmNotif({
           message,
@@ -49,7 +49,7 @@ class SneakerItem extends Component {
       }
     }
 
-    onUpdateAfterSneakerArchived = ({deleted, message}) => {
+    onUpdateAfterApparelArchived = ({deleted, message}) => {
       if (deleted) {
         this.confirmNotif = ShowConfirmNotif({
           message,
@@ -69,10 +69,10 @@ class SneakerItem extends Component {
 
     onHideChangePhotoModal = () => this.setState({ showChangePhotoModal: false });
 
-    onSaveSneakerImage = async (imageURL) => {
+    onSaveApparelImage = async (imageURL) => {
       const { actionCreators } = AdminDuck;
-      const { updateSneakerImage } = actionCreators;
-      const { updated, message } = await this.props.dispatch(updateSneakerImage(imageURL, this.props.sneakerInfo));
+      const { updateApparelImage } = actionCreators;
+      const { updated, message } = await this.props.dispatch(updateApparelImage(imageURL, this.props.apparelInfo));
 
       if (updated) {
         this.confirmNotif = ShowConfirmNotif({
@@ -90,7 +90,7 @@ class SneakerItem extends Component {
     }
 
     renderProductTemplateAvatar = () => {
-        const  imageURL  = this.props.sneakerInfo.imageURL || "";
+        const  imageURL  = this.props.apparelInfo.imageURL || "";
         return imageURL ? (
           <Img
             alt=""
@@ -108,19 +108,19 @@ class SneakerItem extends Component {
     renderChangePhotoModal = () => {
       return (
         <AdminModals.ChangePhotoModal
-          type="sneakers"
-          name={this.props.sneakerInfo.name}
-          imageURL={this.props.sneakerInfo.imageURL}
+          type="apparel"
+          name={this.props.apparelInfo.name}
+          imageURL={this.props.apparelInfo.imageURL}
           onCloseModal={this.onHideChangePhotoModal}
-          onSaveImage={this.onSaveSneakerImage}
+          onSaveImage={this.onSaveApparelImage}
         />
       );
     };
 
 
     renderProductTemplateLabel = () => {
-        const { sneakerInfo } = this.props;
-        const { name } = sneakerInfo;
+        const { apparelInfo } = this.props;
+        const { name } = apparelInfo;
         return (
           <React.Fragment>
             <div className={Style.productTemplateName}>{name}</div>
@@ -129,12 +129,12 @@ class SneakerItem extends Component {
       };
 
     renderEditModal = () => (
-        <AdminModals.SneakersModal
+        <AdminModals.ApparelModal
           isInEditMode={true}
-          sneakerInfo={this.props.sneakerInfo}
+          apparelInfo={this.props.apparelInfo}
           onCloseModal={this.onHideEditItemModal}
-          onUpdateAfterSneakerArchived={this.onUpdateAfterSneakerArchived}
-          onUpdateAfterSneakerSaved={this.onUpdateAfterSneakerSaved}
+          onUpdateAfterApparelArchived={this.onUpdateAfterApparelArchived}
+          onUpdateAfterApparelSaved={this.onUpdateAfterApparelSaved}
         />
       );
 
@@ -163,23 +163,23 @@ class SneakerItem extends Component {
         <React.Fragment>
             {this.state.showChangePhotoModal && this.renderChangePhotoModal()}
             {this.state.showEditItemModal && this.renderEditModal()}
-            {this.props.sneakerInfo && this.renderItem()}
+            {this.props.apparelInfo && this.renderItem()}
         </React.Fragment>
         );
     }
 }
 
 
-SneakerItem.propTypes = {
+ApparelItem.propTypes = {
     isInEditMode: PropTypes.bool,
     itemHelperButton: PropTypes.func,
     sneakerID: PropTypes.string,
-    sneakerInfo: PropTypes.shape({ name: PropTypes.string }).isRequired,
+    apparelInfo: PropTypes.shape({ name: PropTypes.string }).isRequired,
     onRefreshAfterChanges: PropTypes.func
   };
   
-  SneakerItem.defaultProps = {
+  ApparelItem.defaultProps = {
     isInEditMode: true,
   };
 
-  export default connect()(SneakerItem);
+  export default connect()(ApparelItem);

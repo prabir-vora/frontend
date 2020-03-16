@@ -159,8 +159,14 @@ class Sneakers extends Component {
 const mapStateToProps = state => {
   const { duckName } = AdminDuck;
   return {
+    isFetchingSneakers:  state[duckName].sneakers.isFetching, 
     sneakers: state[duckName].sneakers.data 
   }
 }
 
 export default connect(mapStateToProps)(Sneakers);
+
+Sneakers.propTypes = {
+  isFetchingSneakers: PropTypes.bool,
+  sneakers: PropTypes.array
+}

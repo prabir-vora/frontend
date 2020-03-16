@@ -12,27 +12,27 @@ import { Button, RadioButton, TextInput } from 'fields';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-const NEW_SNEAKER_FIELDS = [
+const NEW_APPAREL_FIELDS = [
     {
         fieldKind: "text",
         id: "name",
         label: "Name",
-        placeholder: "Eg. Air Jordan 3", 
+        placeholder: "Eg. Supreme Box Logo", 
         required: true
     },
     {
         fieldKind: "text",
         id: "nickName",
         label: "Nick Name",
-        placeholder: "Eg. UNC",
+        placeholder: "",
         required: false 
     },
     {
         fieldKind: "textarea",
         id: "description",
         label: "Description",
-        placeholder: "Enter Sneaker Description",
-        required: true
+        placeholder: "Enter Description",
+        required: false
     },
     {
         fieldKind: "text",
@@ -44,7 +44,7 @@ const NEW_SNEAKER_FIELDS = [
     {
         fieldKind: "text",
         id: "sku",
-        label: "Sneaker SKU",
+        label: "Apparel SKU",
         placeholder: "",
         required: true
     },
@@ -69,7 +69,16 @@ const NEW_SNEAKER_FIELDS = [
         options: {
             men: { label: "Men" },
             women: { label: "Women" },
-            infant: { label: "Infant" }
+            unisex: { label: "Unisex" }
+        }
+    },
+    {
+        fieldKind: "radio",
+        id: "hasSizing",
+        label: "Does have sizing?",
+        options: {
+            yes: { label: "Yes" },
+            no: { label: "No" },
         }
     },
     {
@@ -77,15 +86,14 @@ const NEW_SNEAKER_FIELDS = [
         id: "releaseDate",
         label: "Release Date",
     }
-
 ]
 
-export default class SneakerFormFields extends Component {
+export default class ApparelFormFields extends Component {
 
     state={
         brands: [],
         designers: [],
-        sneakerInfo: {
+        apparelInfo: {
             name: "",
             nickName: "",
             brand: "",
@@ -94,16 +102,18 @@ export default class SneakerFormFields extends Component {
             gender: "",
             sku: "",
             colorway: "",
+            hasSizing: "no",
             releaseDate: new Date()
         },
         submitBtnStatus: "inactive"
     }
-    
-    componentDidMount() {
-        const releaseDate = this.props.sneakerInfo.releaseDate ? new Date(this.props.sneakerInfo.releaseDate) : new Date();
 
+    componentDidMount() {
+
+        const releaseDate = this.props.apparelInfo.releaseDate ? new Date(this.props.apparelInfo.releaseDate) : new Date();
+        
         this.setState({ 
-            sneakerInfo: immutable.set(this.props.sneakerInfo, "releaseDate", releaseDate),
+            apparelInfo: immutable.set(this.props.apparelInfo, "releaseDate", releaseDate),
             brands: this.props.brands,
             designers: this.props.designers
     
@@ -114,19 +124,19 @@ export default class SneakerFormFields extends Component {
 
     onGetButtonStatus = () => {
         console.log(this.state);
-        const { name, sku, brand, designer, gender, colorway, releaseDate } = this.state.sneakerInfo;
+        const { name, sku, brand, designer, gender, colorway, releaseDate } = this.state.apparelInfo;
 
-        (name !== "" && sku !== "" && brand !== "" && designer !== "" && gender !== "" && colorway !== "" && releaseDate !== "") ?
+        (name !== "" && sku !== "" && brand !== "" && designer !== "" && gender !== "" && colorway !== "" && releaseDate !== "") ? 
         this.setState({ submitBtnStatus:"active" }) : this.setState({ submitBtnStatus: "inactive"});
     }
 
     onChangeTextInputValue = (fieldID, value) => {
-        this.setState({ sneakerInfo: immutable.set(this.state.sneakerInfo, fieldID, value) }, this.onGetButtonStatus);
+        this.setState({ apparelInfo: immutable.set(this.state.apparelInfo, fieldID, value) }, this.onGetButtonStatus);
     }
 
     onChangeDatePicker = date => {
         this.setState({
-            sneakerInfo: immutable.set(this.state.sneakerInfo, "releaseDate", date)
+            apparelInfo: immutable.set(this.state.apparelInfo, "releaseDate", date)
         }, this.onGetButtonStatus);
       };
 
@@ -153,10 +163,10 @@ export default class SneakerFormFields extends Component {
             return (
                 <div key={slug} style={{ marginBottom: '10px' }} >
                     <RadioButton 
-                        checked={this.state.sneakerInfo["brand"] === slug}
+                        checked={this.state.apparelInfo["brand"] === slug}
                         id={slug}
                         label={name}
-                        onClick={() => this.setState({ sneakerInfo: immutable.set(this.state.sneakerInfo, "brand", slug)}, this.onGetButtonStatus)}
+                        onClick={() => this.setState({ apparelInfo: immutable.set(this.state.apparelInfo, "brand", slug)}, this.onGetButtonStatus)}
                     />
                 </div>
             )
@@ -170,27 +180,25 @@ export default class SneakerFormFields extends Component {
             return (
                 <div key={slug} style={{ marginBottom: '10px' }} >
                     <RadioButton 
-                        checked={this.state.sneakerInfo["designer"] === slug}
+                        checked={this.state.apparelInfo["designer"] === slug}
                         id={slug}
                         label={name}
-                        onClick={() => this.setState({ sneakerInfo: immutable.set(this.state.sneakerInfo, "designer", slug)}, this.onGetButtonStatus)}
+                        onClick={() => this.setState({ apparelInfo: immutable.set(this.state.apparelInfo, "designer", slug)}, this.onGetButtonStatus)}
                     />
                 </div>
             )
         })
     }
 
-
-
     renderDefaultRadioButtons = (id, options) => {
         return Object.keys(options).map(optionID => {
             return (
                 <div key={optionID} style={{ marginBottom: '10px' }} >
                     <RadioButton
-                        checked={optionID === this.state.sneakerInfo[id]}
+                        checked={optionID === this.state.apparelInfo[id]}
                         id={optionID}
                         label={options[optionID].label}
-                        onClick={() => this.setState({ sneakerInfo: immutable.set(this.state.sneakerInfo, id, optionID )}, this.onGetButtonStatus)}
+                        onClick={() => this.setState({ apparelInfo: immutable.set(this.state.apparelInfo, id, optionID )}, this.onGetButtonStatus)}
                     />
                 </div>
             )
@@ -217,7 +225,7 @@ export default class SneakerFormFields extends Component {
                         hasMultipleLines={fieldKind === "textarea" ? true : false}
                         name={id}
                         onChange={value => this.onChangeTextInputValue(id, value)}
-                        value={this.state.sneakerInfo[id] || ""}
+                        value={this.state.apparelInfo[id] || ""}
                         />
                     </div>
                 )
@@ -226,7 +234,7 @@ export default class SneakerFormFields extends Component {
                         <div key={id} style={{ marginBottom: "20px" }}>
                             <h2>{field.label}</h2>
                             <DatePicker
-                                selected={this.state.sneakerInfo[id]}
+                                selected={this.state.apparelInfo[id] || ""}
                                 onChange={this.onChangeDatePicker}
                             />
                         </div>
@@ -239,7 +247,7 @@ export default class SneakerFormFields extends Component {
         return <Button
             className={Style.saveButton}
             name="Save"
-            onClick={() => this.props.onSubmit(this.state.sneakerInfo)}
+            onClick={() => this.props.onSubmit(this.state.apparelInfo)}
             status={this.state.submitBtnStatus}
         >
             {this.props.isInEditMode ? "Save" : "Create"}
@@ -249,7 +257,7 @@ export default class SneakerFormFields extends Component {
     render() {
         return (
             <div>
-                {NEW_SNEAKER_FIELDS.map(this.renderField)}
+                {NEW_APPAREL_FIELDS.map(this.renderField)}
                 {this.renderSubmitButton()}
             </div>
         )
@@ -257,19 +265,19 @@ export default class SneakerFormFields extends Component {
 
 }
 
-SneakerFormFields.propTypes = {
+ApparelFormFields.propTypes = {
     isInEditMode: PropTypes.bool,
-    sneakerInfo: PropTypes.object,
+    apparelInfo: PropTypes.object,
     onSubmit: PropTypes.func.isRequired,
     brands: PropTypes.array,
     designers: PropTypes.array
 };
   
-SneakerFormFields.defaultProps = {
+ApparelFormFields.defaultProps = {
     brands: [],
     designers: [],
     isInEditMode: false,
-    sneakerInfo: {
+    apparelInfo: {
         name: "",
         nickName: "",
         brand: "",
@@ -278,6 +286,7 @@ SneakerFormFields.defaultProps = {
         colorway: "",
         gender: "",
         sku: "",
+        hasSizing: "no",
         releaseDate: "",
     }
 };
