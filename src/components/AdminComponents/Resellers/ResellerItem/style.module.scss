@@ -1,0 +1,70 @@
+  
+  .addPhotoIcon {
+    height: 30px;
+    width: inherit;
+  }
+  
+  .itemImage {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    height: 54px;
+    width: 54px;
+    background: white;
+  }
+  
+  .chipName {
+    font-weight: bold;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: inherit;
+  }
+  
+  .pencilIcon {
+    fill: rgba(0, 0, 0, 0.7);
+    height: 20px;
+    width: 20px;
+  }
+  
+  .chipContainer {
+    position: relative;
+  }
+  
+  .signsContainer {
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin: auto;
+    position: absolute;
+    right: 0;
+    left: 0;
+    width: fit-content;
+    text-align: center;
+  }
+  
+  .sign {
+    padding: 0 10px;
+    border-radius: 0 0 4px 4px;
+    margin: 0 5px;
+  }
+  
+  .soldOutSign {
+    @extend .sign;
+    background: #e11b1b;
+    color: #fff;
+  }
+  
+  .onSaleSign {
+    @extend .sign;
+    background: #f4d60e;
+    color: #000;
+  }
+  
+  .archivedSign {
+    @extend .sign;
+    background: #0b2135;
+    color: #fff;
+  }
+  

@@ -232,6 +232,8 @@ export default class SneakerFormFields extends Component {
                         </div>
                         
                     )
+            default: 
+                    return null;
         }
     }
 

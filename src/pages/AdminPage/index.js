@@ -14,7 +14,8 @@ const mapNavBarIDs = {
     designers: <AdminView.Designers />,
     apparel: <AdminView.Apparel />,
     sneakers: <AdminView.Sneakers />,
-    sizing: <AdminView.Sizing />
+    sizing: <AdminView.Sizing />,
+    resellers: <AdminView.Resellers />
 }
 
 class Admin extends Component {

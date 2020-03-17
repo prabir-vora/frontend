@@ -25,7 +25,7 @@ const Img = props => {
       onContentVisible={props.onContentVisible}
     >
       <img
-        alt="Photo Not Found"
+        alt="Not Found"
         onClick={props.onClick}
         onLoad={props.onLoad}
         className={cx(props.className, Style.image)}

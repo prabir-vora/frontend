@@ -17,6 +17,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 // import NotificationDuck from './ducks/Notification.duck';
 import AdminUIDuck from './ducks/Admin/UI.duck';
 import AdminDuck from './ducks/Admin/Admin.duck';
+import TestObjectsDuck from "./ducks/Admin/TestObjects.duck";
 
 const initialState = {};
 const middleware = [thunk];
@@ -47,7 +48,8 @@ const rootReducer = combineDucks(
     // SearchMenuDuck,
     // NotificationDuck
     AdminUIDuck,
-    AdminDuck
+    AdminDuck,
+    TestObjectsDuck
 );
 
 const store = createStore(

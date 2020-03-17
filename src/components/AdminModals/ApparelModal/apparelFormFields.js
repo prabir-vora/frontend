@@ -240,6 +240,8 @@ export default class ApparelFormFields extends Component {
                         </div>
                         
                     )
+            default: 
+                    return null;
         }
     }
 

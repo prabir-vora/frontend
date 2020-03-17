@@ -36,6 +36,10 @@ const ADMIN_NAVBAR_ITEMS = [
     id: "sizing",
     label: "Sizing",
   },
+  {
+    id: "resellers",
+    label: "Resellers"
+  }
 ];
 
 
@@ -70,3 +74,7 @@ const mapStateToProps = state => {
 };
 
 export default connect(mapStateToProps)(AdminNavBar);
+
+AdminNavBar.propTypes = {
+  activeNavbarItemId: PropTypes.string.isRequired
+}

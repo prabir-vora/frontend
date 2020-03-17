@@ -54,10 +54,18 @@ class ImageUploader extends Component {
     onSubmit = async (e) => {
         e.preventDefault();
         this.setState({ isUploading: true });
-
         const { file } = this.state;
+
+        if (file === null || file === undefined) {
+            ShowConfirmNotif({
+                message: "Choose file first",
+                type: "error"
+            })
+            return;
+        }
+
         const { typeOfUpload } = this.props;
-        
+
         const { actionCreators } = AdminDuck;
         const { uploadImage } = actionCreators;
   
@@ -105,7 +113,7 @@ class ImageUploader extends Component {
                 className={Style.uploadButton}
                 name="Upload Image"
                 type="submit"
-                status={this.state.isUploading ? "inactive" : "active"}
+                status={this.state.isUploading || this.state.file === null ? "inactive" : "active"}
             >
                 Upload
             </Button>
