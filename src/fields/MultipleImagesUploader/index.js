@@ -12,27 +12,30 @@ import Style from './style.module.scss';
 import Button from '../Button';
 import { ShowConfirmNotif } from 'functions';
 
-class ImageUploader extends Component {
+class MultipleImagesUploader extends Component {
   state = {
-    file: null,
+    files: [],
     isUploading: false,
   };
 
   componentDidMount() {
-    this.setState({ imageURL: this.props.imageURL });
+    this.setState({ imageURLs: this.props.imageURLs || [] });
   }
 
   // Set the file to state
   onChange = e => {
     console.log(e.target.files);
-    if (e.target.files[0].size > 5242880) {
-      ShowConfirmNotif({
-        message: 'Image size larger than 5 mb',
-        type: 'error',
-      });
+    for (var i = 0; i < e.target.files.length; i++) {
+      if (e.target.files[i].size > 5242880) {
+        ShowConfirmNotif({
+          message: 'Image size larger than 5 mb',
+          type: 'error',
+        });
+        return;
+      }
     }
     this.setState({
-      file: e.target.files[0],
+      files: e.target.files,
       isUploading: false,
     });
   };
@@ -41,9 +44,9 @@ class ImageUploader extends Component {
   onSubmit = async e => {
     e.preventDefault();
     this.setState({ isUploading: true });
-    const { file } = this.state;
+    const { files } = this.state;
 
-    if (file === null || file === undefined) {
+    if (files.length === 0) {
       ShowConfirmNotif({
         message: 'Choose file first',
         type: 'error',
@@ -52,19 +55,24 @@ class ImageUploader extends Component {
     }
 
     const { typeOfUpload } = this.props;
-
+    const listOfFiles = [];
+    for (var i = 0; i < files.length; i++) {
+      listOfFiles.push(files[i]);
+    }
+    console.log(listOfFiles);
     const { actionCreators } = AdminDuck;
-    const { uploadImage } = actionCreators;
+    const { uploadImages } = actionCreators;
 
-    const { success, imageURL, message } = await this.props.dispatch(
-      uploadImage(file, typeOfUpload),
+    const { success, imageURLs, message } = await this.props.dispatch(
+      uploadImages(listOfFiles, typeOfUpload),
     );
     if (success) {
       ShowConfirmNotif({
         message,
         type: 'success',
       });
-      this.props.onUploadImage(imageURL);
+      console.log(imageURLs);
+      this.props.onUploadImages(imageURLs);
     } else {
       ShowConfirmNotif({
         message,
@@ -74,16 +82,17 @@ class ImageUploader extends Component {
     this.setState({ isUploading: false });
   };
 
-  renderCurrentImage = () => {
-    const { imageURL } = this.state;
-
-    if (imageURL !== '') {
-      return (
-        <div className={Style.imageContainer}>
-          <Img className={Style.image} src={imageURL} />
-          <p style={{ fontSize: '1.1rem' }}>Current Image</p>
-        </div>
-      );
+  renderCurrentImages = () => {
+    const { imageURLs } = this.state;
+    console.log(this.state);
+    if (imageURLs !== undefined && imageURLs.length !== 0) {
+      return imageURLs.map(imageURL => {
+        return (
+          <div key={imageURL} className={Style.imageContainer}>
+            <Img className={Style.image} src={imageURL} />
+          </div>
+        );
+      });
     }
 
     return null;
@@ -98,25 +107,27 @@ class ImageUploader extends Component {
         style={{ textAlign: 'center' }}
         type="file"
         accept="image/*"
+        multiple
         onChange={this.onChange}
       />
       <br />
       <Button
         className={Style.uploadButton}
-        name="Upload Image"
+        name="Upload Images"
         type="submit"
         status={
-          this.state.isUploading || this.state.file === null
+          this.state.isUploading || this.state.files.length === 0
             ? 'inactive'
             : 'active'
         }
       >
-        Upload
+        Upload Images
       </Button>
     </form>
   );
 
   render() {
+    console.log(this.props);
     if (this.state.isFetching) {
       return (
         <div style={{ textAlign: 'center' }}>
@@ -127,17 +138,25 @@ class ImageUploader extends Component {
 
     return (
       <div>
-        {this.renderCurrentImage()}
+        <h2>Additional Images</h2>
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+          }}
+        >
+          {this.renderCurrentImages()}
+        </div>
         {this.renderUploadForm()}
       </div>
     );
   }
 }
 
-ImageUploader.propTypes = {
-  imageURL: PropTypes.string,
-  typeOfUpload: PropTypes.string,
-  onUploadImage: PropTypes.func,
-};
+export default connect()(MultipleImagesUploader);
 
-export default connect()(ImageUploader);
+MultipleImagesUploader.propTypes = {
+  imageURLs: PropTypes.array,
+  typeOfUpload: PropTypes.string,
+  onUploadImages: PropTypes.func,
+};

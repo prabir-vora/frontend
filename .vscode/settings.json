@@ -1,0 +1,10 @@
+{
+  // "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "workbench.colorCustomizations": {
+    "terminal.foreground": "#55efc4"
+  },
+  "terminal.integrated.fontSize": 12,
+  "terminal.integrated.lineHeight": 1.3,
+  "terminal.integrated.fontFamily": "Monaco"
+}

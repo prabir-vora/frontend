@@ -5,6 +5,7 @@ import SizingModal from "./SizingModal";
 import SneakersModal from "./SneakersModal";
 import ApparelModal from "./ApparelModal";
 import ResellersModal from "./ResellersModal";
+import ResellItemsModal from "./ResellItemsModal";
 
 export default {
     BrandsModal,
@@ -13,6 +14,6 @@ export default {
     SizingModal,
     SneakersModal,
     ApparelModal,
-    ResellersModal
-
+    ResellersModal,
+    ResellItemsModal
 }

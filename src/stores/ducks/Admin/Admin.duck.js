@@ -59,6 +59,9 @@ const actionTypes = createActionTypes({
     UPDATE_SNEAKER_IMAGE_REQUEST: 'UPDATE_SNEAKER_IMAGE_REQUEST',
     UPDATE_SNEAKER_IMAGE_SUCCESS: 'UPDATE_SNEAKER_IMAGE_SUCCESS',
     UPDATE_SNEAKER_IMAGE_ERROR: 'UPDATE_SNEAKER_IMAGE_ERROR',
+    UPDATE_SNEAKER_ADDITIONAL_IMAGES_REQUEST: 'UPDATE_SNEAKER_ADDITIONAL_IMAGES_REQUEST',
+    UPDATE_SNEAKER_ADDITIONAL_IMAGES_SUCCESS: 'UPDATE_SNEAKER_ADDITIONAL_IMAGES_SUCCESS',
+    UPDATE_SNEAKER_ADDITIONAL_IMAGES_ERROR: 'UPDATE_SNEAKER_ADDITIONAL_IMAGES_ERROR',
 
     // -------> Apparel
     CREATE_NEW_APPAREL_REQUEST: 'CREATE_NEW_APPAREL_REQUEST',
@@ -406,8 +409,8 @@ const createNewSizing = (productCategory, gender, brandChoice, size_range) => di
 const createSneakerWithInputType = () => {
 
     return `
-        mutation($sneaker: SneakerInput!, ) {
-                createNewSneaker(sneaker: $sneaker) {
+        mutation($product: ProductInput!, ) {
+                createNewProduct(product: $product) {
                     name
                     id
                 }
@@ -417,20 +420,22 @@ const createSneakerWithInputType = () => {
 
 const createNewSneaker = (sneakerInfo) => dispatch => {   
     dispatch(createNewSneakerRequest());
-    const { name } = sneakerInfo;
-    const sneakerSlug = slugify(name, {
+
+    const { name, sku, brand, designer } = sneakerInfo;
+    const sneakerSlug = slugify(name + " " + sku, {
         replacement: '-',  
         lower: true,      // convert to lower case, defaults to `false`
       })
-    const sneaker = immutable.set(sneakerInfo, "slug", sneakerSlug);
+    const product = immutable.wrap(sneakerInfo).set('slug', sneakerSlug).set('productCategory', 'sneakers').set('brand', brand.value).set('designer', designer.value).value();
+
     return new Promise((resolve, reject) => {
         fetchGraphQL(
             createSneakerWithInputType(), undefined, {
-                sneaker
+                product
             }
         )
         .then(res => {
-            if (res !== null && res !== undefined && res.createNewSneaker !== null && res.createNewSneaker !== undefined) {
+            if (res !== null && res !== undefined && res.createNewProduct !== null && res.createNewProduct !== undefined) {
                 dispatch(createNewSneakerSuccess());
                 resolve({ created: true, message: "Created Sneaker Successfully" });
             } else {
@@ -449,32 +454,31 @@ const createNewSneaker = (sneakerInfo) => dispatch => {
 const updateSneakerWithInputType = () => {
 
     return `
-        mutation($sneaker: SneakerInput!, $id: ID!) {
-                updateExistingSneaker(sneaker: $sneaker, id: $id) 
+        mutation($product: ProductInput!, $id: ID!) {
+                updateExistingProduct(product: $product, id: $id) 
             }
         `
 } 
 
 const updateExistingSneaker = (sneakerInfo) => dispatch => {
     dispatch(updateExistingSneakerRequest());
-    const { name, id } = sneakerInfo;
-    const sneakerSlug = slugify(name, {
+
+    const { name, id, sku, brand, designer } = sneakerInfo;
+    const sneakerSlug = slugify(name + " " + sku, {
         replacement: '-',  
         lower: true,      // convert to lower case, defaults to `false`
       })
+    const product = immutable.wrap(sneakerInfo).set('slug', sneakerSlug).set('brand', brand.value).set('designer', designer.value).del('id').value();
 
-    const sneakerWithUpdatedSlug = immutable.set(sneakerInfo, "slug", sneakerSlug);
-    const sneaker = immutable.wrap(sneakerWithUpdatedSlug).del('id').del('imageURL').value();
-    console.log(sneaker);
     return new Promise((resolve, reject) => {
         fetchGraphQL(
             updateSneakerWithInputType(), undefined, {
-                sneaker,
+                product,
                 id
             }
         )
         .then((res) => {
-            if (res !== null & res !== undefined && res.updateExistingSneaker) {
+            if (res !== null & res !== undefined && res.updateExistingProduct) {
                 dispatch(updateExistingSneakerSuccess());
                 resolve({ updated: true, message: "Updated Sneaker Successfully" });
             } else {
@@ -494,11 +498,11 @@ const removeExistingSneaker = (sneakerInfo) => dispatch => {
     return new Promise((resolve, reject) => {
         fetchGraphQL(`
             mutation {
-                removeExistingSneaker(id: "${sneakerInfo.id}")
+                removeExistingProduct(id: "${sneakerInfo.id}")
             }
         `)
         .then((res) => {
-            if (res !== null && res !== undefined && res.removeExistingSneaker) {
+            if (res !== null && res !== undefined && res.removeExistingProduct) {
                 dispatch(removeExistingSneakerSuccess());
                 resolve({ deleted: true, message: 'Deleted Sneaker Successfully' });
             } else {
@@ -518,11 +522,11 @@ const updateSneakerImage = (imageURL, sneakerInfo) => dispatch => {
     return new Promise((resolve, reject) => {
         fetchGraphQL(`
             mutation {
-                updateSneakerImage(id: "${sneakerInfo.id}", imageURL: "${imageURL}")
+                updateProductImage(id: "${sneakerInfo.id}", imageURL: "${imageURL}")
             }    
         `)
         .then((res) => {
-            if (res !== null && res !== undefined && res.updateSneakerImage) {
+            if (res !== null && res !== undefined && res.updateProductImage) {
                 dispatch(updateSneakerImageSuccess())
                 resolve({ updated: true, message: "Updated Sneaker Image Successfully" });
             } else {
@@ -537,13 +541,48 @@ const updateSneakerImage = (imageURL, sneakerInfo) => dispatch => {
     })
 }
 
+const updateSneakerImagesWithInput = () => {
+    return `
+    mutation($id: ID!, $imageURLs: [String!]!) {
+        updateProductAdditionalImages(id: $id, imageURLs: $imageURLs)
+    }
+    `
+}
+
+const updateSneakerAdditionalImages = (imageURLs, sneakerInfo) => dispatch => {
+    console.log(imageURLs);
+    dispatch(updateSneakerAdditionalImagesRequest());
+    return new Promise((resolve, reject) => {
+        fetchGraphQL(
+            updateSneakerImagesWithInput(), undefined,
+            {
+                id: sneakerInfo.id,
+                imageURLs
+            }
+        )
+        .then((res) => {
+            if (res !== null && res !== undefined && res.updateProductAdditionalImages) {
+                dispatch(updateSneakerAdditionalImagesSuccess())
+                resolve({ updated: true, message: "Updated Sneaker Image Successfully" });
+            } else {
+                dispatch(updateSneakerAdditionalImagesFailure("Could Not Update Sneaker Image"));
+                resolve({ updated: false, message: "Failed to update Sneaker Image" });
+            }
+        })
+        .catch(err => {
+            dispatch(updateSneakerAdditionalImagesFailure(err.response));
+            resolve({ updated: false, message: "Failed to update Sneaker Image" });
+        });
+    })
+}
+
 // <------------ APPAREL ----------------->
 
 const createApparelWithInputType = () => {
 
     return `
-        mutation($apparel: ApparelInput!, ) {
-                createNewApparel(apparel: $apparel) {
+        mutation($product: ProductInput!, ) {
+                createNewProduct(product: $product) {
                     name
                     id
                 }
@@ -553,20 +592,21 @@ const createApparelWithInputType = () => {
 
 const createNewApparel = (apparelInfo) => dispatch => {   
     dispatch(createNewApparelRequest());
-    const { name } = apparelInfo;
-    const apparelSlug = slugify(name, {
+    const { name, sku, brand, designer, hasSizing } = apparelInfo;
+    const apparelSlug = slugify(name + " " + sku, {
         replacement: '-',  
         lower: true,      // convert to lower case, defaults to `false`
       })
-    const apparel = immutable.set(apparelInfo, "slug", apparelSlug);
+
+    const product = immutable.wrap(apparelInfo).set("slug", apparelSlug).set('brand', brand.value).set('designer', designer.value).set('productCategory', 'apparel').set('hasSizing', hasSizing === "yes" ? true : false).value();
     return new Promise((resolve, reject) => {
         fetchGraphQL(
             createApparelWithInputType(), undefined, {
-                apparel
+                product
             }
         )
         .then(res => {
-            if (res !== null && res !== undefined && res.createNewApparel !== null && res.createNewApparel !== undefined) {
+            if (res !== null && res !== undefined && res.createNewProduct !== null && res.createNewProduct !== undefined) {
                 dispatch(createNewApparelSuccess());
                 resolve({ created: true, message: "Created Apparel Successfully" });
             } else {
@@ -585,32 +625,30 @@ const createNewApparel = (apparelInfo) => dispatch => {
 const updateApparelWithInputType = () => {
 
     return `
-        mutation($apparel: ApparelInput!, $id: ID!) {
-                updateExistingApparel(apparel: $apparel, id: $id) 
+        mutation($product: ProductInput!, $id: ID!) {
+                updateExistingProduct(product: $product, id: $id) 
             }
         `
 } 
 
 const updateExistingApparel = (apparelInfo) => dispatch => {
     dispatch(updateExistingApparelRequest());
-    const { name, id } = apparelInfo;
-    const apparelSlug = slugify(name, {
+    const { name, id, sku, brand, designer } = apparelInfo;
+    const apparelSlug = slugify(name + " " + sku, {
         replacement: '-',  
         lower: true,      // convert to lower case, defaults to `false`
       })
+    const product = immutable.wrap(apparelInfo).set('slug', apparelSlug).set('brand', brand.value).set('designer', designer.value).del('id').value();
 
-    const apparelWithUpdatedSlug = immutable.set(apparelInfo, "slug", apparelSlug);
-    const apparel = immutable.wrap(apparelWithUpdatedSlug).del('id').del('imageURL').value();
-    console.log(apparel);
     return new Promise((resolve, reject) => {
         fetchGraphQL(
             updateApparelWithInputType(), undefined, {
-                apparel,
+                product,
                 id
             }
         )
         .then((res) => {
-            if (res !== null & res !== undefined && res.updateExistingApparel) {
+            if (res !== null & res !== undefined && res.updateExistingProduct) {
                 dispatch(updateExistingApparelSuccess());
                 resolve({ updated: true, message: "Updated Apparel Successfully" });
             } else {
@@ -630,11 +668,11 @@ const removeExistingApparel = (apparelInfo) => dispatch => {
     return new Promise((resolve, reject) => {
         fetchGraphQL(`
             mutation {
-                removeExistingApparel(id: "${apparelInfo.id}")
+                removeExistingProduct(id: "${apparelInfo.id}")
             }
         `)
         .then((res) => {
-            if (res !== null && res !== undefined && res.removeExistingApparel) {
+            if (res !== null && res !== undefined && res.removeExistingProduct) {
                 dispatch(removeExistingApparelSuccess());
                 resolve({ deleted: true, message: 'Deleted Apparel Successfully' });
             } else {
@@ -654,11 +692,11 @@ const updateApparelImage = (imageURL, apparelInfo) => dispatch => {
     return new Promise((resolve, reject) => {
         fetchGraphQL(`
             mutation {
-                updateApparelImage(id: "${apparelInfo.id}", imageURL: "${imageURL}")
+                updateProductImage(id: "${apparelInfo.id}", imageURL: "${imageURL}")
             }    
         `)
         .then((res) => {
-            if (res !== null && res !== undefined && res.updateApparelImage) {
+            if (res !== null && res !== undefined && res.updateProductImage) {
                 dispatch(updateApparelImageSuccess())
                 resolve({ updated: true, message: "Updated Apparel Image Successfully" });
             } else {
@@ -786,6 +824,43 @@ const uploadImage = (file, typeOfUpload) => dispatch => {
     })
 }
 
+const uploadImages = (files, typeOfUpload) => dispatch => {
+
+    const config = {
+        headers: {
+            "content-type": "multipart/form-data"
+        }
+    }
+
+    const callList = [];
+    files.forEach(file => {
+        const formData = new FormData()
+        formData.append("attachment", file);
+        formData.append("typeOfUpload", typeOfUpload);
+        callList.push(axios.post('http://localhost:4000/uploadMedia', formData, config));
+    })
+    return new Promise((resolve, reject) => {
+        Promise.all(callList)
+        .then((values) => {
+            const imageURLs = [];
+            if (values !== undefined && values !== null) {
+                values.forEach(res => {
+                    const { status, url } = res.data;
+                    if (status === "success") {
+                        imageURLs.push(url);
+                    }
+                })
+                console.log(imageURLs);
+                resolve({ success: true, imageURLs, message: "Image upload successful" });
+            } else {
+                resolve({ success: false, imageURLs: [], message: "Image upload unsuccessful" })
+            }
+        }).catch(err => {
+            resolve({ success: false, imageURLs: [], message: "Image upload unsuccessful" })
+        })
+    })
+}
+
 // <----------------- Sneakers -------------->
 
 const getAllSneakers = () => dispatch => {
@@ -793,24 +868,38 @@ const getAllSneakers = () => dispatch => {
     return new Promise((resolve, reject) => {
         fetchGraphQL(`
         query {
-            getAllSneakers {
+            getProducts(productCategory: "sneakers") {
                 id
+                productCategory
                 name
                 nickName
                 description
                 sku
                 slug
-                brand
-                designer
+                brand {
+                    id
+                    name
+                }
+                designer {
+                    id
+                    name
+                }
+                original_image_url
                 gender
-                imageURL
-                releaseDate
+                additional_pictures
+                hasSizing
                 colorway
+                releaseDate
             }
         }`)
         .then((res) => {
-            if (res !== null && res !== undefined && res.getAllSneakers !== null && res.getAllSneakers !== undefined) {
-                dispatch(getAllSneakersSuccess(res.getAllSneakers));
+            if (res !== null && res !== undefined && res.getProducts !== null && res.getProducts !== undefined) {
+                const products = res.getProducts;
+                const sneakers = products.map(product => {
+                    const { brand, designer } = product;
+                    return immutable.wrap(product).set('brand', { value: brand.id, label: brand.name }).set('designer', { value: designer.id, label: designer.name }).value();
+                })
+                dispatch(getAllSneakersSuccess(sneakers));
                 resolve({ success: true, message: "Fetched Sneakers successfully"});
             } else {
                 dispatch(getAllSneakersError("Could not fetch Sneakers"));
@@ -831,25 +920,38 @@ const getAllApparel = () => dispatch => {
     return new Promise((resolve, reject) => {
         fetchGraphQL(`
         query {
-            getAllApparel {
+            getProducts(productCategory: "apparel") {
                 id
+                productCategory
                 name
                 nickName
                 description
                 sku
                 slug
-                brand
-                designer
+                brand {
+                    id
+                    name
+                }
+                designer {
+                    id
+                    name
+                }
+                original_image_url
                 gender
-                imageURL
-                releaseDate
-                colorway
+                additional_pictures
                 hasSizing
+                colorway
+                releaseDate
             }
         }`)
         .then((res) => {
-            if (res !== null && res !== undefined && res.getAllApparel !== null && res.getAllApparel !== undefined) {
-                dispatch(getAllApparelSuccess(res.getAllApparel));
+            if (res !== null && res !== undefined && res.getProducts !== null && res.getProducts !== undefined) {
+                const products = res.getProducts;
+                const apparel = products.map(product => {
+                    const { brand, designer } = product;
+                    return immutable.wrap(product).set('brand', { value: brand.id, label: brand.name }).set('designer', { value: designer.id, label: designer.name }).value();
+                })
+                dispatch(getAllApparelSuccess(apparel));
                 resolve({ success: true, message: "Fetched Apparel successfully"});
             } else {
                 dispatch(getAllApparelError("Could not fetch Apparel"));
@@ -1116,6 +1218,25 @@ const updateSneakerImageSuccess = () => {
 const updateSneakerImageFailure = (errorMessage) => {
     return {
         type: actionTypes.UPDATE_SNEAKER_IMAGE_ERROR,
+        payload: { errorMessage }
+    }
+}
+
+const updateSneakerAdditionalImagesRequest = () => {
+    return {
+        type: actionTypes.UPDATE_SNEAKER_ADDITIONAL_IMAGES_REQUEST
+    }
+}
+
+const updateSneakerAdditionalImagesSuccess = () => {
+    return {
+        type: actionTypes.UPDATE_SNEAKER_ADDITIONAL_IMAGES_SUCCESS,
+    }
+}
+
+const updateSneakerAdditionalImagesFailure = (errorMessage) => {
+    return {
+        type: actionTypes.UPDATE_SNEAKER_ADDITIONAL_IMAGES_ERROR,
         payload: { errorMessage }
     }
 }
@@ -1604,6 +1725,7 @@ export default {
             updateExistingSneaker,
             removeExistingSneaker,
             updateSneakerImage,
+            updateSneakerAdditionalImages,
             // ----> Query
             getAllSneakers,
         // Apparel
@@ -1617,6 +1739,7 @@ export default {
         
 
         // Other
-            uploadImage
+            uploadImage,
+            uploadImages
     }
 }

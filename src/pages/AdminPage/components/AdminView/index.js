@@ -4,6 +4,7 @@ import Designers from "./Designers";
 import Sizing from "./Sizing";
 import Sneakers from "./Sneakers";
 import Resellers from "./Resellers";
+import ResellItems from "./ResellItems";
 
 export default {
     Apparel,
@@ -11,5 +12,6 @@ export default {
     Designers,
     Resellers,
     Sizing,
-    Sneakers
+    Sneakers,
+    ResellItems
 }

@@ -32,7 +32,13 @@ const initialState = {
         errorMessage: {},
         isFetching: false,
         isMutating: false,
-    }
+    },
+    resellItems: {
+        data: [],
+        errorMessage: {},
+        isFetching: false,
+        isMutating: false
+    },
 }
 
 // <------------ Resellers ----------------->
@@ -98,6 +104,7 @@ const updateResellerWithInputType = () => {
 } 
 
 const updateExistingReseller = (resellerInfo) => dispatch => {
+    dispatch(updateExistingResellerRequest());
     const { name, id, lat, lng } = resellerInfo;
     const resellerSlug = slugify(name, {
         replacement: '-',  

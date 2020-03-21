@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import * as immutable from 'object-path-immutable';
 
 // Style
 import Style from "./style.module.scss";

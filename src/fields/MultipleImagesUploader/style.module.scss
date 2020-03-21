@@ -1,0 +1,25 @@
+//  Images
+
+.imageContainer {
+  margin: 20px 50px;
+  text-align: center;
+}
+
+.image {
+  border-radius: 4px;
+  height: 160px;
+  width: 160px;
+}
+
+.button {
+  color: #fff;
+  font-size: 1.15rem;
+  margin-top: 50px;
+  height: 40px;
+  width: 200px;
+}
+
+.uploadButton {
+  @extend .button;
+  background: grey;
+}

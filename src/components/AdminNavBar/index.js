@@ -39,6 +39,10 @@ const ADMIN_NAVBAR_ITEMS = [
   {
     id: "resellers",
     label: "Resellers"
+  },
+  {
+    id: 'resellItems',
+    label: 'Resell Items'
   }
 ];
 

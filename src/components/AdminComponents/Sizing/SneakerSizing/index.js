@@ -44,6 +44,12 @@ export default class SneakerSizing extends Component {
     }
 }
 
+SneakerSizing.propTypes = {
+    productCategory: PropTypes.string,
+    data: PropTypes.object,
+    sizingInfo: PropTypes.object
+}
+
 
 SneakerSizing.defaultProps = {
     data: {}
