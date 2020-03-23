@@ -1,17 +1,17 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import * as immutable from 'object-path-immutable'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import * as immutable from 'object-path-immutable';
 
 // Style
-import Style from '../style.module.scss'
+import Style from '../style.module.scss';
 
 // Fields
-import { Button, RadioButton, TextInput } from 'fields'
-import Select from 'react-select'
+import { Button, RadioButton, TextInput } from 'fields';
+import Select from 'react-select';
 
 // Date Picker
-import DatePicker from 'react-datepicker'
-import 'react-datepicker/dist/react-datepicker.css'
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const NEW_SNEAKER_FIELDS = [
   {
@@ -76,7 +76,7 @@ const NEW_SNEAKER_FIELDS = [
     id: 'releaseDate',
     label: 'Release Date',
   },
-]
+];
 
 export default class SneakerFormFields extends Component {
   state = {
@@ -94,12 +94,12 @@ export default class SneakerFormFields extends Component {
       releaseDate: new Date(),
     },
     submitBtnStatus: 'inactive',
-  }
+  };
 
   componentDidMount() {
     const releaseDate = this.props.sneakerInfo.releaseDate
       ? new Date(this.props.sneakerInfo.releaseDate)
-      : new Date()
+      : new Date();
 
     this.setState(
       {
@@ -112,13 +112,13 @@ export default class SneakerFormFields extends Component {
         designers: this.props.designers,
       },
       this.onGetButtonStatus,
-    )
+    );
   }
 
   // On action methods
 
   onGetButtonStatus = () => {
-    console.log(this.state)
+    console.log(this.state);
     const {
       name,
       sku,
@@ -127,7 +127,7 @@ export default class SneakerFormFields extends Component {
       gender,
       colorway,
       releaseDate,
-    } = this.state.sneakerInfo
+    } = this.state.sneakerInfo;
 
     name !== '' &&
     sku !== '' &&
@@ -137,15 +137,15 @@ export default class SneakerFormFields extends Component {
     colorway !== '' &&
     releaseDate !== ''
       ? this.setState({ submitBtnStatus: 'active' })
-      : this.setState({ submitBtnStatus: 'inactive' })
-  }
+      : this.setState({ submitBtnStatus: 'inactive' });
+  };
 
   onChangeTextInputValue = (fieldID, value) => {
     this.setState(
       { sneakerInfo: immutable.set(this.state.sneakerInfo, fieldID, value) },
       this.onGetButtonStatus,
-    )
-  }
+    );
+  };
 
   onChangeDatePicker = date => {
     this.setState(
@@ -153,8 +153,8 @@ export default class SneakerFormFields extends Component {
         sneakerInfo: immutable.set(this.state.sneakerInfo, 'releaseDate', date),
       },
       this.onGetButtonStatus,
-    )
-  }
+    );
+  };
 
   onSelectBrand = selectedOption => {
     this.setState(
@@ -166,8 +166,8 @@ export default class SneakerFormFields extends Component {
         ),
       },
       this.onGetButtonStatus,
-    )
-  }
+    );
+  };
 
   onSelectDesigner = selectedOption => {
     this.setState(
@@ -179,17 +179,17 @@ export default class SneakerFormFields extends Component {
         ),
       },
       this.onGetButtonStatus,
-    )
-  }
+    );
+  };
   //  render methods
 
   renderRadioButtons = (id, options) => {
-    console.log(id)
+    console.log(id);
     switch (id) {
       default:
-        return this.renderDefaultRadioButtons(id, options)
+        return this.renderDefaultRadioButtons(id, options);
     }
-  }
+  };
 
   renderDefaultRadioButtons = (id, options) => {
     return Object.keys(options).map(optionID => {
@@ -213,53 +213,53 @@ export default class SneakerFormFields extends Component {
             }
           />
         </div>
-      )
-    })
-  }
+      );
+    });
+  };
 
   renderDropdown = id => {
     switch (id) {
       case 'brand':
-        return this.renderBrandsDropDown()
+        return this.renderBrandsDropDown();
       case 'designer':
-        return this.renderDesignersDropDown()
+        return this.renderDesignersDropDown();
       default:
-        return null
+        return null;
     }
-  }
+  };
 
   renderBrandsDropDown = () => {
-    const { brands, sneakerInfo } = this.state
-    const { brand } = sneakerInfo
+    const { brands, sneakerInfo } = this.state;
+    const { brand } = sneakerInfo;
     const brandsList = brands.map(brand => {
-      return { value: brand.id, label: brand.name }
-    })
+      return { value: brand.id, label: brand.name };
+    });
     return (
       <Select
         options={brandsList}
         value={brand}
         onChange={this.onSelectBrand}
       />
-    )
-  }
+    );
+  };
 
   renderDesignersDropDown = () => {
-    const { designers, sneakerInfo } = this.state
-    const { designer } = sneakerInfo
+    const { designers, sneakerInfo } = this.state;
+    const { designer } = sneakerInfo;
     const designersList = designers.map(designer => {
-      return { value: designer.id, label: designer.name }
-    })
+      return { value: designer.id, label: designer.name };
+    });
     return (
       <Select
         options={designersList}
         value={designer}
         onChange={this.onSelectDesigner}
       />
-    )
-  }
+    );
+  };
 
   renderField = (field = {}) => {
-    const { fieldKind, id, options = {} } = field
+    const { fieldKind, id, options = {} } = field;
     switch (fieldKind) {
       case 'radio':
         return (
@@ -269,7 +269,7 @@ export default class SneakerFormFields extends Component {
               {this.renderRadioButtons(id, options)}
             </div>
           </div>
-        )
+        );
       case 'text':
       case 'textarea':
         return (
@@ -282,14 +282,14 @@ export default class SneakerFormFields extends Component {
               value={this.state.sneakerInfo[id] || ''}
             />
           </div>
-        )
+        );
       case 'dropdown':
         return (
           <div key={id}>
             <h2>{field.label}</h2>
             {this.renderDropdown(id)}
           </div>
-        )
+        );
       case 'datepicker':
         return (
           <div key={id} style={{ marginBottom: '20px' }}>
@@ -299,11 +299,11 @@ export default class SneakerFormFields extends Component {
               onChange={this.onChangeDatePicker}
             />
           </div>
-        )
+        );
       default:
-        return null
+        return null;
     }
-  }
+  };
 
   renderSubmitButton = () => {
     return (
@@ -315,8 +315,8 @@ export default class SneakerFormFields extends Component {
       >
         {this.props.isInEditMode ? 'Save' : 'Create'}
       </Button>
-    )
-  }
+    );
+  };
 
   render() {
     return (
@@ -324,7 +324,7 @@ export default class SneakerFormFields extends Component {
         {NEW_SNEAKER_FIELDS.map(this.renderField)}
         {this.renderSubmitButton()}
       </div>
-    )
+    );
   }
 }
 
@@ -334,7 +334,7 @@ SneakerFormFields.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   brands: PropTypes.array,
   designers: PropTypes.array,
-}
+};
 
 SneakerFormFields.defaultProps = {
   brands: [],
@@ -351,4 +351,4 @@ SneakerFormFields.defaultProps = {
     sku: '',
     releaseDate: '',
   },
-}
+};

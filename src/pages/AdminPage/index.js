@@ -35,6 +35,7 @@ class Admin extends Component {
       this.fetchAllSneakers(),
       this.fetchAllApparel(),
       this.fetchAllResellers(),
+      this.fetchAllResellItems(),
     ]);
   }
 
@@ -110,6 +111,23 @@ class Admin extends Component {
     const { actionCreators } = TestObjectsDuck;
     const { getAllResellers } = actionCreators;
     const { success, message } = await this.props.dispatch(getAllResellers());
+    if (success) {
+      //   this.confirmNotif = ShowConfirmNotif({
+      //     message,
+      //     type: 'success',
+      //   });
+    } else {
+      this.confirmNotif = ShowConfirmNotif({
+        message,
+        type: 'error',
+      });
+    }
+  };
+
+  fetchAllResellItems = async () => {
+    const { actionCreators } = TestObjectsDuck;
+    const { getAllResellItems } = actionCreators;
+    const { success, message } = await this.props.dispatch(getAllResellItems());
     if (success) {
       //   this.confirmNotif = ShowConfirmNotif({
       //     message,

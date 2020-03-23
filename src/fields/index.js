@@ -15,6 +15,7 @@ import RadioButton from './RadioButton';
 import ProductTemplate from './ProductTemplate';
 import ImageUploader from './ImageUploader';
 import MultipleImagesUploader from './MultipleImagesUploader';
+import LocationSearchInput from './LocationSearchInput';
 
 export {
   Button,
@@ -24,6 +25,7 @@ export {
   CheckBoxes,
   ImageUploader,
   Img,
+  LocationSearchInput,
   ExpansionPanel,
   FullPageModal,
   PageMsg,

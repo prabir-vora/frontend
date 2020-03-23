@@ -76,6 +76,9 @@ const actionTypes = createActionTypes({
     UPDATE_APPAREL_IMAGE_REQUEST: 'UPDATE_APPAREL_IMAGE_REQUEST',
     UPDATE_APPAREL_IMAGE_SUCCESS: 'UPDATE_APPAREL_IMAGE_SUCCESS',
     UPDATE_APPAREL_IMAGE_ERROR: 'UPDATE_APPAREL_IMAGE_ERROR',
+    UPDATE_APPAREL_ADDITIONAL_IMAGES_REQUEST: 'UPDATE_APPAREL_ADDITIONAL_IMAGES_REQUEST',
+    UPDATE_APPAREL_ADDITIONAL_IMAGES_SUCCESS: 'UPDATE_APPAREL_ADDITIONAL_IMAGES_SUCCESS',
+    UPDATE_APPAREL_ADDITIONAL_IMAGES_ERROR: 'UPDATE_APPAREL_ADDITIONAL_IMAGES_ERROR',
 
     //  Queries 
 
@@ -711,6 +714,40 @@ const updateApparelImage = (imageURL, apparelInfo) => dispatch => {
     })
 }
 
+const updateApparelImagesWithInput = () => {
+    return `
+    mutation($id: ID!, $imageURLs: [String!]!) {
+        updateProductAdditionalImages(id: $id, imageURLs: $imageURLs)
+    }
+    `
+}
+
+const updateApparelAdditionalImages = (imageURLs, apparelInfo) => dispatch => {
+    console.log(imageURLs);
+    dispatch(updateApparelAdditionalImagesRequest());
+    return new Promise((resolve, reject) => {
+        fetchGraphQL(
+            updateApparelImagesWithInput(), undefined,
+            {
+                id: apparelInfo.id,
+                imageURLs
+            }
+        )
+        .then((res) => {
+            if (res !== null && res !== undefined && res.updateProductAdditionalImages) {
+                dispatch(updateApparelAdditionalImagesSuccess())
+                resolve({ updated: true, message: "Updated Apparel Image Successfully" });
+            } else {
+                dispatch(updateApparelAdditionalImagesFailure("Could Not Update Apparel Image"));
+                resolve({ updated: false, message: "Failed to update Apparel Image" });
+            }
+        })
+        .catch(err => {
+            dispatch(updateApparelAdditionalImagesFailure(err.response));
+            resolve({ updated: false, message: "Failed to update Apparel Image" });
+        });
+    })
+}
 
 // ----------------> Query
 
@@ -1318,6 +1355,25 @@ const updateApparelImageFailure = (errorMessage) => {
     }
 }
 
+const updateApparelAdditionalImagesRequest = () => {
+    return {
+        type: actionTypes.UPDATE_APPAREL_ADDITIONAL_IMAGES_REQUEST
+    }
+}
+
+const updateApparelAdditionalImagesSuccess = () => {
+    return {
+        type: actionTypes.UPDATE_APPAREL_ADDITIONAL_IMAGES_SUCCESS,
+    }
+}
+
+const updateApparelAdditionalImagesFailure = (errorMessage) => {
+    return {
+        type: actionTypes.UPDATE_APPAREL_ADDITIONAL_IMAGES_ERROR,
+        payload: { errorMessage }
+    }
+}
+
 // QUERY Actions
 
 // brands
@@ -1734,10 +1790,9 @@ export default {
             updateExistingApparel,
             removeExistingApparel,
             updateApparelImage,
+            updateApparelAdditionalImages,
             // -----> Query
             getAllApparel,
-        
-
         // Other
             uploadImage,
             uploadImages

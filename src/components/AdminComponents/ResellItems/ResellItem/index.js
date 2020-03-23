@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 // Redux
 import { connect } from 'react-redux';
-import AdminDuck from 'stores/ducks/Admin/Admin.duck';
+import TestObjectsDuck from 'stores/ducks/Admin/TestObjects.duck';
 
 // Icons
 import { AddPhotoIcon, PencilIcon } from 'assets/Icons';
@@ -12,7 +12,7 @@ import { AddPhotoIcon, PencilIcon } from 'assets/Icons';
 import AdminModals from 'components/AdminModals';
 
 // Fields
-import { ProductTemplate, Img } from 'fields';
+import { Chip, Img } from 'fields';
 
 // Additional Functions
 import { ShowConfirmNotif } from 'functions';
@@ -21,7 +21,7 @@ import { ShowConfirmNotif } from 'functions';
 // import Style from "../style.module.scss";
 import Style from './style.module.scss';
 
-class ApparelItem extends Component {
+class ResellItem extends Component {
   confirmNotif = null;
 
   state = {};
@@ -30,7 +30,7 @@ class ApparelItem extends Component {
 
   onShowEditItemModal = () => this.setState({ showEditItemModal: true });
 
-  onUpdateAfterApparelSaved = ({ updated, message }) => {
+  onUpdateAfterResellItemSaved = ({ updated, message }) => {
     if (updated) {
       this.confirmNotif = ShowConfirmNotif({
         message,
@@ -48,7 +48,7 @@ class ApparelItem extends Component {
     }
   };
 
-  onUpdateAfterApparelArchived = ({ deleted, message }) => {
+  onUpdateAfterResellItemArchived = ({ deleted, message }) => {
     if (deleted) {
       this.confirmNotif = ShowConfirmNotif({
         message,
@@ -70,11 +70,11 @@ class ApparelItem extends Component {
 
   onHideChangePhotoModal = () => this.setState({ showChangePhotoModal: false });
 
-  onSaveApparelImage = async imageURL => {
-    const { actionCreators } = AdminDuck;
-    const { updateApparelImage } = actionCreators;
+  onSaveResellImage = async imageURL => {
+    const { actionCreators } = TestObjectsDuck;
+    const { updateResellImage } = actionCreators;
     const { updated, message } = await this.props.dispatch(
-      updateApparelImage(imageURL, this.props.apparelInfo),
+      updateResellImage(imageURL, this.props.resellItemInfo),
     );
 
     if (updated) {
@@ -94,28 +94,8 @@ class ApparelItem extends Component {
     }
   };
 
-  onSaveApparelAdditionalImages = async imageURLs => {
-    const { actionCreators } = AdminDuck;
-    const { updateApparelAdditionalImages } = actionCreators;
-    const { updated, message } = await this.props.dispatch(
-      updateApparelAdditionalImages(imageURLs, this.props.apparelInfo),
-    );
-
-    if (updated) {
-      this.confirmNotif = ShowConfirmNotif({
-        message,
-        type: 'success',
-      });
-    } else {
-      this.confirmNotif = ShowConfirmNotif({
-        message,
-        type: 'error',
-      });
-    }
-  };
-
-  renderProductTemplateAvatar = () => {
-    const imageURL = this.props.apparelInfo.original_image_url || '';
+  renderChipAvatar = () => {
+    const imageURL = this.props.resellItemInfo.imageURL || '';
     return imageURL ? (
       <Img
         alt=""
@@ -130,38 +110,67 @@ class ApparelItem extends Component {
     );
   };
 
-  renderChangePhotoModal = () => {
-    return (
-      <AdminModals.ChangePhotoModal
-        type="apparel"
-        name={this.props.apparelInfo.name}
-        imageURL={this.props.apparelInfo.original_image_url}
-        onCloseModal={this.onHideChangePhotoModal}
-        onSaveImage={this.onSaveApparelImage}
-        hasAdditionalImages={true}
-        additional_pictures={this.props.apparelInfo.additional_pictures}
-        onSaveAdditionalImages={this.onSaveApparelAdditionalImages}
-      />
-    );
-  };
+  // renderChangePhotoModal = () => {
+  //   return (
+  //     <AdminModals.ChangePhotoModal
+  //       type="resellers"
+  //       name={this.props.resellItemInfo.name}
+  //       imageURL={this.props.resellItemInfo.imageURL}
+  //       onCloseModal={this.onHideChangePhotoModal}
+  //       onSaveImage={this.onSaveResellImage}
+  //     />
+  //   );
+  // };
 
-  renderProductTemplateLabel = () => {
-    const { apparelInfo } = this.props;
-    const { name } = apparelInfo;
+  renderChipLabel = () => {
+    const { resellItemInfo } = this.props;
+    const { product, reseller, askingPrice, condition } = resellItemInfo;
     return (
       <React.Fragment>
-        <div className={Style.productTemplateName}>{name}</div>
+        <h4 className={Style.chipName}>
+          <span style={{ fontWeight: '800' }}>{product.label} by </span>
+          <span style={{ color: '#1f2fd1' }}>{reseller.label}</span>
+        </h4>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            margin: '0px',
+            maxWidth: 'inherit',
+          }}
+        >
+          <h4
+            style={{
+              margin: '5px',
+              color: 'green',
+              maxWidth: 'inherit',
+              overflow: 'hidden',
+            }}
+          >
+            ${askingPrice}{' '}
+          </h4>
+          <h4
+            style={{
+              margin: '5px',
+              color: 'red',
+              maxWidth: 'inherit',
+              overflow: 'hidden',
+            }}
+          >
+            Condition: {condition}{' '}
+          </h4>
+        </div>
       </React.Fragment>
     );
   };
 
   renderEditModal = () => (
-    <AdminModals.ApparelModal
+    <AdminModals.ResellItemsModal
       isInEditMode={true}
-      apparelInfo={this.props.apparelInfo}
+      resellItemInfo={this.props.resellItemInfo}
       onCloseModal={this.onHideEditItemModal}
-      onUpdateAfterApparelArchived={this.onUpdateAfterApparelArchived}
-      onUpdateAfterApparelSaved={this.onUpdateAfterApparelSaved}
+      onUpdateAfterResellItemArchived={this.onUpdateAfterResellItemArchived}
+      onUpdateAfterResellItemSaved={this.onUpdateAfterResellItemSaved}
     />
   );
 
@@ -175,36 +184,45 @@ class ApparelItem extends Component {
   };
 
   renderItem = () => (
-    <div className={Style.productTemplateContainer}>
-      <ProductTemplate
-        avatar={this.renderProductTemplateAvatar()}
-        label={this.renderProductTemplateLabel()}
+    <div className={Style.chipContainer}>
+      <Chip
+        avatar={this.renderChipAvatar()}
+        label={this.renderChipLabel()}
         helperButtonContent={this.renderHelperButton()}
       />
+      {/* {this.renderSigns()} */}
     </div>
   );
 
   render() {
     return (
       <React.Fragment>
-        {this.state.showChangePhotoModal && this.renderChangePhotoModal()}
+        {/* {this.state.showChangePhotoModal && this.renderChangePhotoModal()} */}
         {this.state.showEditItemModal && this.renderEditModal()}
-        {this.props.apparelInfo && this.renderItem()}
+        {this.props.resellItemInfo && this.renderItem()}
       </React.Fragment>
     );
   }
 }
 
-ApparelItem.propTypes = {
+ResellItem.propTypes = {
   isInEditMode: PropTypes.bool,
   itemHelperButton: PropTypes.func,
-  sneakerID: PropTypes.string,
-  apparelInfo: PropTypes.shape({ name: PropTypes.string }).isRequired,
+  resellerID: PropTypes.string,
+  resellItemInfo: PropTypes.shape({
+    product: PropTypes.object,
+    reseller: PropTypes.object,
+    askingPrice: PropTypes.string,
+    condition: PropTypes.string,
+  }).isRequired,
   onRefreshAfterChanges: PropTypes.func,
 };
 
-ApparelItem.defaultProps = {
+ResellItem.defaultProps = {
   isInEditMode: true,
+  resellItemInfo: {
+    name: '',
+  },
 };
 
-export default connect()(ApparelItem);
+export default connect()(ResellItem);

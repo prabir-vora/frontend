@@ -1,194 +1,116 @@
 import React, { Component } from 'react';
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
 // Redux
-import { connect } from "react-redux";
-import TestObjectsDuck from "stores/ducks/Admin/TestObjects.duck";
-import AdminDuck from "stores/ducks/Admin/Admin.duck";
+import { connect } from 'react-redux';
+import TestObjectsDuck from 'stores/ducks/Admin/TestObjects.duck';
 
 // Components
-import AdminModals from "components/AdminModals";
-// import { ListOfResellItems } from "components/AdminComponents/ResellItems";
+import AdminModals from 'components/AdminModals';
+import { ListOfResellItems } from 'components/AdminComponents/ResellItems';
 
 // Style
-import Style from "../style.module.scss";
+import Style from '../style.module.scss';
 
 // Other components
 import { ClipLoader } from 'react-spinners';
-import { ShowConfirmNotif } from "functions";
+import { ShowConfirmNotif } from 'functions';
 
 class ResellItems extends Component {
-    confirmNotif = null;
+  confirmNotif = null;
 
-    state = {
-        showCreateItemModal: false
-    };
+  state = {
+    showCreateItemModal: false,
+  };
 
-    async componentDidMount() {
-        //  Fetch ResellItems, Brands and Designers
-        await this.fetchAllSneakers();
-        await this.fetchAllApparel();
-        await this.fetchAllResellers();
+  // On Change Actions
 
-        // await this.fetchAllResellItems();
+  onHideCreateItemModal = () => this.setState({ showCreateItemModal: false });
 
-    }
+  onShowCreateItemModal = () => this.setState({ showCreateItemModal: true });
 
-    // Action Creator called
-    fetchAllSneakers = async () => {
-      const { actionCreators} = AdminDuck;
-      const { getAllSneakers } = actionCreators;
-      const { success, message } = await this.props.dispatch(getAllSneakers());
-      if (success) {
-          // this.confirmNotif = ShowConfirmNotif({
-          //   message,
-          //   type: "success"
-          // })
-      } else {
-          this.confirmNotif = ShowConfirmNotif({
-          message,
-          type: "error"
-          })
-      }
-    }
-
-    fetchAllApparel = async () => {
-      const { actionCreators} = AdminDuck;
-      const { getAllApparel } = actionCreators;
-      const { success, message } = await this.props.dispatch(getAllApparel());
-      if (success) {
-          // this.confirmNotif = ShowConfirmNotif({
-          //   message,
-          //   type: "success"
-          // })
-      } else {
-          this.confirmNotif = ShowConfirmNotif({
-          message,
-          type: "error"
-          })
-      }
-    }
-
-    fetchAllResellers = async () => {
-      const { actionCreators} = TestObjectsDuck;
-      const { getAllResellers } = actionCreators;
-      const { success, message } = await this.props.dispatch(getAllResellers());
-      if (success) {
-          // this.confirmNotif = ShowConfirmNotif({
-          //   message,
-          //   type: "success"
-          // })
-      } else {
-          this.confirmNotif = ShowConfirmNotif({
-          message,
-          type: "error"
-          })
-      }
-    }
-
-    // Action Creator called
-    fetchAllResellItems = async () => {
-        // const { actionCreators} = TestObjectsDuck;
-        // const { getAllResellItems } = actionCreators;
-        // const { success, message } = await this.props.dispatch(getAllResellItems());
-        // if (success) {
-        //     this.confirmNotif = ShowConfirmNotif({
-        //       message,
-        //       type: "success"
-        //     })
-        // } else {
-        //     this.confirmNotif = ShowConfirmNotif({
-        //     message,
-        //     type: "error"
-        //     })
-        // }
-    }
-
-    // On Change Actions 
-
-    onHideCreateItemModal = () => this.setState({ showCreateItemModal: false });
-
-    onShowCreateItemModal = () => this.setState({ showCreateItemModal: true });
-
-    onUpdateAfterResellerCreated = ({ created, message }) => {
-      if (created) {
-        this.confirmNotif = ShowConfirmNotif({
-          message,
-          type: "success"
-        });
-        this.setState({ showCreateItemModal: false }, () => this.onRefreshAfterChanges());
-      } else {
-        this.confirmNotif = ShowConfirmNotif({
-          message,
-          type: "error"
-        });
-        this.setState({ showCreateItemModal: false });
-      }
-    }
-
-    onRefreshAfterChanges = async () => {
-        // const { actionCreators} = TestObjectsDuck;
-        // const { getAllResellItems } = actionCreators;
-        // const { success, message } = await this.props.dispatch(getAllResellItems());
-        // if (success) {
-        //   this.confirmNotif = ShowConfirmNotif({
-        //     message,
-        //     type: "success"
-        //   })
-        // } else {
-        //   this.confirmNotif = ShowConfirmNotif({
-        //     message,
-        //     type: "error"
-        //   })
-        // }
-      }
-  
-    //  Render Methods
-    renderCreateModal = () => (
-        <AdminModals.ResellItemsModal
-          onCloseModal={this.onHideCreateItemModal}
-          onUpdateAfterResellerCreated={this.onUpdateAfterResellerCreated}
-        />
+  onUpdateAfterResellItemCreated = ({ created, message }) => {
+    if (created) {
+      this.confirmNotif = ShowConfirmNotif({
+        message,
+        type: 'success',
+      });
+      this.setState({ showCreateItemModal: false }, () =>
+        this.onRefreshAfterChanges(),
       );
-    
-    renderAllResellItems = () => (
-    //   <ListOfResellItems
-    //       resellers={this.props.resellers}
-    //       onRefreshAfterChanges={this.onRefreshAfterChanges}
-    //   />
-    null
-    )
-
-    render() {
-        const { isFetchingResellItems } = this.props;
-        if (isFetchingResellItems) {
-            return (<div style={{ textAlign: "center"}}>
-                <ClipLoader color={"#000000"} loading={true} />
-            </div>)
-        }
-        return (
-          <div>
-              {this.state.showCreateItemModal && this.renderCreateModal()}
-              {this.renderAllResellItems()}
-              <div className={Style.floatingButton}>
-                  <button onClick={this.onShowCreateItemModal}>+</button>
-              </div>
-          </div>
-        )
+    } else {
+      this.confirmNotif = ShowConfirmNotif({
+        message,
+        type: 'error',
+      });
+      this.setState({ showCreateItemModal: false });
     }
+  };
+
+  onRefreshAfterChanges = async () => {
+    const { actionCreators } = TestObjectsDuck;
+    const { getAllResellItems } = actionCreators;
+    const { success, message } = await this.props.dispatch(getAllResellItems());
+    if (success) {
+      this.confirmNotif = ShowConfirmNotif({
+        message,
+        type: 'success',
+      });
+    } else {
+      this.confirmNotif = ShowConfirmNotif({
+        message,
+        type: 'error',
+      });
+    }
+  };
+
+  //  Render Methods
+  renderCreateModal = () => (
+    <AdminModals.ResellItemsModal
+      onCloseModal={this.onHideCreateItemModal}
+      onUpdateAfterResellItemCreated={this.onUpdateAfterResellItemCreated}
+    />
+  );
+
+  renderAllResellItems = () => (
+    <ListOfResellItems
+      resellItems={this.props.resellItems}
+      onRefreshAfterChanges={this.onRefreshAfterChanges}
+    />
+  );
+
+  render() {
+    const { isFetchingResellItems } = this.props;
+    if (isFetchingResellItems) {
+      return (
+        <div style={{ textAlign: 'center' }}>
+          <ClipLoader color={'#000000'} loading={true} />
+        </div>
+      );
+    }
+    return (
+      <div>
+        {this.state.showCreateItemModal && this.renderCreateModal()}
+        {this.renderAllResellItems()}
+        <div className={Style.floatingButton}>
+          <button onClick={this.onShowCreateItemModal}>+</button>
+        </div>
+      </div>
+    );
+  }
 }
 
 const mapStateToProps = state => {
   const { duckName } = TestObjectsDuck;
   return {
-    isFetchingResellItems:  state[duckName].resellers.isFetching, 
-    resellers: state[duckName].resellers.data 
-  }
-}
+    isFetchingResellItems: state[duckName].resellItems.isFetching,
+    resellItems: state[duckName].resellItems.data,
+  };
+};
 
 export default connect(mapStateToProps)(ResellItems);
 
 ResellItems.propTypes = {
   isFetchingResellItems: PropTypes.bool,
-  resellers: PropTypes.array
-}
+  resellItems: PropTypes.array,
+};
