@@ -1,19 +1,32 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import * as immutable from 'object-path-immutable'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import * as immutable from 'object-path-immutable';
 
 // Style
-import Style from '../style.module.scss'
+import Style from '../style.module.scss';
 
 // Fields
-import { Button, RadioButton, TextInput } from 'fields'
-import Select from 'react-select'
+import { Button, RadioButton, TextInput } from 'fields';
+import Select from 'react-select';
 
 // Date Picker
-import DatePicker from 'react-datepicker'
-import 'react-datepicker/dist/react-datepicker.css'
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const NEW_APPAREL_FIELDS = [
+  {
+    fieldKind: 'dropdown',
+    id: 'productType',
+    label: 'Select Product Type',
+    options: {
+      hoodies: { label: 'Hoodies' },
+      sweatshirts: { label: 'Sweatshirts' },
+      shorts: { label: 'Shorts' },
+      pants: { label: 'Pants' },
+      tshirts: { label: 'T-shirts' },
+      sweatpants: { label: 'Sweatpants' },
+    },
+  },
   {
     fieldKind: 'text',
     id: 'name',
@@ -54,12 +67,14 @@ const NEW_APPAREL_FIELDS = [
     id: 'brand',
     label: 'Select Brand',
     required: true,
+    options: {},
   },
   {
     fieldKind: 'dropdown',
     id: 'designer',
     label: 'Select Designer',
     required: true,
+    options: {},
   },
   {
     fieldKind: 'radio',
@@ -85,13 +100,14 @@ const NEW_APPAREL_FIELDS = [
     id: 'releaseDate',
     label: 'Release Date',
   },
-]
+];
 
 export default class ApparelFormFields extends Component {
   state = {
     brands: [],
     designers: [],
     apparelInfo: {
+      productType: '',
       name: '',
       nickName: '',
       brand: '',
@@ -104,12 +120,12 @@ export default class ApparelFormFields extends Component {
       releaseDate: new Date(),
     },
     submitBtnStatus: 'inactive',
-  }
+  };
 
   componentDidMount() {
     const releaseDate = this.props.apparelInfo.releaseDate
       ? new Date(this.props.apparelInfo.releaseDate)
-      : new Date()
+      : new Date();
 
     this.setState(
       {
@@ -122,14 +138,15 @@ export default class ApparelFormFields extends Component {
         designers: this.props.designers,
       },
       this.onGetButtonStatus,
-    )
+    );
   }
 
   // On action methods
 
   onGetButtonStatus = () => {
-    console.log(this.state)
+    console.log(this.state);
     const {
+      productType,
       name,
       sku,
       brand,
@@ -137,8 +154,8 @@ export default class ApparelFormFields extends Component {
       gender,
       colorway,
       releaseDate,
-    } = this.state.apparelInfo
-
+    } = this.state.apparelInfo;
+    productType !== '' &&
     name !== '' &&
     sku !== '' &&
     brand !== '' &&
@@ -147,15 +164,15 @@ export default class ApparelFormFields extends Component {
     colorway !== '' &&
     releaseDate !== ''
       ? this.setState({ submitBtnStatus: 'active' })
-      : this.setState({ submitBtnStatus: 'inactive' })
-  }
+      : this.setState({ submitBtnStatus: 'inactive' });
+  };
 
   onChangeTextInputValue = (fieldID, value) => {
     this.setState(
       { apparelInfo: immutable.set(this.state.apparelInfo, fieldID, value) },
       this.onGetButtonStatus,
-    )
-  }
+    );
+  };
 
   onChangeDatePicker = date => {
     this.setState(
@@ -163,8 +180,21 @@ export default class ApparelFormFields extends Component {
         apparelInfo: immutable.set(this.state.apparelInfo, 'releaseDate', date),
       },
       this.onGetButtonStatus,
-    )
-  }
+    );
+  };
+
+  onSelectProductType = selectedOption => {
+    this.setState(
+      {
+        apparelInfo: immutable.set(
+          this.state.apparelInfo,
+          'productType',
+          selectedOption,
+        ),
+      },
+      this.onGetButtonStatus,
+    );
+  };
 
   onSelectBrand = selectedOption => {
     this.setState(
@@ -176,8 +206,8 @@ export default class ApparelFormFields extends Component {
         ),
       },
       this.onGetButtonStatus,
-    )
-  }
+    );
+  };
 
   onSelectDesigner = selectedOption => {
     this.setState(
@@ -189,18 +219,18 @@ export default class ApparelFormFields extends Component {
         ),
       },
       this.onGetButtonStatus,
-    )
-  }
+    );
+  };
 
   //  render methods
 
   renderRadioButtons = (id, options) => {
-    console.log(id)
+    console.log(id);
     switch (id) {
       default:
-        return this.renderDefaultRadioButtons(id, options)
+        return this.renderDefaultRadioButtons(id, options);
     }
-  }
+  };
 
   renderDefaultRadioButtons = (id, options) => {
     return Object.keys(options).map(optionID => {
@@ -224,53 +254,73 @@ export default class ApparelFormFields extends Component {
             }
           />
         </div>
-      )
-    })
-  }
+      );
+    });
+  };
 
-  renderDropdown = id => {
+  renderDropdown = (id, options = {}) => {
     switch (id) {
+      case 'productType':
+        return this.renderProductTypeDropDown(options);
       case 'brand':
-        return this.renderBrandsDropDown()
+        return this.renderBrandsDropDown();
       case 'designer':
-        return this.renderDesignersDropDown()
+        return this.renderDesignersDropDown();
       default:
-        return null
+        return null;
     }
-  }
+  };
+
+  renderProductTypeDropDown = options => {
+    console.log(options);
+    const { apparelInfo } = this.state;
+    const { productType } = apparelInfo;
+    const productTypes = [];
+    Object.keys(options).forEach(option => {
+      productTypes.push({ value: option, label: options[option].label });
+    });
+    console.log(productTypes);
+    return (
+      <Select
+        options={productTypes}
+        value={productType}
+        onChange={this.onSelectProductType}
+      />
+    );
+  };
 
   renderBrandsDropDown = () => {
-    const { brands, apparelInfo } = this.state
-    const { brand } = apparelInfo
+    const { brands, apparelInfo } = this.state;
+    const { brand } = apparelInfo;
     const brandsList = brands.map(brand => {
-      return { value: brand.id, label: brand.name }
-    })
+      return { value: brand.id, label: brand.name };
+    });
     return (
       <Select
         options={brandsList}
         value={brand}
         onChange={this.onSelectBrand}
       />
-    )
-  }
+    );
+  };
 
   renderDesignersDropDown = () => {
-    const { designers, apparelInfo } = this.state
-    const { designer } = apparelInfo
+    const { designers, apparelInfo } = this.state;
+    const { designer } = apparelInfo;
     const designersList = designers.map(designer => {
-      return { value: designer.id, label: designer.name }
-    })
+      return { value: designer.id, label: designer.name };
+    });
     return (
       <Select
         options={designersList}
         value={designer}
         onChange={this.onSelectDesigner}
       />
-    )
-  }
+    );
+  };
 
   renderField = (field = {}) => {
-    const { fieldKind, id, options = {} } = field
+    const { fieldKind, id, options = {} } = field;
     switch (fieldKind) {
       case 'radio':
         return (
@@ -280,7 +330,7 @@ export default class ApparelFormFields extends Component {
               {this.renderRadioButtons(id, options)}
             </div>
           </div>
-        )
+        );
       case 'text':
       case 'textarea':
         return (
@@ -293,14 +343,14 @@ export default class ApparelFormFields extends Component {
               value={this.state.apparelInfo[id] || ''}
             />
           </div>
-        )
+        );
       case 'dropdown':
         return (
-          <div key={id}>
+          <div key={id} style={{ marginBottom: '20px' }}>
             <h2>{field.label}</h2>
-            {this.renderDropdown(id)}
+            {this.renderDropdown(id, options)}
           </div>
-        )
+        );
       case 'datepicker':
         return (
           <div key={id} style={{ marginBottom: '20px' }}>
@@ -310,11 +360,11 @@ export default class ApparelFormFields extends Component {
               onChange={this.onChangeDatePicker}
             />
           </div>
-        )
+        );
       default:
-        return null
+        return null;
     }
-  }
+  };
 
   renderSubmitButton = () => {
     return (
@@ -326,8 +376,8 @@ export default class ApparelFormFields extends Component {
       >
         {this.props.isInEditMode ? 'Save' : 'Create'}
       </Button>
-    )
-  }
+    );
+  };
 
   render() {
     return (
@@ -335,7 +385,7 @@ export default class ApparelFormFields extends Component {
         {NEW_APPAREL_FIELDS.map(this.renderField)}
         {this.renderSubmitButton()}
       </div>
-    )
+    );
   }
 }
 
@@ -345,13 +395,14 @@ ApparelFormFields.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   brands: PropTypes.array,
   designers: PropTypes.array,
-}
+};
 
 ApparelFormFields.defaultProps = {
   brands: [],
   designers: [],
   isInEditMode: false,
   apparelInfo: {
+    productType: '',
     name: '',
     nickName: '',
     brand: '',
@@ -363,4 +414,4 @@ ApparelFormFields.defaultProps = {
     hasSizing: 'no',
     releaseDate: '',
   },
-}
+};
