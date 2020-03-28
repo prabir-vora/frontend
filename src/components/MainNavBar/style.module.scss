@@ -1,0 +1,195 @@
+.mainNavBar {
+  position: sticky;
+  top: 0px;
+  z-index: 900;
+  background-color: #000000;
+  height: 60px;
+  border-bottom: 1px solid #141413;
+}
+
+.navBarContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  padding: 0px 24px;
+  box-pack: justify;
+  box-align: center;
+}
+
+.menuIcon {
+  display: flex;
+  // flex-direction: column;
+  // justify-content: space-between;
+  fill: white;
+  width: 20px;
+  height: 18px;
+  & > svg {
+    height: 20px;
+    width: 18px;
+    fill: #fff;
+  }
+  cursor: pointer;
+}
+
+.navOverlay {
+  position: fixed;
+  top: 0px;
+  right: 0px;
+  left: 0px;
+  bottom: 0px;
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 0.3s ease 0s;
+  background: rgba(0, 0, 0, 0.6);
+
+  &.hidden {
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+}
+
+.overlayCover {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+}
+
+.slidingNavBar {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  width: 375px;
+  max-width: 70%;
+  transform: none;
+  z-index: 1;
+  opacity: 1;
+  overflow-x: hidden;
+  background: black;
+  transition: transform 0.3s ease-in-out 0s;
+}
+
+.slidingNavBarHidden {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  width: 375px;
+  max-width: 70%;
+  transform: translate(-100vw, 0px);
+  z-index: 0;
+  opacity: 0;
+  overflow-x: hidden;
+  background: black;
+  transition: opacity 0s linear 0.4s, transform 0.3s ease-in-out 0s;
+}
+
+.sideBarNavLink {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 60px;
+  font-size: 15px;
+  line-height: 1.43;
+  letter-spacing: 0px;
+  text-transform: capitalize;
+  padding: 8px 24px;
+  border-bottom: 1px solid rgb(222, 222, 222);
+  text-decoration: none;
+  :hover {
+    text-decoration: underline;
+  }
+}
+
+.sideBarNavLinkActive {
+  text-decoration: underline;
+}
+
+.mainHeaderNavLink {
+  display: none;
+  font-size: 15px;
+  font-weight: 500;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 5.71;
+  letter-spacing: normal;
+  text-transform: capitalize;
+  margin-right: 32px;
+  color: #808080;
+  text-decoration: none;
+}
+
+.mainHeaderNavLinkActive {
+  color: white;
+  text-decoration: underline;
+}
+
+.navLinkText {
+  font-size: 15px;
+  line-height: 1.43;
+  letter-spacing: 0px;
+  text-transform: capitalize;
+  color: white;
+}
+
+.logo {
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin: 0px;
+}
+
+@media (min-width: 40em) {
+  .sideBarContainer {
+    order: 4;
+    margin: 0px 0px 0px 24px;
+  }
+
+  .mainNavBar {
+    height: 90px;
+    border-bottom: none;
+  }
+
+  .navBarContent {
+    width: calc(100% - 180px);
+    height: 90px !important;
+    margin: 0px auto;
+    padding: 0px;
+    transition: all 600ms ease 0s;
+  }
+
+  .slidingNavBar {
+    right: 0px;
+    left: initial;
+    transform: none;
+  }
+
+  .slidingNavBarHidden {
+    right: 0px;
+    left: initial;
+    transform: translate(100vw, 0px);
+  }
+
+  .logo {
+    font-size: 2em !important;
+    color: white !important;
+    margin-right: auto;
+    order: 1;
+    flex: 0 0 auto;
+  }
+
+  .mainHeaderNavLink {
+    display: block;
+    order: 2;
+    transition: color 600ms ease 0s;
+  }
+}

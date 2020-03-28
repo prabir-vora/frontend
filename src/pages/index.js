@@ -1,21 +1,19 @@
-import ApparelPage from './ApparelPage';
 import AuthenticationPage from './AuthenticationPage';
 import HomePage from './HomePage';
 import ProductTemplatePage from './ProductTemplatePage';
 import ProfilePage from './ProfilePage';
 import ResellerListPage from './ResellersListPage';
 import ResellerTemplatePage from './ResellerTemplatePage';
-import SneakersPage from './SneakersPage';
+import ShopPage from './ShopPage';
 import AdminPage from './AdminPage';
 
 export {
-    ApparelPage,
-    AuthenticationPage,
-    HomePage,
-    ProductTemplatePage,
-    ProfilePage,
-    ResellerListPage,
-    ResellerTemplatePage,
-    SneakersPage,
-    AdminPage
-}
+  AuthenticationPage,
+  HomePage,
+  ProductTemplatePage,
+  ProfilePage,
+  ResellerListPage,
+  ResellerTemplatePage,
+  ShopPage,
+  AdminPage,
+};

@@ -1,13 +1,15 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+
+import MainNavBar from 'components/MainNavBar';
 
 class HomePage extends Component {
-    render() {
-        return (
-            <div>
-                This is the Home page
-            </div>
-        )
-    }
+  render() {
+    return (
+      <div style={{ width: '100%' }}>
+        <MainNavBar />
+      </div>
+    );
+  }
 }
 
 export default HomePage;
