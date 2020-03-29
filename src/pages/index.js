@@ -1,6 +1,6 @@
 import AuthenticationPage from './AuthenticationPage';
 import HomePage from './HomePage';
-import ProductTemplatePage from './ProductTemplatePage';
+import ProductListingPage from './ProductListingPage';
 import ProfilePage from './ProfilePage';
 import ResellerListPage from './ResellersListPage';
 import ResellerTemplatePage from './ResellerTemplatePage';
@@ -10,7 +10,7 @@ import AdminPage from './AdminPage';
 export {
   AuthenticationPage,
   HomePage,
-  ProductTemplatePage,
+  ProductListingPage,
   ProfilePage,
   ResellerListPage,
   ResellerTemplatePage,

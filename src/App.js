@@ -21,16 +21,11 @@ export default class App extends React.Component {
                 path="/resellers/:resellerID"
                 component={ROUTES('resellerTemplatePage')}
               />
-              <Route path="/shop" component={ROUTES('shopPage')} />
-              {/* <Route path="/sneakers" component={ROUTES("sneakersPage")}/>
-              <Route path="/apparel" component={ROUTES("apparelPage")}/> */}
+              <Route exact path="/shop" component={ROUTES('shopPage')} />
               <Route
-                path="/sneakers/:productID"
-                component={ROUTES('productTemplatePage')}
-              />
-              <Route
-                path="/apparel/:productID"
-                component={ROUTES('productTemplatePage')}
+                exact
+                path="/shop/:productListingID"
+                component={ROUTES('productListingPage')}
               />
               <Route path="/user" component={ROUTES('profilePage')} />
               <Route path="/auth" component={ROUTES('authenticationPage')} />'

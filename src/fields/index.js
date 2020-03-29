@@ -16,6 +16,7 @@ import ProductTemplate from './ProductTemplate';
 import ImageUploader from './ImageUploader';
 import MultipleImagesUploader from './MultipleImagesUploader';
 import LocationSearchInput from './LocationSearchInput';
+import Rheostat from './Rheostat';
 
 export {
   Button,
@@ -32,6 +33,7 @@ export {
   ProductTemplate,
   RadioButton,
   RadioButtons,
+  Rheostat,
   Notification,
   ScreenSize,
   ModalBackButton,

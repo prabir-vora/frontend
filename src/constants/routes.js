@@ -4,7 +4,7 @@ import {
   AdminPage,
   AuthenticationPage,
   HomePage,
-  ProductTemplatePage,
+  ProductListingPage,
   ProfilePage,
   ResellerListPage,
   ResellerTemplatePage,
@@ -21,8 +21,8 @@ const ROUTES = (routeName = '', props = {}) => {
       return ResellerTemplatePage;
     case 'shopPage':
       return ShopPage;
-    case 'productTemplatePage':
-      return ProductTemplatePage;
+    case 'productListingPage':
+      return ProductListingPage;
     case 'profilePage':
       return ProfilePage;
     case 'authenticationPage':

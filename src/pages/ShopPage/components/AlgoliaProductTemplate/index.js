@@ -10,13 +10,25 @@ export default class AlgoliaProductTemplate extends Component {
     return (
       <div className={Style.gridCellWrapper}>
         <div className={Style.gridCellContent}>
-          <a title={name} href={`/${slug}`}>
+          <a title={name} href={`/shop/${slug}`}>
             <div>
               <div className={Style.gridCell}>
                 <div className={Style.gridCellImage}>
                   <Img src={original_image_url} className={Style.gridImage} />
                 </div>
-                <div style={{ textAlign: 'center' }}>{name}</div>
+                <div
+                  style={{
+                    textAlign: 'center',
+                    fontFamily:
+                      'Druk Wide Web,futura-pt,HelveticaNeue-Light,Helvetica Neue Light,Helvetica Neue,Helvetica,Arial,Lucida Grande,sans-serif',
+
+                    fontSize: '16px',
+                    fontWeight: '800',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  {name}
+                </div>
                 <br />
                 <div style={{ textAlign: 'center' }}>${askingPrice}</div>
               </div>

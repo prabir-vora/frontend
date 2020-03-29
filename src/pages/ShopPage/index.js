@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import algoliasearch from 'algoliasearch';
 import MainNavBar from 'components/MainNavBar';
 import { TickIcon } from 'assets/Icons';
+import { Rheostat } from 'fields';
 
 import {
   InstantSearch,
@@ -13,6 +14,7 @@ import {
   Pagination,
   Configure,
   connectHits,
+  connectRange,
 } from 'react-instantsearch-dom';
 
 import Style from './style.module.scss';
@@ -38,7 +40,6 @@ function Hits(props) {
 }
 
 function Stats(props) {
-  console.log(props);
   return (
     <p className={Style.stats}>
       {props.nbHits > 10000
@@ -49,13 +50,16 @@ function Stats(props) {
 }
 
 function RefinementListCustom(props) {
-  console.log(props);
   const { attribute } = props;
   switch (attribute) {
     case 'brand_name':
       return renderBrandRefinementList(props);
     case 'condition':
       return renderConditionRefinementList(props);
+    case 'gender':
+      return renderGenderRefinementList(props);
+    case 'productType':
+      return renderProductTypeRefinementList(props);
     default:
       return null;
   }
@@ -91,7 +95,7 @@ function renderConditionRefinementList(props) {
         {sortedItems.map(item => {
           return (
             <p
-              style={{ fontSize: '12px' }}
+              style={{ fontSize: '12px', cursor: 'pointer' }}
               onClick={() => props.refine(item.value)}
             >
               {item.isRefined ? (
@@ -125,7 +129,7 @@ function renderBrandRefinementList(props) {
         {items.map(item => {
           return (
             <p
-              style={{ fontSize: '12px' }}
+              style={{ fontSize: '12px', cursor: 'pointer' }}
               onClick={() => props.refine(item.value)}
             >
               {item.isRefined ? (
@@ -142,11 +146,122 @@ function renderBrandRefinementList(props) {
   );
 }
 
+function renderGenderRefinementList(props) {
+  const { items } = props;
+  return (
+    <div style={{ marginBottom: '40px' }}>
+      <p
+        style={{
+          textTransform: 'uppercase',
+          fontSize: '14px',
+          fontWeight: '600',
+        }}
+      >
+        Gender
+      </p>
+      <div>
+        {items.map(item => {
+          return (
+            <p
+              style={{
+                fontSize: '12px',
+                textTransform: 'capitalize',
+                cursor: 'pointer',
+              }}
+              onClick={() => props.refine(item.value)}
+            >
+              {item.isRefined ? (
+                <TickIcon
+                  style={{ width: '15px', height: '15px', fill: 'white' }}
+                />
+              ) : null}{' '}
+              {item.label}
+            </p>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function renderProductTypeRefinementList(props) {
+  const { items } = props;
+  console.log(items);
+
+  if (items.length === 0) {
+    return null;
+  }
+
+  return (
+    <div style={{ marginBottom: '40px' }}>
+      <p
+        style={{
+          textTransform: 'uppercase',
+          fontSize: '14px',
+          fontWeight: '600',
+        }}
+      >
+        Product Type
+      </p>
+      <div>
+        {items.map(item => {
+          return (
+            <p
+              style={{
+                fontSize: '12px',
+                textTransform: 'capitalize',
+                cursor: 'pointer',
+              }}
+              onClick={() => props.refine(item.value)}
+            >
+              {item.isRefined ? (
+                <TickIcon
+                  style={{ width: '15px', height: '15px', fill: 'white' }}
+                />
+              ) : null}{' '}
+              {item.label}
+            </p>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function RangeSlider(props) {
+  console.log(props);
+  const { min, max, currentRefinement, refine } = props;
+
+  return (
+    <div>
+      <p
+        style={{
+          textTransform: 'uppercase',
+          fontSize: '14px',
+          fontWeight: '600',
+        }}
+      >
+        PRICE
+      </p>
+      <Rheostat
+        values={[currentRefinement.min, currentRefinement.max]}
+        min={min}
+        max={max}
+        onChange={({ values: [min, max] }) => {
+          refine({ min, max });
+        }}
+      />
+    </div>
+  );
+}
+
 const CustomHits = connectHits(Hits);
 
 const CustomStats = connectStats(Stats);
 
 const CustomRefinementList = connectRefinementList(RefinementListCustom);
+
+const CustomRangeSlider = connectRange(RangeSlider);
 
 export default class ShopPage extends Component {
   state = { showFilters: false, productCategory: 'sneakers' };
@@ -265,9 +380,14 @@ export default class ShopPage extends Component {
                     {/* <ClearRefinements /> */}
                     <div>
                       <CustomRefinementList
+                        attribute="productType"
+                        operator="or"
+                      />
+                    </div>
+                    <div>
+                      <CustomRefinementList
                         attribute="brand_name"
                         operator="or"
-                        canRefine={false}
                       />
                     </div>
                     <div>
@@ -276,9 +396,16 @@ export default class ShopPage extends Component {
                         operator="or"
                       />
                     </div>
+                    <div>
+                      <CustomRefinementList attribute="gender" operator="or" />
+                    </div>
+                    <div style={{ width: '100%' }}>
+                      <CustomRangeSlider attribute="askingPrice" />
+                    </div>
                     <Configure
                       hitsPerPage={8}
                       filters={`productCategory:${this.state.productCategory}`}
+                      distinct={true}
                     />
                   </div>
                   <div className={Style.filterResultsArea}>

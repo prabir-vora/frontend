@@ -14,6 +14,7 @@
     "js-cookie": "^2.2.1",
     "lodash.get": "^4.4.2",
     "lodash.pick": "^4.4.0",
+    "moment": "^2.24.0",
     "node-sass": "^4.13.1",
     "object-path-immutable": "^4.1.0",
     "react": "^16.13.0",
@@ -32,6 +33,7 @@
     "react-toastify": "^5.5.0",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
+    "rheostat": "^4.1.1",
     "slugify": "^1.4.0"
   },
   "scripts": {
