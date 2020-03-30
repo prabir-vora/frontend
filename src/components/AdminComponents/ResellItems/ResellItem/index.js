@@ -70,11 +70,11 @@ class ResellItem extends Component {
 
   onHideChangePhotoModal = () => this.setState({ showChangePhotoModal: false });
 
-  onSaveResellImage = async imageURL => {
+  onSaveResellItemImages = async images => {
     const { actionCreators } = TestObjectsDuck;
-    const { updateResellImage } = actionCreators;
+    const { updateResellItemImages } = actionCreators;
     const { updated, message } = await this.props.dispatch(
-      updateResellImage(imageURL, this.props.resellItemInfo),
+      updateResellItemImages(images, this.props.resellItemInfo),
     );
 
     if (updated) {
@@ -110,20 +110,21 @@ class ResellItem extends Component {
     );
   };
 
-  // renderChangePhotoModal = () => {
-  //   return (
-  //     <AdminModals.ChangePhotoModal
-  //       type="resellers"
-  //       name={this.props.resellItemInfo.name}
-  //       imageURL={this.props.resellItemInfo.imageURL}
-  //       onCloseModal={this.onHideChangePhotoModal}
-  //       onSaveImage={this.onSaveResellImage}
-  //     />
-  //   );
-  // };
+  renderChangePhotoModal = () => {
+    return (
+      <AdminModals.ResellItemsPhotosModal
+        type="resellItems"
+        name={this.props.resellItemInfo.product.label}
+        images={this.props.resellItemInfo.images}
+        onCloseModal={this.onHideChangePhotoModal}
+        onSaveImages={this.onSaveResellItemImages}
+      />
+    );
+  };
 
   renderChipLabel = () => {
     const { resellItemInfo } = this.props;
+    console.log(resellItemInfo);
     const { product, reseller, askingPrice, condition } = resellItemInfo;
     return (
       <React.Fragment>
@@ -197,7 +198,7 @@ class ResellItem extends Component {
   render() {
     return (
       <React.Fragment>
-        {/* {this.state.showChangePhotoModal && this.renderChangePhotoModal()} */}
+        {this.state.showChangePhotoModal && this.renderChangePhotoModal()}
         {this.state.showEditItemModal && this.renderEditModal()}
         {this.props.resellItemInfo && this.renderItem()}
       </React.Fragment>

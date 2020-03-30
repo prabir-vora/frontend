@@ -45,6 +45,9 @@ button {
 
 ul {
   list-style-type: none;
+  margin-block-start: none;
+  margin-block-end: none;
+  padding-inline-start: none;
 }
 
 a {

@@ -72,6 +72,11 @@ const NEW_SNEAKER_FIELDS = [
     },
   },
   {
+    fieldKind: 'dropdown',
+    id: 'size_brand',
+    label: 'Select Sizing Brand',
+  },
+  {
     fieldKind: 'datepicker',
     id: 'releaseDate',
     label: 'Release Date',
@@ -90,6 +95,7 @@ export default class SneakerFormFields extends Component {
       description: '',
       gender: '',
       sku: '',
+      sizing_brand: '',
       colorway: '',
       releaseDate: new Date(),
     },
@@ -101,6 +107,8 @@ export default class SneakerFormFields extends Component {
       ? new Date(this.props.sneakerInfo.releaseDate)
       : new Date();
 
+    console.log(this.props.sneakerInfo);
+
     this.setState(
       {
         sneakerInfo: immutable.set(
@@ -110,6 +118,7 @@ export default class SneakerFormFields extends Component {
         ),
         brands: this.props.brands,
         designers: this.props.designers,
+        sizing: this.props.sizing,
       },
       this.onGetButtonStatus,
     );
@@ -127,6 +136,7 @@ export default class SneakerFormFields extends Component {
       gender,
       colorway,
       releaseDate,
+      size_brand,
     } = this.state.sneakerInfo;
 
     name !== '' &&
@@ -135,7 +145,8 @@ export default class SneakerFormFields extends Component {
     designer !== '' &&
     gender !== '' &&
     colorway !== '' &&
-    releaseDate !== ''
+    releaseDate !== '' &&
+    size_brand !== ''
       ? this.setState({ submitBtnStatus: 'active' })
       : this.setState({ submitBtnStatus: 'inactive' });
   };
@@ -175,6 +186,19 @@ export default class SneakerFormFields extends Component {
         sneakerInfo: immutable.set(
           this.state.sneakerInfo,
           'designer',
+          selectedOption,
+        ),
+      },
+      this.onGetButtonStatus,
+    );
+  };
+
+  onSelectSizeBrand = selectedOption => {
+    this.setState(
+      {
+        sneakerInfo: immutable.set(
+          this.state.sneakerInfo,
+          'size_brand',
           selectedOption,
         ),
       },
@@ -223,6 +247,8 @@ export default class SneakerFormFields extends Component {
         return this.renderBrandsDropDown();
       case 'designer':
         return this.renderDesignersDropDown();
+      case 'size_brand':
+        return this.renderSizeBrandDropDown();
       default:
         return null;
     }
@@ -254,6 +280,31 @@ export default class SneakerFormFields extends Component {
         options={designersList}
         value={designer}
         onChange={this.onSelectDesigner}
+      />
+    );
+  };
+
+  renderSizeBrandDropDown = () => {
+    const { sizing, sneakerInfo } = this.state;
+    const { size_brand, gender } = sneakerInfo;
+    if (gender === '') {
+      return <div>Select Gender first</div>;
+    }
+    var value = '';
+    if (size_brand !== '') {
+      value = size_brand;
+    }
+    const sneakerSizingList = sizing['sneakers'];
+    const genderBasedList = sneakerSizingList[gender];
+
+    const sizeBrandsList = Object.keys(genderBasedList).map(size_brand => {
+      return { value: size_brand, label: size_brand };
+    });
+    return (
+      <Select
+        options={sizeBrandsList}
+        value={value}
+        onChange={this.onSelectSizeBrand}
       />
     );
   };

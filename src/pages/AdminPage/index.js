@@ -36,6 +36,7 @@ class Admin extends Component {
       this.fetchAllApparel(),
       this.fetchAllResellers(),
       this.fetchAllResellItems(),
+      this.fetchAllSizing(),
     ]);
   }
 
@@ -133,6 +134,23 @@ class Admin extends Component {
       //     message,
       //     type: 'success',
       //   });
+    } else {
+      this.confirmNotif = ShowConfirmNotif({
+        message,
+        type: 'error',
+      });
+    }
+  };
+
+  fetchAllSizing = async () => {
+    const { actionCreators } = AdminDuck;
+    const { getSizing } = actionCreators;
+    const { success, message } = await this.props.dispatch(getSizing());
+    if (success) {
+      // this.confirmNotif = ShowConfirmNotif({
+      //   message,
+      //   type: "success"
+      // })
     } else {
       this.confirmNotif = ShowConfirmNotif({
         message,

@@ -424,12 +424,12 @@ const createSneakerWithInputType = () => {
 const createNewSneaker = (sneakerInfo) => dispatch => {   
     dispatch(createNewSneakerRequest());
 
-    const { name, sku, brand, designer } = sneakerInfo;
+    const { name, sku, brand, designer, size_brand} = sneakerInfo;
     const sneakerSlug = slugify(name + " " + sku, {
         replacement: '-',  
         lower: true,      // convert to lower case, defaults to `false`
       })
-    const product = immutable.wrap(sneakerInfo).set('slug', sneakerSlug).set('productCategory', 'sneakers').set('brand', brand.value).set('designer', designer.value).value();
+    const product = immutable.wrap(sneakerInfo).set('slug', sneakerSlug).set('productCategory', 'sneakers').set('brand', brand.value).set('designer', designer.value).set('size_brand', size_brand.value).value();
 
     return new Promise((resolve, reject) => {
         fetchGraphQL(
@@ -466,12 +466,12 @@ const updateSneakerWithInputType = () => {
 const updateExistingSneaker = (sneakerInfo) => dispatch => {
     dispatch(updateExistingSneakerRequest());
 
-    const { name, id, sku, brand, designer } = sneakerInfo;
+    const { name, id, sku, brand, designer, size_brand } = sneakerInfo;
     const sneakerSlug = slugify(name + " " + sku, {
         replacement: '-',  
         lower: true,      // convert to lower case, defaults to `false`
       })
-    const product = immutable.wrap(sneakerInfo).set('slug', sneakerSlug).set('brand', brand.value).set('designer', designer.value).del('id').value();
+    const product = immutable.wrap(sneakerInfo).set('slug', sneakerSlug).set('brand', brand.value).set('designer', designer.value).set('size_brand', size_brand.value).del('id').value();
 
     return new Promise((resolve, reject) => {
         fetchGraphQL(
@@ -596,13 +596,13 @@ const createApparelWithInputType = () => {
 const createNewApparel = (apparelInfo) => dispatch => {   
     dispatch(createNewApparelRequest());
     console.log(apparelInfo);
-    const { productType, name, sku, brand, designer, hasSizing } = apparelInfo;
+    const { productType, name, sku, brand, designer, hasSizing, size_brand } = apparelInfo;
     const apparelSlug = slugify(name + " " + sku, {
         replacement: '-',  
         lower: true,      // convert to lower case, defaults to `false`
       })
 
-    const product = immutable.wrap(apparelInfo).set("slug", apparelSlug).set('productType', productType.value).set('brand', brand.value).set('designer', designer.value).set('productCategory', 'apparel').set('hasSizing', hasSizing === "yes" ? true : false).value();
+    const product = immutable.wrap(apparelInfo).set("slug", apparelSlug).set('productType', productType.value).set('brand', brand.value).set('designer', designer.value).set('productCategory', 'apparel').set('hasSizing', hasSizing === "yes" ? true : false).set('size_brand', size_brand.value).value();
     return new Promise((resolve, reject) => {
         fetchGraphQL(
             createApparelWithInputType(), undefined, {
@@ -637,12 +637,12 @@ const updateApparelWithInputType = () => {
 
 const updateExistingApparel = (apparelInfo) => dispatch => {
     dispatch(updateExistingApparelRequest());
-    const { name, id, sku, brand, designer } = apparelInfo;
+    const { productType, name, id, sku, brand, designer, hasSizing, size_brand } = apparelInfo;
     const apparelSlug = slugify(name + " " + sku, {
         replacement: '-',  
         lower: true,      // convert to lower case, defaults to `false`
       })
-    const product = immutable.wrap(apparelInfo).set('slug', apparelSlug).set('brand', brand.value).set('designer', designer.value).del('id').value();
+    const product = immutable.wrap(apparelInfo).set('slug', apparelSlug).set('productType', productType.value).set('brand', brand.value).set('designer', designer.value).set('hasSizing', hasSizing === "yes" ? true : false).set('size_brand', size_brand.value).del('id').value();
 
     return new Promise((resolve, reject) => {
         fetchGraphQL(
@@ -928,14 +928,17 @@ const getAllSneakers = () => dispatch => {
                 hasSizing
                 colorway
                 releaseDate
+                size_brand
             }
         }`)
         .then((res) => {
             if (res !== null && res !== undefined && res.getProducts !== null && res.getProducts !== undefined) {
                 const products = res.getProducts;
+    
                 const sneakers = products.map(product => {
-                    const { brand, designer } = product;
-                    return immutable.wrap(product).set('brand', { value: brand.id, label: brand.name }).set('designer', { value: designer.id, label: designer.name }).value();
+                    console.log(product)
+                    const { brand, designer, size_brand = ""} = product;
+                    return immutable.wrap(product).set('brand', { value: brand.id, label: brand.name }).set('designer', { value: designer.id, label: designer.name }).set('size_brand', { value: size_brand, label: size_brand }).value();
                 })
                 dispatch(getAllSneakersSuccess(sneakers));
                 resolve({ success: true, message: "Fetched Sneakers successfully"});
@@ -979,6 +982,7 @@ const getAllApparel = () => dispatch => {
                 gender
                 additional_pictures
                 hasSizing
+                size_brand
                 colorway
                 releaseDate
             }
@@ -995,8 +999,9 @@ const getAllApparel = () => dispatch => {
                 }
                 const products = res.getProducts;
                 const apparel = products.map(product => {
-                    const { productType, brand, designer } = product;
-                    return immutable.wrap(product).set('brand', { value: brand.id, label: brand.name }).set('designer', { value: designer.id, label: designer.name }).set('productType', { value: productType, label: productTypes[productType]}).value();
+                    console.log(product);
+                    const { productType, brand, designer, hasSizing, size_brand = "" } = product;
+                    return immutable.wrap(product).set('brand', { value: brand.id, label: brand.name }).set('designer', { value: designer.id, label: designer.name }).set('productType', { value: productType, label: productTypes[productType]}).set('hasSizing', hasSizing ? "yes": "no" ).set('size_brand', { value: size_brand, label: size_brand }).value();
                 })
                 dispatch(getAllApparelSuccess(apparel));
                 resolve({ success: true, message: "Fetched Apparel successfully"});

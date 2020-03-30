@@ -29,6 +29,9 @@ const actionTypes = createActionTypes(
     UPDATE_EXISTING_RESELL_ITEM_REQUEST: 'UPDATE_EXISTING_RESELL_ITEM_REQUEST',
     UPDATE_EXISTING_RESELL_ITEM_SUCCESS: 'UPDATE_EXISTING_RESELL_ITEM_SUCCESS',
     UPDATE_EXISTING_RESELL_ITEM_ERROR: 'UPDATE_EXISTING_RESELL_ITEM_ERROR',
+    UPDATE_RESELL_ITEM_IMAGES_REQUEST: 'UPDATE_RESELL_ITEM_IMAGES_REQUEST',
+    UPDATE_RESELL_ITEM_IMAGES_SUCCESS: 'UPDATE_RESELL_ITEM_IMAGES_SUCCESS',
+    UPDATE_RESELL_ITEM_IMAGES_ERROR: 'UPDATE_RESELL_ITEM_IMAGES_ERROR',
     REMOVE_EXISTING_RESELL_ITEM_REQUEST: 'REMOVE_EXISTING_RESELL_ITEM_REQUEST',
     REMOVE_EXISTING_RESELL_ITEM_SUCCESS: 'REMOVE_EXISTING_RESELL_ITEM_SUCCESS',
     REMOVE_EXISTING_RESELL_ITEM_ERROR: 'REMOVE_EXISTING_RESELL_ITEM_ERROR',
@@ -247,7 +250,7 @@ const createResellItemWithInputType = () => {
 
 const createNewResellItem = resellItemInfo => dispatch => {
   dispatch(createNewResellItemRequest());
-  const { product, reseller, askingPrice } = resellItemInfo;
+  const { product, reseller, askingPrice, size } = resellItemInfo;
   const resellItemSlug = slugify(product.label + ' ' + reseller.label, {
     replacement: '-',
     lower: true, // convert to lower case, defaults to `false`
@@ -259,6 +262,7 @@ const createNewResellItem = resellItemInfo => dispatch => {
     .set('product', product.value)
     .set('reseller', reseller.value)
     .set('askingPrice', parseInt(askingPrice))
+    .set('size', size.value)
     .del('productType')
     .value();
   return new Promise((resolve, reject) => {
@@ -300,7 +304,7 @@ const updateResellItemWithInputType = () => {
 const updateExistingResellItem = resellItemInfo => dispatch => {
   dispatch(updateExistingResellItemRequest());
 
-  const { product, reseller, askingPrice, id } = resellItemInfo;
+  const { product, reseller, askingPrice, size, id } = resellItemInfo;
   const resellItemSlug = slugify(product.label + ' ' + reseller.label, {
     replacement: '-',
     lower: true, // convert to lower case, defaults to `false`
@@ -311,6 +315,7 @@ const updateExistingResellItem = resellItemInfo => dispatch => {
     .set('slug', resellItemSlug)
     .set('product', product.value)
     .set('reseller', reseller.value)
+    .set('size', size.value)
     .set('askingPrice', parseInt(askingPrice))
     .del('productType')
     .del('id')
@@ -340,6 +345,48 @@ const updateExistingResellItem = resellItemInfo => dispatch => {
       .catch(err => {
         dispatch(updateExistingResellItemError(err.response));
         resolve({ updated: false, message: 'Failed to update ResellItem' });
+      });
+  });
+};
+
+const updateResellItemImagesWithInput = () => {
+  return `
+  mutation($id: ID!, $images: [String!]!) {
+      updateResellItemImages(id: $id, imageURLs: $images)
+  }
+  `;
+};
+
+const updateResellItemImages = (images, resellItemInfo) => dispatch => {
+  dispatch(updateResellItemImagesRequest());
+  return new Promise((resolve, reject) => {
+    fetchGraphQL(updateResellItemImagesWithInput(), undefined, {
+      id: resellItemInfo.id,
+      images,
+    })
+      .then(res => {
+        if (res !== null && res !== undefined && res.updateResellItemImages) {
+          dispatch(updateResellItemImagesSuccess());
+          resolve({
+            updated: true,
+            message: 'Updated Resell Item Image Successfully',
+          });
+        } else {
+          dispatch(
+            updateResellItemImagesFailure('Could Not Update Resell Item Image'),
+          );
+          resolve({
+            updated: false,
+            message: 'Failed to update Resell Item Image',
+          });
+        }
+      })
+      .catch(err => {
+        dispatch(updateResellItemImagesFailure(err.response));
+        resolve({
+          updated: false,
+          message: 'Failed to update Resell Item Image',
+        });
       });
   });
 };
@@ -432,6 +479,7 @@ const getAllResellItems = () => dispatch => {
                   askingPrice
                   condition
                   images
+                  size
               }
           }`)
       .then(res => {
@@ -443,12 +491,13 @@ const getAllResellItems = () => dispatch => {
         ) {
           const results = res.getAllResellItems;
           const resellItems = results.map(resellItem => {
-            const { product, reseller, askingPrice } = resellItem;
+            const { product, reseller, askingPrice, size = '' } = resellItem;
             return immutable
               .wrap(resellItem)
               .set('product', { value: product.id, label: product.name })
               .set('productType', product.productCategory)
               .set('reseller', { value: reseller.id, label: reseller.name })
+              .set('size', { value: size, label: size })
               .set('askingPrice', `${askingPrice}`)
               .value();
           });
@@ -581,6 +630,25 @@ const updateExistingResellItemSuccess = () => {
 const updateExistingResellItemError = errorMessage => {
   return {
     type: actionTypes.UPDATE_EXISTING_RESELL_ITEM_ERROR,
+    payload: { errorMessage },
+  };
+};
+
+const updateResellItemImagesRequest = () => {
+  return {
+    type: actionTypes.UPDATE_RESELL_ITEM_IMAGES_REQUEST,
+  };
+};
+
+const updateResellItemImagesSuccess = () => {
+  return {
+    type: actionTypes.UPDATE_RESELL_ITEM_IMAGES_SUCCESS,
+  };
+};
+
+const updateResellItemImagesFailure = errorMessage => {
+  return {
+    type: actionTypes.UPDATE_RESELL_ITEM_IMAGES_ERROR,
     payload: { errorMessage },
   };
 };
@@ -821,6 +889,7 @@ export default {
     createNewResellItem,
     updateExistingResellItem,
     removeExistingResellItem,
+    updateResellItemImages,
     // -----> Query
     getAllResellItems,
   },

@@ -105,6 +105,7 @@ class ResellItemsModal extends Component {
           sneakers={this.props.sneakers}
           apparel={this.props.apparel}
           resellers={this.props.resellers}
+          sizing={this.props.sizing}
         />
         {isInEditMode && this.renderArchiveItemButton()}
       </CenterModal>
@@ -139,6 +140,7 @@ const mapStateToProps = state => {
     resellers: state[TestObjectsDuck.duckName].resellers.data,
     sneakers: state[AdminDuck.duckName].sneakers.data,
     apparel: state[AdminDuck.duckName].apparel.data,
+    sizing: state[AdminDuck.duckName].sizing.data,
   };
 };
 

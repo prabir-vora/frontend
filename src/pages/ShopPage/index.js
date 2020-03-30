@@ -60,6 +60,8 @@ function RefinementListCustom(props) {
       return renderGenderRefinementList(props);
     case 'productType':
       return renderProductTypeRefinementList(props);
+    case 'size':
+      return renderSizeRefinementList(props);
     default:
       return null;
   }
@@ -202,6 +204,56 @@ function renderProductTypeRefinementList(props) {
         }}
       >
         Product Type
+      </p>
+      <div>
+        {items.map(item => {
+          return (
+            <p
+              style={{
+                fontSize: '12px',
+                textTransform: 'capitalize',
+                cursor: 'pointer',
+              }}
+              onClick={() => props.refine(item.value)}
+            >
+              {item.isRefined ? (
+                <TickIcon
+                  style={{ width: '15px', height: '15px', fill: 'white' }}
+                />
+              ) : null}{' '}
+              {item.label}
+            </p>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function renderSizeRefinementList(props) {
+  const { items, productCategory } = props;
+  console.log(productCategory);
+
+  if (productCategory === 'sneakers') {
+    items.sort((sizeA, sizeB) => {
+      return parseFloat(sizeA.label) > parseFloat(sizeB.label) ? 1 : -1;
+    });
+  }
+
+  if (items.length === 0) {
+    return null;
+  }
+
+  return (
+    <div style={{ marginBottom: '40px' }}>
+      <p
+        style={{
+          textTransform: 'uppercase',
+          fontSize: '14px',
+          fontWeight: '600',
+        }}
+      >
+        Size
       </p>
       <div>
         {items.map(item => {
@@ -398,6 +450,13 @@ export default class ShopPage extends Component {
                     </div>
                     <div>
                       <CustomRefinementList attribute="gender" operator="or" />
+                    </div>
+                    <div>
+                      <CustomRefinementList
+                        attribute="size"
+                        operator="or"
+                        productCategory={this.state.productCategory}
+                      />
                     </div>
                     <div style={{ width: '100%' }}>
                       <CustomRangeSlider attribute="askingPrice" />

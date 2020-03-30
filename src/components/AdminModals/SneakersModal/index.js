@@ -1,59 +1,59 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 // Redux
-import { connect } from 'react-redux'
-import AdminDuck from 'stores/ducks/Admin/Admin.duck'
+import { connect } from 'react-redux';
+import AdminDuck from 'stores/ducks/Admin/Admin.duck';
 
 // Components
-import { CenterModal, ModalBackButton } from 'fields'
-import SneakerFormFields from './sneakerFormFields'
-import ConfirmArchiveModal from '../ConfirmArchiveModal'
+import { CenterModal, ModalBackButton } from 'fields';
+import SneakerFormFields from './sneakerFormFields';
+import ConfirmArchiveModal from '../ConfirmArchiveModal';
 
 // Style
-import ModalStyle from '../style.module.scss'
+import ModalStyle from '../style.module.scss';
 
 class SneakersModal extends Component {
   state = {
     showLoadingModal: false,
-  }
+  };
 
-  componentWillUnmount = () => this.setState({ showLoadingModal: false })
+  componentWillUnmount = () => this.setState({ showLoadingModal: false });
 
   // On Change Methods
 
   onHideConfirmArchiveModal = () =>
-    this.setState({ showConfirmArchiveModal: false })
+    this.setState({ showConfirmArchiveModal: false });
 
   onShowConfirmArchiveModal = () =>
-    this.setState({ showConfirmArchiveModal: true })
+    this.setState({ showConfirmArchiveModal: true });
 
   renderModalTitle = () => {
-    return <h1>{this.props.isInEditMode ? 'Edit' : 'Create'} Sneaker</h1>
-  }
+    return <h1>{this.props.isInEditMode ? 'Edit' : 'Create'} Sneaker</h1>;
+  };
 
   onSubmitSneakerInfo = async sneakerInfo => {
     if (this.props.isInEditMode) {
-      const { actionCreators } = AdminDuck
-      const { updateExistingSneaker } = actionCreators
-      const res = await this.props.dispatch(updateExistingSneaker(sneakerInfo))
-      this.props.onUpdateAfterSneakerSaved(res)
+      const { actionCreators } = AdminDuck;
+      const { updateExistingSneaker } = actionCreators;
+      const res = await this.props.dispatch(updateExistingSneaker(sneakerInfo));
+      this.props.onUpdateAfterSneakerSaved(res);
     } else {
-      const { actionCreators } = AdminDuck
-      const { createNewSneaker } = actionCreators
-      const res = await this.props.dispatch(createNewSneaker(sneakerInfo))
-      this.props.onUpdateAfterSneakerCreated(res)
+      const { actionCreators } = AdminDuck;
+      const { createNewSneaker } = actionCreators;
+      const res = await this.props.dispatch(createNewSneaker(sneakerInfo));
+      this.props.onUpdateAfterSneakerCreated(res);
     }
-  }
+  };
 
   onArchiveSneaker = async () => {
-    const { actionCreators } = AdminDuck
-    const { removeExistingSneaker } = actionCreators
+    const { actionCreators } = AdminDuck;
+    const { removeExistingSneaker } = actionCreators;
     const res = await this.props.dispatch(
       removeExistingSneaker(this.props.sneakerInfo),
-    )
-    this.props.onUpdateAfterSneakerArchived(res)
-  }
+    );
+    this.props.onUpdateAfterSneakerArchived(res);
+  };
 
   // Render methods
   renderArchiveItemButton = () => {
@@ -62,18 +62,18 @@ class SneakersModal extends Component {
         className={ModalStyle.archiveButton}
         name="Archive Item"
         onClick={() => {
-          this.onShowConfirmArchiveModal()
+          this.onShowConfirmArchiveModal();
         }}
         type="submit"
       >
         Archive
       </button>
-    )
-  }
+    );
+  };
 
   render() {
-    const { isInEditMode, sneakerInfo } = this.props
-    const { showConfirmArchiveModal } = this.state
+    const { isInEditMode, sneakerInfo } = this.props;
+    const { showConfirmArchiveModal } = this.state;
     return (
       <CenterModal
         closeModalButtonLabel={<ModalBackButton />}
@@ -97,11 +97,12 @@ class SneakersModal extends Component {
           onSubmit={this.onSubmitSneakerInfo}
           brands={this.props.brands}
           designers={this.props.designers}
+          sizing={this.props.sizing}
           sneakerInfo={this.props.sneakerInfo}
         />
         {isInEditMode && this.renderArchiveItemButton()}
       </CenterModal>
-    )
+    );
   }
 }
 
@@ -114,19 +115,20 @@ SneakersModal.propTypes = {
   onUpdateAfterSneakerArchived: PropTypes.func,
   onUpdateAfterSneakerCreated: PropTypes.func,
   onUpdateAfterSneakerSaved: PropTypes.func,
-}
+};
 
 SneakersModal.defaultProps = {
   isInEditMode: false,
-}
+};
 
 const mapStateToProps = state => {
-  const { duckName } = AdminDuck
+  const { duckName } = AdminDuck;
   return {
     isMutating: state[duckName].sneakers.isMutating,
     brands: state[duckName].brands.data,
     designers: state[duckName].designers.data,
-  }
-}
+    sizing: state[duckName].sizing.data,
+  };
+};
 
-export default connect(mapStateToProps)(SneakersModal)
+export default connect(mapStateToProps)(SneakersModal);

@@ -17,6 +17,7 @@ import ImageUploader from './ImageUploader';
 import MultipleImagesUploader from './MultipleImagesUploader';
 import LocationSearchInput from './LocationSearchInput';
 import Rheostat from './Rheostat';
+import ImageGallery from './ImageGallery';
 
 export {
   Button,
@@ -26,6 +27,7 @@ export {
   CheckBoxes,
   ImageUploader,
   Img,
+  ImageGallery,
   LocationSearchInput,
   ExpansionPanel,
   FullPageModal,

@@ -96,6 +96,11 @@ const NEW_APPAREL_FIELDS = [
     },
   },
   {
+    fieldKind: 'dropdown',
+    id: 'size_brand',
+    label: 'Select Sizing Brand',
+  },
+  {
     fieldKind: 'datepicker',
     id: 'releaseDate',
     label: 'Release Date',
@@ -117,6 +122,7 @@ export default class ApparelFormFields extends Component {
       sku: '',
       colorway: '',
       hasSizing: 'no',
+      size_brand: '',
       releaseDate: new Date(),
     },
     submitBtnStatus: 'inactive',
@@ -136,6 +142,7 @@ export default class ApparelFormFields extends Component {
         ),
         brands: this.props.brands,
         designers: this.props.designers,
+        sizing: this.props.sizing,
       },
       this.onGetButtonStatus,
     );
@@ -154,6 +161,7 @@ export default class ApparelFormFields extends Component {
       gender,
       colorway,
       releaseDate,
+      size_brand,
     } = this.state.apparelInfo;
     productType !== '' &&
     name !== '' &&
@@ -162,7 +170,8 @@ export default class ApparelFormFields extends Component {
     designer !== '' &&
     gender !== '' &&
     colorway !== '' &&
-    releaseDate !== ''
+    releaseDate !== '' &&
+    size_brand !== ''
       ? this.setState({ submitBtnStatus: 'active' })
       : this.setState({ submitBtnStatus: 'inactive' });
   };
@@ -222,6 +231,19 @@ export default class ApparelFormFields extends Component {
     );
   };
 
+  onSelectSizeBrand = selectedOption => {
+    this.setState(
+      {
+        apparelInfo: immutable.set(
+          this.state.apparelInfo,
+          'size_brand',
+          selectedOption,
+        ),
+      },
+      this.onGetButtonStatus,
+    );
+  };
+
   //  render methods
 
   renderRadioButtons = (id, options) => {
@@ -266,6 +288,8 @@ export default class ApparelFormFields extends Component {
         return this.renderBrandsDropDown();
       case 'designer':
         return this.renderDesignersDropDown();
+      case 'size_brand':
+        return this.renderSizeBrandDropDown();
       default:
         return null;
     }
@@ -315,6 +339,35 @@ export default class ApparelFormFields extends Component {
         options={designersList}
         value={designer}
         onChange={this.onSelectDesigner}
+      />
+    );
+  };
+
+  renderSizeBrandDropDown = () => {
+    const { sizing, apparelInfo } = this.state;
+    const { size_brand, gender, hasSizing } = apparelInfo;
+    if (gender === '') {
+      return <div>Select Gender first</div>;
+    }
+
+    if (hasSizing === 'no') {
+      return <div>Product Sizing turned off</div>;
+    }
+    var value = '';
+    if (size_brand !== '') {
+      value = size_brand;
+    }
+    const apparelSizingList = sizing['apparel'];
+    const genderBasedList = apparelSizingList[gender];
+
+    const sizeBrandsList = Object.keys(genderBasedList).map(size_brand => {
+      return { value: size_brand, label: size_brand };
+    });
+    return (
+      <Select
+        options={sizeBrandsList}
+        value={value}
+        onChange={this.onSelectSizeBrand}
       />
     );
   };

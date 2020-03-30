@@ -47,6 +47,11 @@ const RESELL_ITEM_FIELDS = [
   },
   {
     fieldKind: 'dropdown',
+    id: 'size',
+    label: 'Select size',
+  },
+  {
+    fieldKind: 'dropdown',
     id: 'resellers',
     label: 'Select Reseller',
   },
@@ -69,6 +74,7 @@ export default class ResellItemsFormFields extends Component {
       condition: 'new',
       askingPrice: '',
       reseller: '',
+      size: '',
       availability: [],
     },
     submitBtnStatus: 'inactive',
@@ -106,13 +112,15 @@ export default class ResellItemsFormFields extends Component {
       product,
       condition,
       reseller,
+      size,
     } = this.state.resellItemInfo;
 
     productType !== '' &&
     askingPrice !== '' &&
     product !== '' &&
     condition !== '' &&
-    reseller !== ''
+    reseller !== '' &&
+    size !== ''
       ? this.setState({ submitBtnStatus: 'active' })
       : this.setState({ submitBtnStatus: 'inactive' });
   };
@@ -128,6 +136,16 @@ export default class ResellItemsFormFields extends Component {
       },
       this.onGetButtonStatus,
     );
+  };
+
+  onSelectSize = selectedOption => {
+    this.setState({
+      resellItemInfo: immutable.set(
+        this.state.resellItemInfo,
+        'size',
+        selectedOption,
+      ),
+    });
   };
 
   onSelectReseller = selectedOption => {
@@ -220,6 +238,8 @@ export default class ResellItemsFormFields extends Component {
         return this.renderSelectProductDropDown();
       case 'resellers':
         return this.renderResellersDropDown();
+      case 'size':
+        return this.renderSizeDropDown();
       default:
         return null;
     }
@@ -235,6 +255,43 @@ export default class ResellItemsFormFields extends Component {
         options={productList}
         value={product}
         onChange={this.onSelectProduct}
+      />
+    );
+  };
+
+  renderSizeDropDown = () => {
+    const { productType, product, size } = this.state.resellItemInfo;
+
+    if (product === '') {
+      return <div> Select Product first </div>;
+    }
+    const filteredProduct = this.props[productType].filter(
+      item => item.id === product.value,
+    );
+
+    const selectedProduct = filteredProduct[0];
+
+    console.log(selectedProduct);
+
+    const { size_brand, gender } = selectedProduct;
+
+    const size_list = this.props.sizing[productType][gender][size_brand.value][
+      'us'
+    ];
+
+    console.log(size_list);
+
+    const sizeDropDownValues = size_list.map(size => {
+      return { value: `${size}`, label: `${size}` };
+    });
+
+    console.log(sizeDropDownValues);
+
+    return (
+      <Select
+        options={sizeDropDownValues}
+        value={size}
+        onChange={this.onSelectSize}
       />
     );
   };
