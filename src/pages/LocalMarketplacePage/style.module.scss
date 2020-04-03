@@ -1,0 +1,80 @@
+.pageLayout {
+  display: flex;
+  position: relative;
+  box-align: center;
+  align-items: center;
+  flex-direction: column;
+  box-pack: start;
+  justify-content: flex-start;
+  flex: 1 1 0%;
+  background: black;
+  color: white;
+  font-family: Druk Wide Web, futura-pt, HelveticaNeue-Light,
+    Helvetica Neue Light, Helvetica Neue, Helvetica, Arial, Lucida Grande,
+    sans-serif;
+}
+
+.locationFilter {
+  width: 70%;
+  font-family: Druk Wide Web, futura-pt, HelveticaNeue-Light,
+    Helvetica Neue Light, Helvetica Neue, Helvetica, Arial, Lucida Grande,
+    sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.locationFilterTitle {
+  margin-bottom: 20px;
+}
+
+.locationSearchInput {
+  background: white;
+  color: black;
+  width: 100%;
+  max-width: 400px;
+}
+
+.pillButton {
+  padding: 19px 28px;
+  border-radius: 38px;
+  transform: matrix(1, 0, 0, 1, 0, 1.14936);
+  opacity: 1;
+  font-weight: 600;
+  font-size: 16px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 68px;
+  box-shadow: inset 0 0 0 2px #888;
+  color: #aaaaaa;
+  cursor: pointer;
+
+  &:hover {
+    box-shadow: inset 0 0 0 4px #ffffff !important;
+    color: #ffffff;
+  }
+}
+
+.buttonText {
+  transition: 300ms color cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+.algoliaContentWrapper {
+  width: 100%;
+  margin-top: -20px;
+}
+
+.locationErrorMessage {
+  font-size: 20px;
+  text-align: center;
+  margin-top: 70px;
+}
+
+@media (min-width: 40em) {
+  .pageTitle {
+    padding: 4em 20px 2em 20px;
+  }
+
+  .algoliaContentWrapper {
+    margin-top: 0px;
+  }
+}

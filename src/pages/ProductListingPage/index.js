@@ -53,7 +53,7 @@ class ProductListingPage extends Component {
         original: original_image_url,
         thumbnail: original_image_url,
       });
-      additional_pictures.map(pictureURL => {
+      additional_pictures.forEach(pictureURL => {
         imageGalleryInput.push({
           original: pictureURL,
           thumbnail: pictureURL,
@@ -62,7 +62,7 @@ class ProductListingPage extends Component {
     } else {
       const { selectedResellItem } = this.state;
       const { images } = selectedResellItem;
-      images.map(image => {
+      images.forEach(image => {
         imageGalleryInput.push({
           original: image,
           thumbnail: image,

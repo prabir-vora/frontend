@@ -9,8 +9,6 @@ import {
   Button,
   CenterModal,
   ModalBackButton,
-  TextInput,
-  Img,
   MultipleImagesUploader,
 } from 'fields';
 

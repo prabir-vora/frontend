@@ -22,8 +22,9 @@
 }
 
 .Demo__search-bar-container {
-  width: 90%;
-  max-width: 500px;
+  width: 100%;
+  max-width: 400px;
+  color: black;
   /* margin: 40px auto 0; */
 }
 
@@ -40,6 +41,7 @@
   width: 100%;
   padding: 16px;
   font-size: 16px;
+  max-width: 400px;
   border-radius: 2px;
   outline: none;
 }
@@ -51,7 +53,7 @@
   right: 16px;
   top: 50%;
   transform: translateY(-50%);
-  background: transparent;
+  background: white;
   border: none;
   outline: none;
   font-weight: 600;
@@ -65,6 +67,10 @@
   border-top: 1px solid #e6e6e6;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   border-radius: 0 0 2px 2px;
+  position: absolute;
+  z-index: 10000;
+  width: 100%;
+  max-width: 400px;
 }
 
 .Demo__suggestion-item {
@@ -106,6 +112,17 @@
 @media (max-width: 480px) {
   .autocomplete-container {
     text-align: left;
+  }
+
+  .Demo__search-bar-container {
+    width: 100%;
+    max-width: 312px;
+    /* margin: 40px auto 0; */
+  }
+
+  .Demo__autocomplete-container {
+    width: 100%;
+    max-width: 312px;
   }
 }
 

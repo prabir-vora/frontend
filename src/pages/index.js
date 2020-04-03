@@ -6,10 +6,12 @@ import ResellerListPage from './ResellersListPage';
 import ResellerTemplatePage from './ResellerTemplatePage';
 import ShopPage from './ShopPage';
 import AdminPage from './AdminPage';
+import LocalMarketplacePage from './LocalMarketplacePage';
 
 export {
   AuthenticationPage,
   HomePage,
+  LocalMarketplacePage,
   ProductListingPage,
   ProfilePage,
   ResellerListPage,

@@ -8,6 +8,7 @@ import {
   ProfilePage,
   ResellerListPage,
   ResellerTemplatePage,
+  LocalMarketplacePage,
   ShopPage,
 } from '../pages';
 
@@ -23,6 +24,8 @@ const ROUTES = (routeName = '', props = {}) => {
       return ShopPage;
     case 'productListingPage':
       return ProductListingPage;
+    case 'localMarketplacePage':
+      return LocalMarketplacePage;
     case 'profilePage':
       return ProfilePage;
     case 'authenticationPage':

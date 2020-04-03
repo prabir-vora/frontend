@@ -86,16 +86,10 @@ class LocationSearchInput extends React.Component {
   };
 
   render() {
-    const {
-      address,
-      errorMessage,
-      latitude,
-      longitude,
-      isGeocoding,
-    } = this.state;
+    const { address, errorMessage } = this.state;
     console.log(address);
     return (
-      <div>
+      <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
         <PlacesAutocomplete
           onChange={this.handleChange}
           value={address}
@@ -109,7 +103,8 @@ class LocationSearchInput extends React.Component {
                 <div className="Demo__search-input-container">
                   <input
                     {...getInputProps({
-                      placeholder: 'Search Places...',
+                      placeholder:
+                        'Search by town/city, neighbourhood or postcode.',
                       className: 'Demo__search-input',
                     })}
                   />
@@ -150,31 +145,6 @@ class LocationSearchInput extends React.Component {
             );
           }}
         </PlacesAutocomplete>
-        {errorMessage.length > 0 && (
-          <div className="Demo__error-message">No result Found</div>
-        )}
-
-        {((latitude && longitude) || isGeocoding) && (
-          <div>
-            <h3 className="Demo__geocode-result-header">Geocode result</h3>
-            {isGeocoding ? (
-              <div>
-                <i className="fa fa-spinner fa-pulse fa-3x fa-fw Demo__spinner" />
-              </div>
-            ) : (
-              <div>
-                <div className="Demo__geocode-result-item--lat">
-                  <label>Latitude:</label>
-                  <span>{latitude}</span>
-                </div>
-                <div className="Demo__geocode-result-item--lng">
-                  <label>Longitude:</label>
-                  <span>{longitude}</span>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
       </div>
     );
   }

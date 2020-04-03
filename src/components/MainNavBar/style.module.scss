@@ -1,7 +1,7 @@
 .mainNavBar {
   position: sticky;
   top: 0px;
-  z-index: 900;
+  z-index: 100;
   background-color: #000000;
   height: 60px;
   border-bottom: 1px solid #141413;
@@ -108,7 +108,33 @@
   }
 }
 
-.sideBarNavLinkActive {
+.sideBarAuthLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  line-height: 1.43;
+  text-transform: capitalize;
+  padding: 8px 24px;
+  border-bottom: 1px solid rgb(222, 222, 222);
+  text-decoration: none;
+
+  & > button {
+    font-size: 15px;
+    margin-right: 20px;
+  }
+}
+
+.loggedIn {
+  height: 60px;
+  line-height: 1.43;
+  padding: 8px 24px;
+  border-bottom: 1px solid rgb(222, 222, 222);
+  text-decoration: none;
+  color: white;
+}
+
+.authLin .sideBarNavLinkActive {
   text-decoration: underline;
 }
 

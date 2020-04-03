@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import algoliasearch from 'algoliasearch';
-import MainNavBar from 'components/MainNavBar';
 import { TickIcon } from 'assets/Icons';
 import { Rheostat } from 'fields';
 
+import ResellItemTemplate from '../ResellItemTemplate';
+
 import {
   InstantSearch,
-  //   SearchBox,
+  SearchBox,
   connectStats,
   //   Hits,
   connectRefinementList,
@@ -17,10 +18,12 @@ import {
   connectRange,
 } from 'react-instantsearch-dom';
 
+import { LocationSearchInput } from 'fields';
+
+import Select from 'react-select';
+
 import Style from './style.module.scss';
 import cx from 'classnames';
-
-import { AlgoliaProduceTemplate } from './components';
 
 const searchClient = algoliasearch(
   'UYWEM6FQPE',
@@ -30,10 +33,11 @@ const searchClient = algoliasearch(
 // Custom Components
 
 function Hits(props) {
+  console.log(props.hits);
   return (
     <div className={Style.resultsGrid}>
       {props.hits.map(hit => {
-        return <AlgoliaProduceTemplate key={hit.objectID} hit={hit} />;
+        return <ResellItemTemplate key={hit.objectID} hit={hit} />;
       })}
     </div>
   );
@@ -315,168 +319,221 @@ const CustomRefinementList = connectRefinementList(RefinementListCustom);
 
 const CustomRangeSlider = connectRange(RangeSlider);
 
-export default class ShopPage extends Component {
-  state = { showFilters: false, productCategory: 'sneakers' };
+const radiusOptions = [
+  {
+    value: 8046,
+    label: 'Within 5 miles',
+  },
+  {
+    value: 16093,
+    label: 'Within 10 miles',
+  },
+  {
+    value: 32187,
+    label: 'Within 20 miles',
+  },
+  {
+    value: 48280,
+    label: 'Within 30 miles',
+  },
+  {
+    value: 80467,
+    label: 'Within 50 miles',
+  },
+  {
+    value: 120701,
+    label: 'Within 75 miles',
+  },
+  {
+    value: 241402,
+    label: 'Within 150 miles',
+  },
+  {
+    value: 321869,
+    label: 'Within 200 miles',
+  },
+];
+
+export default class LocalListingsPage extends Component {
+  state = {
+    showFilters: false,
+    productCategory: 'sneakers',
+    selectedRadius: radiusOptions[0],
+  };
 
   render() {
     return (
-      <div>
-        <MainNavBar />
-        <div className={Style.pageLayout}>
-          <div className={Style.pageContent}>
-            <div className={Style.pageTitle}>
-              <h1>Shop All</h1>
-            </div>
-            <div className={Style.algoliaContentWrapper}>
-              <InstantSearch
-                indexName="test_PRODUCT_LISTINGS"
-                searchClient={searchClient}
-              >
-                <div className={Style.productCategoryToggle}>
-                  <button
-                    className={
-                      this.state.productCategory === 'sneakers'
-                        ? cx(
-                            Style.productCategoryButton,
-                            Style.activeProductCategory,
-                          )
-                        : Style.productCategoryButton
-                    }
-                    onClick={() => {
-                      this.setState({ productCategory: 'sneakers' });
-                    }}
-                  >
-                    Sneakers
-                  </button>
-                  <button
-                    className={
-                      this.state.productCategory === 'apparel'
-                        ? cx(
-                            Style.productCategoryButton,
-                            Style.activeProductCategory,
-                          )
-                        : Style.productCategoryButton
-                    }
-                    onClick={() => {
-                      this.setState({ productCategory: 'apparel' });
-                    }}
-                  >
-                    Apparel
-                  </button>
-                </div>
-                <div className={Style.filterSummary}>
-                  <div className={Style.filterSummaryRowItem}>
-                    <div className={Style.flexRow}>
-                      <label
-                        className={Style.collapseToggle}
-                        onClick={() =>
-                          this.setState({
-                            showFilters: !this.state.showFilters,
-                          })
-                        }
-                      >
-                        <span className={Style.toggleName}>
-                          {this.state.showFilters
-                            ? 'HIDE FILTERS'
-                            : 'SHOW FILTERS'}
-                        </span>
-                      </label>
-                    </div>
-                  </div>
-                  <div className={Style.filterSummaryRowItem}>
-                    <CustomStats />
-                  </div>
-                  <div className={Style.filterSummaryRowItem}>
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                    >
-                      <p
-                        style={{
-                          margin: '0px 10px',
-                          fontSize: '10px',
-                          textTransform: 'uppercase',
-                        }}
-                      >
-                        Sort By
-                      </p>
-                      <SortBy
-                        defaultRefinement="test_PRODUCT_LISTINGS"
-                        items={[
-                          { value: 'test_PRODUCT_LISTINGS', label: 'Featured' },
-                          {
-                            value: 'test_PRODUCT_LISTINGS_ascPrice',
-                            label: 'Price asc.',
-                          },
-                          {
-                            value: 'test_PRODUCT_LISTINGS_descPrice',
-                            label: 'Price desc.',
-                          },
-                        ]}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className={Style.filterContentArea}>
-                  <div
-                    className={
-                      this.state.showFilters
-                        ? cx(Style.filterControls, Style.open)
-                        : Style.filterControls
-                    }
-                  >
-                    {/* <ClearRefinements /> */}
-                    <div>
-                      <CustomRefinementList
-                        attribute="productType"
-                        operator="or"
-                      />
-                    </div>
-                    <div>
-                      <CustomRefinementList
-                        attribute="brand_name"
-                        operator="or"
-                      />
-                    </div>
-                    <div>
-                      <CustomRefinementList
-                        attribute="condition"
-                        operator="or"
-                      />
-                    </div>
-                    <div>
-                      <CustomRefinementList attribute="gender" operator="or" />
-                    </div>
-                    <div>
-                      <CustomRefinementList
-                        attribute="size"
-                        operator="or"
-                        productCategory={this.state.productCategory}
-                      />
-                    </div>
-                    <div style={{ width: '100%' }}>
-                      <CustomRangeSlider attribute="askingPrice" />
-                    </div>
-                    <Configure
-                      hitsPerPage={9}
-                      filters={`productCategory:${this.state.productCategory}`}
-                      distinct={true}
-                    />
-                  </div>
-                  <div className={Style.filterResultsArea}>
-                    <CustomHits className={Style.resultsGrid} />
-                    {/* <Hits hitComponent={AlgoliaProduceTemplate} /> */}
-                  </div>
-                </div>
-                <div className={Style.pagination}>
-                  <Pagination />
-                </div>
-              </InstantSearch>
+      <div className={Style.pageContent}>
+        <div className={Style.pageTitle}>
+          <h1>Local Marketplace</h1>
+        </div>
+        <div>
+          <div>
+            <LocationSearchInput
+              address={this.props.address}
+              latitude={this.props.lat}
+              longitude={this.props.lng}
+              onSelectLocation={this.props.onSelectLocation}
+            />
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              width: '100%',
+              marginTop: '20px',
+              alignItems: 'center',
+            }}
+          >
+            <div style={{ marginRight: '10px' }}>Radius</div>
+            <div className={Style.dropdownRadiusMenu}>
+              <Select
+                options={radiusOptions}
+                value={this.state.selectedRadius}
+                onChange={selectedRadius => this.setState({ selectedRadius })}
+              />
             </div>
           </div>
+        </div>
+        <div className={Style.algoliaContentWrapper}>
+          <InstantSearch
+            indexName="test_LOCAL_LISTINGS"
+            searchClient={searchClient}
+          >
+            <div className={Style.productCategoryToggle}>
+              <button
+                className={
+                  this.state.productCategory === 'sneakers'
+                    ? cx(
+                        Style.productCategoryButton,
+                        Style.activeProductCategory,
+                      )
+                    : Style.productCategoryButton
+                }
+                onClick={() => {
+                  this.setState({ productCategory: 'sneakers' });
+                }}
+              >
+                Sneakers
+              </button>
+              <button
+                className={
+                  this.state.productCategory === 'apparel'
+                    ? cx(
+                        Style.productCategoryButton,
+                        Style.activeProductCategory,
+                      )
+                    : Style.productCategoryButton
+                }
+                onClick={() => {
+                  this.setState({ productCategory: 'apparel' });
+                }}
+              >
+                Apparel
+              </button>
+            </div>
+            <div className={Style.filterSummary}>
+              <div className={Style.filterSummaryRowItem}>
+                <div className={Style.flexRow}>
+                  <label
+                    className={Style.collapseToggle}
+                    onClick={() =>
+                      this.setState({
+                        showFilters: !this.state.showFilters,
+                      })
+                    }
+                  >
+                    <span className={Style.toggleName}>
+                      {this.state.showFilters ? 'HIDE FILTERS' : 'SHOW FILTERS'}
+                    </span>
+                  </label>
+                </div>
+              </div>
+              <div className={Style.filterSummaryRowItem}>
+                <CustomStats />
+              </div>
+              <div className={Style.filterSummaryRowItem}>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <p
+                    style={{
+                      margin: '0px 10px',
+                      fontSize: '10px',
+                      textTransform: 'uppercase',
+                    }}
+                  >
+                    Sort By
+                  </p>
+                  <SortBy
+                    defaultRefinement="test_LOCAL_LISTINGS"
+                    items={[
+                      { value: 'test_LOCAL_LISTINGS', label: 'Featured' },
+                      {
+                        value: 'test_LOCAL_LISTINGS_ascPrice',
+                        label: 'Price asc.',
+                      },
+                      {
+                        value: 'test_LOCAL_LISTINGS_descPrice',
+                        label: 'Price desc.',
+                      },
+                    ]}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className={Style.filterContentArea}>
+              <div
+                className={
+                  this.state.showFilters
+                    ? cx(Style.filterControls, Style.open)
+                    : Style.filterControls
+                }
+              >
+                {/* <ClearRefinements /> */}
+                <div>
+                  <CustomRefinementList attribute="productType" operator="or" />
+                </div>
+                <div>
+                  <CustomRefinementList attribute="brand_name" operator="or" />
+                </div>
+                <div>
+                  <CustomRefinementList attribute="condition" operator="or" />
+                </div>
+                <div>
+                  <CustomRefinementList attribute="gender" operator="or" />
+                </div>
+                <div>
+                  <CustomRefinementList
+                    attribute="size"
+                    operator="or"
+                    productCategory={this.state.productCategory}
+                  />
+                </div>
+                <div style={{ width: '100%' }}>
+                  <CustomRangeSlider attribute="askingPrice" />
+                </div>
+                <Configure
+                  hitsPerPage={9}
+                  filters={`productCategory:${this.state.productCategory}`}
+                  distinct={false}
+                  aroundLatLng={`${this.props.latitude},${this.props.longitude}`}
+                  aroundRadius={this.state.selectedRadius.value}
+                  getRankingInfo={true}
+                />
+              </div>
+              <div className={Style.filterResultsArea}>
+                <CustomHits className={Style.resultsGrid} />
+              </div>
+            </div>
+            <div className={Style.pagination}>
+              <Pagination />
+            </div>
+          </InstantSearch>
         </div>
       </div>
     );

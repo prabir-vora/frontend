@@ -5,15 +5,19 @@ import { ConnectedRouter } from 'connected-react-router';
 import ROUTES from './constants/routes';
 import 'react-toastify/dist/ReactToastify.min.css';
 import { ToastContainer, Flip } from 'react-toastify';
+import AppAuthContainer from 'AppAuthContainer';
+
+import { withCookies } from 'react-cookie';
 
 import store, { history } from './stores/store';
 
-export default class App extends React.Component {
+class App extends React.Component {
   render() {
     return (
       <Provider store={store}>
         <ConnectedRouter history={history}>
           <div style={{ height: 'auto' }}>
+            <AppAuthContainer />
             <Switch>
               <Route exact path="/" component={ROUTES('homePage')} />
               <Route path="/resellers" component={ROUTES('resellerListPage')} />
@@ -27,6 +31,11 @@ export default class App extends React.Component {
                 path="/shop/:productListingID"
                 component={ROUTES('productListingPage')}
               />
+              <Route
+                exact
+                path="/localMarketplace"
+                component={ROUTES('localMarketplacePage')}
+              />
               <Route path="/user" component={ROUTES('profilePage')} />
               <Route path="/auth" component={ROUTES('authenticationPage')} />'
               <Route path="/admin" component={ROUTES('adminPage')} />
@@ -38,3 +47,5 @@ export default class App extends React.Component {
     );
   }
 }
+
+export default withCookies(App);

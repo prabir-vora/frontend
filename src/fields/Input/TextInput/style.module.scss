@@ -7,7 +7,7 @@ $error-shadow: 0 0 0 1px rgba(241, 93, 92, 0.3), 0 1px 1px 0 rgba(0, 0, 0, 0.07)
 // ---------------- FORM FIELD ----------------
 
 .field {
-  border: 1px solid #e0e0e0;
+  border: 1px solid black;
   background: #fff;
   border-radius: 6px;
   min-height: 25px;
@@ -43,8 +43,9 @@ $error-shadow: 0 0 0 1px rgba(241, 93, 92, 0.3), 0 1px 1px 0 rgba(0, 0, 0, 0.07)
 
 .input {
   background: inherit;
-  font-family: "Open Sans";
-  font-size: inherit;
+  font-family: 'Druk Wide Web,futura-pt,HelveticaNeue-Light,Helvetica Neue Light,Helvetica Neue,Helvetica,Arial,Lucida Grande,sans-serif';
+  font-size: 16px;
+  font-weight: 500;
   padding-top: 0;
   width: 100%;
   &::placeholder {
