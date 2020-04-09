@@ -10,6 +10,8 @@ import {
   ResellerTemplatePage,
   LocalMarketplacePage,
   ShopPage,
+  SellPage,
+  CreateListingPage,
 } from '../pages';
 
 const ROUTES = (routeName = '', props = {}) => {
@@ -32,6 +34,10 @@ const ROUTES = (routeName = '', props = {}) => {
       return AuthenticationPage;
     case 'adminPage':
       return AdminPage;
+    case 'sellPage':
+      return SellPage;
+    case 'createListing':
+      return CreateListingPage;
     default:
       return () => <div>404 not found</div>;
   }

@@ -27,7 +27,6 @@ export default class SignUpModal extends Component {
   onSignUpWithEmail = e => {
     e.preventDefault();
     console.log('on submit signup');
-    this.props.onSignUpWithEmail(this.state.signUpInfo);
   };
 
   onDetermineButtonStatus = () => {
@@ -49,6 +48,10 @@ export default class SignUpModal extends Component {
 
   onSignUpWithGoogleFail = error => {
     console.log(error);
+  };
+
+  toggleToLogin = () => {
+    this.props.toggleToLogin();
   };
 
   renderSignUpContainer() {
@@ -75,7 +78,12 @@ export default class SignUpModal extends Component {
         </button>
         <p className={ModalStyle.Message}>
           Already have an account{' '}
-          <button className={ModalStyle.linkButton}>Log in</button>
+          <button
+            className={ModalStyle.linkButton}
+            onClick={this.toggleToLogin}
+          >
+            Log in
+          </button>
         </p>
       </div>
     );

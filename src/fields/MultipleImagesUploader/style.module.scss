@@ -1,25 +1,45 @@
 //  Images
 
 .imageContainer {
-  margin: 20px 50px;
-  text-align: center;
+  // margin: 20px 50px;
+  // text-align: center;
+  // width: 80%;
+  /*border-radius: 25px;*/
+  margin: 20px 20px 20px 20px;
+  overflow: visible;
+  // box-shadow: 5px 5px 2px #888888;
+  position: relative;
 }
 
 .image {
   border-radius: 4px;
-  height: 160px;
-  width: 160px;
+  height: 80px;
+  width: 80px;
 }
 
 .button {
   color: #fff;
-  font-size: 1.15rem;
-  margin-top: 50px;
-  height: 40px;
-  width: 200px;
+  font-size: 12px;
+  margin-top: 20px;
+  height: 30px;
+  width: 100px;
+}
+
+.closeButton {
+  position: absolute;
+  background: white;
+  color: white;
+  border: 1px solid black;
+  padding: 5px;
+  top: -10px;
+  right: -10px;
+  & > svg {
+    width: 10px;
+    height: 10px;
+  }
 }
 
 .uploadButton {
   @extend .button;
-  background: grey;
+  background: green;
 }

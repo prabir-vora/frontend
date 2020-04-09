@@ -13,6 +13,7 @@ import * as immutable from 'object-path-immutable';
 import { isEmailValid } from './helper';
 
 import { GoogleLogin } from 'react-google-login';
+import AppAuthDuck from 'stores/ducks/AppAuth.duck';
 
 export default class LoginModal extends Component {
   state = {
@@ -21,12 +22,18 @@ export default class LoginModal extends Component {
       email: '',
       password: '',
     },
+    loginErrorMessage: '',
   };
 
-  onLoginWithEmail = e => {
+  onLoginWithEmail = async e => {
     e.preventDefault();
     console.log('on submit signup');
-    this.props.onLoginWithEmail(this.state.loginInfo);
+    const { success } = this.props.onLoginWithEmail(this.state.loginInfo);
+    if (!success) {
+      this.setState({
+        loginErrorMessage: 'Invalid Credentials. Try again.',
+      });
+    }
   };
 
   onDetermineButtonStatus = () => {
@@ -50,6 +57,10 @@ export default class LoginModal extends Component {
     console.log(error);
   };
 
+  toggleToSignUp = () => {
+    this.props.toggleToSignUp();
+  };
+
   renderLoginContainer() {
     return (
       <div>
@@ -70,7 +81,12 @@ export default class LoginModal extends Component {
         </button>
         <p className={ModalStyle.Message}>
           Don't have an account?{' '}
-          <button className={ModalStyle.linkButton}>Sign Up</button>
+          <button
+            className={ModalStyle.linkButton}
+            onClick={this.toggleToSignUp}
+          >
+            Sign Up
+          </button>
         </p>
       </div>
     );
@@ -103,11 +119,12 @@ export default class LoginModal extends Component {
           />
           <Button
             className={ModalStyle.ModalButton}
-            name="Sign Up"
+            name="Login"
             status={this.onDetermineButtonStatus()}
           >
-            Sign Up
+            Login
           </Button>
+          <p>{this.state.loginErrorMessage}</p>
         </form>
       </div>
     );

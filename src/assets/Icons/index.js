@@ -9,6 +9,8 @@ import { ReactComponent as ListingIcon } from './ListingIcon.svg';
 import { ReactComponent as ChatIcon } from './ChatIcon.svg';
 import { ReactComponent as ShoppingCartIcon } from './ShoppingCartIcon.svg';
 import { ReactComponent as NetworkIcon } from './NetworkIcon.svg';
+import { ReactComponent as PlusIcon } from './PlusIcon.svg';
+import { ReactComponent as SneakerIcon } from './SneakerIcon.svg';
 
 export {
   AddPhotoIcon,
@@ -21,5 +23,7 @@ export {
   NetworkIcon,
   PencilIcon,
   ShoppingCartIcon,
+  PlusIcon,
+  SneakerIcon,
   TickIcon,
 };

@@ -1,17 +1,179 @@
 import React, { Component } from 'react';
 import MainNavBar from 'components/MainNavBar';
+import algoliasearch from 'algoliasearch';
 import { ImageGallery } from 'fields';
+import { TickIcon } from 'assets/Icons';
+
+import AlgoliaListingTemplate from './components/AlgoliaListingTemplate';
 
 import moment from 'moment';
 
 import { connect } from 'react-redux';
 import ProductListingDuck from 'stores/ducks/ProductListing.duck';
 
+import {
+  InstantSearch,
+  connectRefinementList,
+  connectHits,
+  connectStats,
+  Configure,
+  SortBy,
+} from 'react-instantsearch-dom';
+
 // Style
 import Style from './style.module.scss';
 import cx from 'classnames';
 
 import { Img } from 'fields';
+
+const searchClient = algoliasearch(
+  'UYWEM6FQPE',
+  '3b918f48b5c7755f15435a3c749c9bbe',
+);
+
+function RefinementListCustom(props) {
+  const { attribute } = props;
+  switch (attribute) {
+    case 'condition':
+      return renderConditionRefinementList(props);
+    case 'size':
+      return renderSizeRefinementList(props);
+    default:
+      return null;
+  }
+}
+
+function Hits(props) {
+  return (
+    <div className={Style.resultsList}>
+      {props.hits.map(hit => {
+        return <AlgoliaListingTemplate key={hit.objectID} hit={hit} />;
+      })}
+    </div>
+  );
+}
+
+function Stats(props) {
+  return (
+    <p className={Style.stats}>
+      {props.nbHits > 1000 ? '1,000+ LISTINGS' : `${props.nbHits} LISTINGS`}
+    </p>
+  );
+}
+
+const CustomRefinementList = connectRefinementList(RefinementListCustom);
+
+const CustomHits = connectHits(Hits);
+
+const CustomStats = connectStats(Stats);
+
+function renderConditionRefinementList(props) {
+  const conditionMap = {
+    new: { label: 'New, Deadstock', order: 1 },
+    new_defects: { label: 'New, Defects', order: 3 },
+    new_opened: { label: 'New, Opened', order: 2 },
+    preowned: { label: 'Preowned', order: 4 },
+  };
+  const { attribute, items } = props;
+
+  const sortedItems = items.sort((conditionA, conditionB) => {
+    return conditionMap[conditionA.label].order >
+      conditionMap[conditionB.label].order
+      ? 1
+      : -1;
+  });
+  return (
+    <div style={{ marginBottom: '40px' }}>
+      <p
+        style={{
+          textTransform: 'uppercase',
+          fontSize: '14px',
+          fontWeight: '600',
+          marginBottom: '10px',
+        }}
+      >
+        {attribute}
+      </p>
+      <div>
+        {sortedItems.map(item => {
+          return (
+            <p
+              style={{
+                fontSize: '12px',
+                cursor: 'pointer',
+                marginBottom: '7px',
+              }}
+              onClick={() => props.refine(item.value)}
+            >
+              {item.isRefined ? (
+                <TickIcon
+                  style={{ width: '15px', height: '15px', fill: 'white' }}
+                />
+              ) : null}{' '}
+              {conditionMap[item.label].label}
+            </p>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function renderSizeRefinementList(props) {
+  const { items, productCategory } = props;
+  console.log(productCategory);
+
+  if (productCategory === 'sneakers') {
+    items.sort((sizeA, sizeB) => {
+      return parseFloat(sizeA.label) > parseFloat(sizeB.label) ? 1 : -1;
+    });
+  }
+
+  if (items.length === 0) {
+    return null;
+  }
+
+  return (
+    <div style={{ marginBottom: '40px' }}>
+      <p
+        style={{
+          textTransform: 'uppercase',
+          fontSize: '14px',
+          fontWeight: '600',
+          marginBottom: '10px',
+        }}
+      >
+        Size
+      </p>
+      <div>
+        {items.map(item => {
+          return (
+            <p
+              style={{
+                fontSize: '12px',
+                textTransform: 'capitalize',
+                cursor: 'pointer',
+                marginBottom: '7px',
+              }}
+              onClick={() => props.refine(item.value)}
+            >
+              {item.isRefined ? (
+                <TickIcon
+                  style={{
+                    width: '15px',
+                    height: '15px',
+                    fill: 'white',
+                  }}
+                />
+              ) : null}{' '}
+              {item.label}
+            </p>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
 class ProductListingPage extends Component {
   state = { viewResellers: false, selectedResellItem: '' };
@@ -34,8 +196,8 @@ class ProductListingPage extends Component {
         this.props.productListing !== undefined
       ) {
         const { currentSlug, listingsMap } = this.props.productListing;
-        const data = listingsMap[currentSlug];
-        this.setState({ selectedResellItem: data.resellItems[0] });
+        const product = listingsMap[currentSlug];
+        this.setState({ selectedResellItem: product.resellItems[0], product });
       }
     } else {
       console.log(message);
@@ -45,30 +207,18 @@ class ProductListingPage extends Component {
   renderImageGallery = data => {
     let imageGalleryInput = [];
 
-    const { viewResellers } = this.state;
-    if (!viewResellers) {
-      const { original_image_url, additional_pictures } = data;
+    const { original_image_url, additional_pictures } = data;
 
+    imageGalleryInput.push({
+      original: original_image_url,
+      thumbnail: original_image_url,
+    });
+    additional_pictures.forEach(pictureURL => {
       imageGalleryInput.push({
-        original: original_image_url,
-        thumbnail: original_image_url,
+        original: pictureURL,
+        thumbnail: pictureURL,
       });
-      additional_pictures.forEach(pictureURL => {
-        imageGalleryInput.push({
-          original: pictureURL,
-          thumbnail: pictureURL,
-        });
-      });
-    } else {
-      const { selectedResellItem } = this.state;
-      const { images } = selectedResellItem;
-      images.forEach(image => {
-        imageGalleryInput.push({
-          original: image,
-          thumbnail: image,
-        });
-      });
-    }
+    });
 
     return (
       <div style={{ marginTop: '100px' }}>
@@ -151,7 +301,7 @@ class ProductListingPage extends Component {
             this.setState({ viewResellers: true });
           }}
         >
-          <span className={Style.buttonText}>View Resellers</span>
+          <span className={Style.buttonText}>View Listings</span>
         </button>
       </React.Fragment>
     );
@@ -171,7 +321,7 @@ class ProductListingPage extends Component {
     };
 
     return (
-      <React.Fragment>
+      <div className={Style.listingsContainer}>
         <button
           className={Style.viewResellersButton}
           onClick={() => {
@@ -180,7 +330,7 @@ class ProductListingPage extends Component {
         >
           <span className={Style.buttonText}>Back</span>
         </button>
-        <ul className={Style.resellersList}>
+        <ul className={Style.listingsList}>
           {resellItems.map(resellItem => {
             const { reseller, condition, askingPrice, size } = resellItem;
             const { name, imageURL } = reseller;
@@ -207,6 +357,84 @@ class ProductListingPage extends Component {
             );
           })}
         </ul>
+      </div>
+    );
+  };
+
+  renderListings = () => {
+    const { name, productCategory } = this.state.product;
+    return (
+      <React.Fragment>
+        <div className={Style.pageTitle}>
+          <h1 style={{ color: 'white' }}>{name}</h1>
+        </div>
+        <InstantSearch
+          indexName="test_PRODUCT_LISTINGS"
+          searchClient={searchClient}
+        >
+          <div className={Style.filterSummary}>
+            <div className={Style.filterSummaryRowItem}>
+              <CustomStats />
+            </div>
+            <div className={Style.filterSummaryRowItem}>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <p
+                  style={{
+                    margin: '0px 10px',
+                    fontSize: '10px',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  Sort By
+                </p>
+                <SortBy
+                  defaultRefinement="test_PRODUCT_LISTINGS"
+                  items={[
+                    { value: 'test_PRODUCT_LISTINGS', label: 'Featured' },
+                    {
+                      value: 'test_PRODUCT_LISTINGS_ascPrice',
+                      label: 'Price asc.',
+                    },
+                    {
+                      value: 'test_PRODUCT_LISTINGS_descPrice',
+                      label: 'Price desc.',
+                    },
+                  ]}
+                />
+              </div>
+            </div>
+          </div>
+          <div className={Style.listingsContainer}>
+            <div className={Style.algoliaWrapper}>
+              <div className={Style.filterControls}>
+                <div>
+                  <CustomRefinementList
+                    attribute="size"
+                    operator="or"
+                    productCategory={productCategory}
+                  />
+                </div>
+                <div>
+                  <CustomRefinementList attribute="condition" operator="or" />
+                </div>
+              </div>
+              <div className={Style.filterResultsArea}>
+                <CustomHits className={Style.resultsGrid} />
+                <Configure
+                  hitsPerPage={9}
+                  filters={`name:"${name}"`}
+                  distinct={false}
+                />
+              </div>
+            </div>
+          </div>
+        </InstantSearch>
       </React.Fragment>
     );
   };
@@ -224,21 +452,25 @@ class ProductListingPage extends Component {
       <div>
         <MainNavBar />
         <div className={Style.pageLayout}>
-          <div className={Style.mediaContainer}>
-            {this.renderImageGallery(data)}
-          </div>
-          <div className={Style.productContainer}>
-            <div className={Style.contentContainer}>
-              <div className={Style.content}>
-                <div className={Style.productName}>{data.name}</div>
-                <div style={{ width: '100%' }}>
-                  {this.state.viewResellers
-                    ? this.renderResellers(data)
-                    : this.renderProductDetails(data)}
+          {!this.state.viewResellers ? (
+            <div style={{ display: 'flex' }}>
+              <div className={Style.mediaContainer}>
+                {this.renderImageGallery(data)}
+              </div>
+              <div className={Style.productContainer}>
+                <div className={Style.contentContainer}>
+                  <div className={Style.content}>
+                    <div className={Style.productName}>{data.name}</div>
+                    <div style={{ width: '100%' }}>
+                      {this.renderProductDetails(data)}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          ) : (
+            <div className={Style.pageContent}>{this.renderListings()}</div>
+          )}
         </div>
       </div>
     );

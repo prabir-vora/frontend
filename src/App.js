@@ -31,6 +31,12 @@ class App extends React.Component {
                 path="/shop/:productListingID"
                 component={ROUTES('productListingPage')}
               />
+              <Route exact path="/sell" component={ROUTES('sellPage')} />
+              <Route
+                exact
+                path="/sell/createListing"
+                component={ROUTES('createListing')}
+              />
               <Route
                 exact
                 path="/localMarketplace"

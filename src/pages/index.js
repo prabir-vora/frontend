@@ -7,9 +7,12 @@ import ResellerTemplatePage from './ResellerTemplatePage';
 import ShopPage from './ShopPage';
 import AdminPage from './AdminPage';
 import LocalMarketplacePage from './LocalMarketplacePage';
+import SellPage from './SellPage';
+import CreateListingPage from './CreateListingPage';
 
 export {
   AuthenticationPage,
+  CreateListingPage,
   HomePage,
   LocalMarketplacePage,
   ProductListingPage,
@@ -18,4 +21,5 @@ export {
   ResellerTemplatePage,
   ShopPage,
   AdminPage,
+  SellPage,
 };

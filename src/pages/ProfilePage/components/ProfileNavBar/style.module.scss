@@ -1,0 +1,19 @@
+.navBarContainer {
+  width: 80%;
+  max-width: 1200px;
+  margin: 3em 20px 0em 20px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.navBarItem {
+  font-size: 17px;
+  font-weight: 600;
+  margin: 0px 40px;
+  color: #aaaaaa;
+
+  &.active {
+    text-decoration: underline;
+    color: white;
+  }
+}

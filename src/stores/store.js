@@ -12,6 +12,7 @@ import ProductListingDuck from './ducks/ProductListing.duck';
 import AdminUIDuck from './ducks/Admin/UI.duck';
 import AdminDuck from './ducks/Admin/Admin.duck';
 import TestObjectsDuck from './ducks/Admin/TestObjects.duck';
+import SellDuck from './ducks/Sell.duck';
 
 const initialState = {};
 const middleware = [thunk];
@@ -37,6 +38,7 @@ const rootReducer = combineDucks(
   ProductListingDuck,
   AdminUIDuck,
   AdminDuck,
+  SellDuck,
   TestObjectsDuck,
   UserDuck,
 );

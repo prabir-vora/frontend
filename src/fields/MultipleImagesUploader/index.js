@@ -5,6 +5,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import AdminDuck from 'stores/ducks/Admin/Admin.duck';
 
+import { CloseIcon } from 'assets/Icons';
+
 import { ClipLoader } from 'react-spinners';
 import Img from '../Img';
 
@@ -16,6 +18,7 @@ class MultipleImagesUploader extends Component {
   state = {
     files: [],
     isUploading: false,
+    imageURLs: [],
   };
 
   componentDidMount() {
@@ -73,6 +76,7 @@ class MultipleImagesUploader extends Component {
       });
       console.log(imageURLs);
       this.props.onUploadImages(imageURLs);
+      this.setState({ imageURLs });
     } else {
       ShowConfirmNotif({
         message,
@@ -86,10 +90,23 @@ class MultipleImagesUploader extends Component {
     const { imageURLs } = this.state;
     console.log(this.state);
     if (imageURLs !== undefined && imageURLs.length !== 0) {
-      return imageURLs.map(imageURL => {
+      return imageURLs.map((imageURL, index) => {
         return (
           <div key={imageURL} className={Style.imageContainer}>
             <Img className={Style.image} src={imageURL} />
+            <button
+              className={Style.closeButton}
+              onClick={() => {
+                const { imageURLs } = this.state;
+                imageURLs.splice(index, 1);
+                this.setState({
+                  imageURLs,
+                });
+                this.props.onUploadImages(imageURLs);
+              }}
+            >
+              <CloseIcon />
+            </button>
           </div>
         );
       });
@@ -100,7 +117,14 @@ class MultipleImagesUploader extends Component {
 
   renderUploadForm = () => (
     <form
-      style={{ width: '100%', paddingBottom: '10px', textAlign: 'center' }}
+      style={{
+        width: '100%',
+        paddingBottom: '10px',
+        textAlign: 'center',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}
       onSubmit={this.onSubmit}
     >
       <input
@@ -110,7 +134,6 @@ class MultipleImagesUploader extends Component {
         multiple
         onChange={this.onChange}
       />
-      <br />
       <Button
         className={Style.uploadButton}
         name="Upload Images"
@@ -121,7 +144,7 @@ class MultipleImagesUploader extends Component {
             : 'active'
         }
       >
-        Upload Images
+        Upload
       </Button>
     </form>
   );
@@ -138,7 +161,6 @@ class MultipleImagesUploader extends Component {
 
     return (
       <div>
-        <h2>Additional Images</h2>
         <div
           style={{
             display: 'flex',

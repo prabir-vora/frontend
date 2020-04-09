@@ -1,8 +1,14 @@
 .pageLayout {
   display: flex;
-  flex-direction: row;
-  background: #000;
-  height: 100vh;
+  position: relative;
+  box-align: center;
+  align-items: center;
+  flex-direction: column;
+  box-pack: start;
+  justify-content: flex-start;
+  flex: 1 1;
+  background: black;
+  color: white;
 }
 
 .mediaContainer {
@@ -136,7 +142,7 @@
   transition: 300ms color cubic-bezier(0.4, 0, 0.6, 1);
 }
 
-.resellersList {
+.listingsList {
   width: 100%;
   box-sizing: border-box;
   margin-top: 50px;
@@ -174,4 +180,64 @@
 .thumbnailClass {
   width: 50px;
   height: 50px;
+}
+
+.pageContent {
+  min-height: calc(100vh - 90px);
+  position: relative;
+  width: calc(100% - 300px);
+  align-items: center;
+}
+
+.pageTitle {
+  padding: 2em 20px;
+  width: 100%;
+}
+
+.algoliaWrapper {
+  display: flex;
+  flex-direction: row;
+  z-index: 1;
+  align-items: flex-start;
+  color: white;
+}
+
+.filterControls {
+  opacity: 1;
+  width: 253px;
+  flex-basis: 253px;
+  margin-right: 60px;
+  padding-bottom: 40px;
+  transition: all 0.15s ease-in-out;
+}
+
+.filterResultsArea {
+  width: 100%;
+  position: relative;
+  align-self: stretch;
+}
+
+.filterSummary {
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0.5em 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  z-index: 1;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.filterSummaryRowItem {
+  flex: 0 1 33%;
+}
+
+.stats {
+  color: rgb(136, 136, 136);
+  text-align: center;
+  font-size: 10px;
+  line-height: 15px;
+  letter-spacing: 1.7px;
+  text-transform: uppercase;
 }

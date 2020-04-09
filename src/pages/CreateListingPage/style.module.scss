@@ -1,0 +1,47 @@
+.pageLayout {
+  display: flex;
+  position: relative;
+  box-align: center;
+  align-items: center;
+  flex-direction: column;
+  box-pack: start;
+  justify-content: flex-start;
+  flex: 1 1 0%;
+  background: black;
+}
+
+.pageContent {
+  min-height: calc(100vh - 90px);
+  max-width: 450px;
+  position: relative;
+  width: 50%;
+  background: white;
+  padding: 0 5% 5% 5%;
+  align-items: center;
+}
+
+.pageTitle {
+  padding: 1em 0px;
+  width: 100%;
+}
+
+.submitBtn {
+  padding: 14px 25px;
+  width: 100%;
+  background: black;
+  color: white;
+
+  font-size: 12px;
+  margin-bottom: 1em;
+  margin-top: 1em;
+  max-width: 200px;
+  height: 40px;
+}
+
+.removeProductSelection {
+  width: 80px;
+  height: 30px;
+  background: red;
+  color: white;
+  font-size: 13px;
+}

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { MenuIcon } from 'assets/Icons';
@@ -9,12 +9,23 @@ import UserDuck from 'stores/ducks/User.duck';
 
 import { withCookies } from 'react-cookie';
 
+import { Img } from 'fields';
+
 // Style
 import Style from './style.module.scss';
 import cx from 'classnames';
 
 class MainNavBar extends Component {
   state = { showSideNavBar: false };
+
+  protectedRouteClick = route => {
+    if (!this.props.user) {
+      const { showModal } = AppAuthDuck.actionCreators;
+      this.props.dispatch(showModal('login'));
+    } else {
+      this.props.history.push('/sell');
+    }
+  };
 
   onClickMenu = () => this.setState({ showNavbar: !this.state.showNavbar });
 
@@ -67,6 +78,7 @@ class MainNavBar extends Component {
         <ul style={{ padding: '0' }}>
           <li>
             <NavLink
+              exact
               to="/"
               className={Style.sideBarNavLink}
               activeClassName={Style.sideBarNavLinkActive}
@@ -76,6 +88,7 @@ class MainNavBar extends Component {
           </li>
           <li>
             <NavLink
+              exact
               to="/shop"
               className={Style.sideBarNavLink}
               activeClassName={Style.sideBarNavLinkActive}
@@ -85,6 +98,7 @@ class MainNavBar extends Component {
           </li>
           <li>
             <NavLink
+              exact
               to="/localMarketplace"
               className={Style.sideBarNavLink}
               activeClassName={Style.sideBarNavLinkActive}
@@ -109,13 +123,13 @@ class MainNavBar extends Component {
             >
               <span className={Style.navLinkText}>Brands</span>
             </NavLink>
-            <NavLink
-              to="/brands"
+            <label
               className={Style.sideBarNavLink}
               activeClassName={Style.sideBarNavLinkActive}
+              onClick={() => this.protectedRouteClick('sell')}
             >
-              <span className={Style.navLinkText}>Become A Reseller</span>
-            </NavLink>
+              <span className={Style.navLinkText}>Sell</span>
+            </label>
             <React.Fragment>
               {!this.props.user ? (
                 <div className={Style.sideBarAuthLink}>
@@ -177,6 +191,7 @@ class MainNavBar extends Component {
             Discover
           </NavLink>
           <NavLink
+            exact
             to="/shop"
             className={Style.mainHeaderNavLink}
             activeClassName={Style.mainHeaderNavLinkActive}
@@ -184,6 +199,7 @@ class MainNavBar extends Component {
             Shop
           </NavLink>
           <NavLink
+            exact
             to="/localMarketplace"
             className={Style.mainHeaderNavLink}
             activeClassName={Style.mainHeaderNavLinkActive}
@@ -197,6 +213,20 @@ class MainNavBar extends Component {
           >
             Resellers
           </NavLink>
+          {this.props.user && (
+            <NavLink to="/user" className={Style.mainHeaderNavLink}>
+              <div style={{}}>
+                <Img
+                  src={
+                    this.props.user.profilePictureURL ||
+                    'https://i.ya-webdesign.com/images/placeholder-image-png-4.png'
+                  }
+                  alt={`${this.props.user.name} image`}
+                  style={{ width: '30px', height: '30px' }}
+                />
+              </div>
+            </NavLink>
+          )}
         </div>
       </nav>
     );
@@ -211,4 +241,6 @@ const mapStateToProps = state => {
 
 const x = withCookies(MainNavBar);
 
-export default connect(mapStateToProps)(x);
+const y = withRouter(x);
+
+export default connect(mapStateToProps)(y);

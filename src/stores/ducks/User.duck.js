@@ -74,6 +74,8 @@ const fetchCurrentUser = () => dispatch => {
                   lat
                   lng
                 }
+                createdAt
+                profilePictureURL
             }
         }
         `)

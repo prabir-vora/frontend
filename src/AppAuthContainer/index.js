@@ -113,6 +113,8 @@ class AppAuthContainer extends Component {
       if (success && !isSetup) {
         this.props.dispatch(showModal('setup'));
       }
+    } else {
+      return null;
     }
   };
 
@@ -161,6 +163,18 @@ class AppAuthContainer extends Component {
     }
   };
 
+  toggleToLogin = () => {
+    const { showModal, hideModal } = AppAuthDuck.actionCreators;
+    this.props.dispatch(hideModal('signUp'));
+    this.props.dispatch(showModal('login'));
+  };
+
+  toggleToSignUp = () => {
+    const { showModal, hideModal } = AppAuthDuck.actionCreators;
+    this.props.dispatch(hideModal('login'));
+    this.props.dispatch(showModal('signUp'));
+  };
+
   render() {
     const { showSignUpModal, showLoginModal, showSetupModal } = this.props;
     return (
@@ -170,6 +184,7 @@ class AppAuthContainer extends Component {
             onSignUpWithEmail={this.onSignUpWithEmail}
             onSignUpWithGoogle={this.onSignUpWithGoogle}
             onClose={this.onCloseSignUpModal}
+            toggleToLogin={this.toggleToLogin}
           />
         )}
         {showSetupModal && (
@@ -184,6 +199,7 @@ class AppAuthContainer extends Component {
             onLoginWithEmail={this.onLoginWithEmail}
             onLoginWithGoogle={this.onLoginWithGoogle}
             onClose={this.onCloseLoginModal}
+            toggleToSignUp={this.toggleToSignUp}
           />
         )}
       </React.Fragment>

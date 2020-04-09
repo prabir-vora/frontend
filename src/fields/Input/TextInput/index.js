@@ -1,24 +1,24 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import cx from "classnames";
-import _pick from "lodash.pick";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import cx from 'classnames';
+import _pick from 'lodash.pick';
 
 // Style
-import Style from "./style.module.scss";
+import Style from './style.module.scss';
 
 const INPUT_ATTRIBUTES = [
-  "autoFocus",
-  "errortext",
-  "label",
-  "max",
-  "min",
-  "name",
-  "placeholder",
-  "readOnly",
-  "required",
-  "rows",
-  "type",
-  "value"
+  'autoFocus',
+  'errortext',
+  'label',
+  'max',
+  'min',
+  'name',
+  'placeholder',
+  'readOnly',
+  'required',
+  'rows',
+  'type',
+  'value',
 ];
 
 class TextInput extends Component {
@@ -56,7 +56,7 @@ class TextInput extends Component {
       !isValueValid && Style.invalid,
       focused && !readOnly && Style.focused,
       readOnly && Style.readOnly,
-      this.props.fieldClassname
+      this.props.fieldClassname,
     );
   };
 
@@ -77,23 +77,24 @@ class TextInput extends Component {
       className: cx(Style.input, this.props.inputClassname),
       onBlur: this.onFormBlur,
       onChange: this.onChangeValue,
-      onFocus: this.onFormFocus
+      onFocus: this.onFormFocus,
     };
     return !hasMultipleLines ? (
       <input {...props} />
     ) : (
-      <textarea {...props} style={{ border: "none" }} />
+      <textarea {...props} style={{ border: 'none' }} />
     );
   };
 
   render() {
     const { label, unit, value } = this.props;
     const isValueValid = this.onValidateValue(value);
-    const labelForUnit = unit ? ` (${unit})` : "";
+    const labelForUnit = unit ? ` (${unit})` : '';
     return (
       <div
         className={this.props.className}
         onBlur={() => this.onValidateValue(value)}
+        style={{ maxWidth: '400px' }}
       >
         <div className={this.onGetFieldClassname(isValueValid)}>
           {label && (
@@ -121,16 +122,16 @@ TextInput.propTypes = {
   regEx: PropTypes.any,
   placeholder: PropTypes.string,
   type: PropTypes.string,
-  value: PropTypes.any
+  value: PropTypes.any,
 };
 
 TextInput.defaultProps = {
   hasMultipleLines: false,
-  errortext: "",
-  placeholder: "",
+  errortext: '',
+  placeholder: '',
   readOnly: false,
   regEx: null,
-  type: "text"
+  type: 'text',
 };
 
 export default TextInput;

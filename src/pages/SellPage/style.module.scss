@@ -1,0 +1,60 @@
+.pageLayout {
+  display: flex;
+  position: relative;
+  box-align: center;
+  align-items: center;
+  flex-direction: column;
+  box-pack: start;
+  justify-content: flex-start;
+  flex: 1 1 0%;
+  background: black;
+  color: white;
+}
+
+.pageContent {
+  min-height: calc(100vh - 90px);
+  position: relative;
+  width: calc(100% - 180px);
+  align-items: center;
+}
+
+.pageTitle {
+  padding: 2em 20px;
+  width: 100%;
+}
+
+.pageTitleDescription {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  margin-top: 30px;
+}
+
+.contentWrapper {
+  display: flex;
+  justify-content: space-around;
+  margin: 4em;
+}
+
+.sellOption {
+  width: 250px;
+  height: 250px;
+  background: rgb(68, 21, 158);
+  background: linear-gradient(
+    139deg,
+    rgba(68, 21, 158, 1) 0%,
+    rgba(85, 51, 163, 1) 40%,
+    rgba(120, 112, 182, 1) 75%,
+    rgba(148, 158, 224, 1) 99%
+  );
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+
+  & > svg {
+    fill: white;
+  }
+}

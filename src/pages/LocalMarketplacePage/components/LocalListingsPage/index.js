@@ -93,6 +93,7 @@ function renderConditionRefinementList(props) {
           textTransform: 'uppercase',
           fontSize: '14px',
           fontWeight: '600',
+          marginBottom: '7px',
         }}
       >
         {attribute}
@@ -127,6 +128,7 @@ function renderBrandRefinementList(props) {
           textTransform: 'uppercase',
           fontSize: '14px',
           fontWeight: '600',
+          marginBottom: '10px',
         }}
       >
         Brands
@@ -135,7 +137,11 @@ function renderBrandRefinementList(props) {
         {items.map(item => {
           return (
             <p
-              style={{ fontSize: '12px', cursor: 'pointer' }}
+              style={{
+                fontSize: '12px',
+                cursor: 'pointer',
+                marginBottom: '7px',
+              }}
               onClick={() => props.refine(item.value)}
             >
               {item.isRefined ? (
@@ -161,6 +167,7 @@ function renderGenderRefinementList(props) {
           textTransform: 'uppercase',
           fontSize: '14px',
           fontWeight: '600',
+          marginBottom: '10px',
         }}
       >
         Gender
@@ -173,6 +180,7 @@ function renderGenderRefinementList(props) {
                 fontSize: '12px',
                 textTransform: 'capitalize',
                 cursor: 'pointer',
+                marginBottom: '7px',
               }}
               onClick={() => props.refine(item.value)}
             >
@@ -205,6 +213,7 @@ function renderProductTypeRefinementList(props) {
           textTransform: 'uppercase',
           fontSize: '14px',
           fontWeight: '600',
+          marginBottom: '10px',
         }}
       >
         Product Type
@@ -217,6 +226,7 @@ function renderProductTypeRefinementList(props) {
                 fontSize: '12px',
                 textTransform: 'capitalize',
                 cursor: 'pointer',
+                marginBottom: '7px',
               }}
               onClick={() => props.refine(item.value)}
             >
@@ -255,6 +265,7 @@ function renderSizeRefinementList(props) {
           textTransform: 'uppercase',
           fontSize: '14px',
           fontWeight: '600',
+          marginBottom: '10px',
         }}
       >
         Size
@@ -267,6 +278,7 @@ function renderSizeRefinementList(props) {
                 fontSize: '12px',
                 textTransform: 'capitalize',
                 cursor: 'pointer',
+                marginBottom: '7px',
               }}
               onClick={() => props.refine(item.value)}
             >
