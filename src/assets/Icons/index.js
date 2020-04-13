@@ -11,6 +11,9 @@ import { ReactComponent as ShoppingCartIcon } from './ShoppingCartIcon.svg';
 import { ReactComponent as NetworkIcon } from './NetworkIcon.svg';
 import { ReactComponent as PlusIcon } from './PlusIcon.svg';
 import { ReactComponent as SneakerIcon } from './SneakerIcon.svg';
+import { ReactComponent as FollowersCountIcon } from './FollowersCountIcon.svg';
+import { ReactComponent as ListingsCountIcon } from './ListingsCountIcon.svg';
+import { ReactComponent as DollarIcon } from './DollarIcon.svg';
 
 export {
   AddPhotoIcon,
@@ -18,7 +21,10 @@ export {
   ChatIcon,
   CheckIcon,
   CloseIcon,
+  DollarIcon,
+  FollowersCountIcon,
   ListingIcon,
+  ListingsCountIcon,
   MenuIcon,
   NetworkIcon,
   PencilIcon,

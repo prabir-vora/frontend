@@ -39,6 +39,11 @@ class App extends React.Component {
               />
               <Route
                 exact
+                path="/resellerSetup"
+                component={ROUTES('resellerSetupPage')}
+              />
+              <Route
+                exact
                 path="/localMarketplace"
                 component={ROUTES('localMarketplacePage')}
               />

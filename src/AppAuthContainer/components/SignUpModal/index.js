@@ -26,6 +26,8 @@ export default class SignUpModal extends Component {
 
   onSignUpWithEmail = e => {
     e.preventDefault();
+    console.log(this.props);
+    this.props.onSignUpWithEmail(this.state.signUpInfo);
     console.log('on submit signup');
   };
 

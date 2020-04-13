@@ -7,6 +7,7 @@ import {
   ProductListingPage,
   ProfilePage,
   ResellerListPage,
+  ResellerSetupPage,
   ResellerTemplatePage,
   LocalMarketplacePage,
   ShopPage,
@@ -20,6 +21,8 @@ const ROUTES = (routeName = '', props = {}) => {
       return HomePage;
     case 'resellerListPage':
       return ResellerListPage;
+    case 'resellerSetupPage':
+      return ResellerSetupPage;
     case 'resellerTemplatePage':
       return ResellerTemplatePage;
     case 'shopPage':

@@ -9,6 +9,10 @@ const actionTypes = createActionTypes(
     USER_SETUP_SUCCESS: 'USER_SETUP_SUCCESS',
     USER_SETUP_FAILURE: 'USER_SETUP_FAILURE',
 
+    RESELLER_SETUP_REQUEST: 'RESELLER_SETUP_REQUEST',
+    RESELLER_SETUP_SUCCESS: 'RESELLER_SETUP_SUCCESS',
+    RESELLER_SETUP_FAILURE: 'RESELLER_SETUP_FAILURE',
+
     FETCH_CURRENT_USER_REQUEST: 'FETCH_CURRENT_USER_REQUEST',
     FETCH_CURRENT_USER_SUCCESS: 'FETCH_CURRENT_USER_SUCCESS',
     FETCH_CURRENT_USER_FAILURE: 'FETCH_CURRENT_USER_FAILURE',
@@ -57,6 +61,36 @@ const userSetup = setupInfo => dispatch => {
   });
 };
 
+const resellerSetupWithInput = () => {
+  return `
+    mutation($resellerInfo: ResellerSetupInfo!) {
+      resellerSetup(resellerSetupInfo: $resellerInfo) 
+    }
+  `;
+};
+
+const resellerSetup = resellerInfo => dispatch => {
+  return new Promise((resolve, reject) => {
+    fetchGraphQL(resellerSetupWithInput(), undefined, {
+      resellerInfo,
+    })
+      .then(res => {
+        if (
+          res !== null &&
+          res !== undefined &&
+          res.resellerSetup !== undefined
+        ) {
+          resolve({ success: true });
+        } else {
+          resolve({ success: false });
+        }
+      })
+      .catch(e => {
+        resolve({ success: false });
+      });
+  });
+};
+
 const fetchCurrentUser = () => dispatch => {
   dispatch(fetchCurrentUserRequest());
 
@@ -76,6 +110,17 @@ const fetchCurrentUser = () => dispatch => {
                 }
                 createdAt
                 profilePictureURL
+                resellItems {
+                  id
+                  askingPrice
+                  condition
+                  availability
+                  size
+                  product {
+                    id
+                    name
+                  }
+                }
             }
         }
         `)
@@ -190,5 +235,6 @@ export default {
     logOutUser,
     fetchIsUsernameValid,
     userSetup,
+    resellerSetup,
   },
 };

@@ -11,9 +11,12 @@
   font-weight: 600;
   margin: 0px 40px;
   color: #aaaaaa;
+  padding-bottom: 5px;
+  text-transform: capitalize;
 
   &.active {
-    text-decoration: underline;
+    border-radius: 0;
+    border-bottom: 1px solid #938cfc;
     color: white;
   }
 }

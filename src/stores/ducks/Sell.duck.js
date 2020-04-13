@@ -9,12 +9,23 @@ const actionTypes = createActionTypes(
     CREATE_NEW_LISTING_REQUEST: 'CREATE_NEW_LISTING_REQUEST',
     CREATE_NEW_LISTING_SUCCESS: 'CREATE_NEW_LISTING_SUCCESS',
     CREATE_NEW_LISTING_FAILURE: 'CREATE_NEW_LISTING_FAILURE',
+
+    //  -----> Brands
+    GET_BRANDS_REQUEST: 'GET_BRANDS_REQUEST',
+    GET_BRANDS_SUCCESS: 'GET_BRANDS_SUCCESS',
+    GET_BRANDS_ERROR: 'GET_BRANDS_ERROR',
   },
   duckName,
 );
 
 const initialState = {
   creatingNewListing: false,
+  brands: {
+    data: [],
+    errorMessage: {},
+    isFetching: false,
+    isMutating: false,
+  },
 };
 
 const createListingWithInputType = () => {
@@ -72,6 +83,43 @@ const createNewListing = (resellItemInfo, reseller) => dispatch => {
   });
 };
 
+// ----------------> Query
+
+// <----------------- Brands -------------->
+
+const getAllBrands = () => dispatch => {
+  dispatch(getAllBrandsRequest());
+  return new Promise((resolve, reject) => {
+    fetchGraphQL(`
+        query {
+            getAllBrands {
+                id
+                name
+                slug
+                imageURL
+            }
+        }`)
+      .then(res => {
+        if (
+          res !== null &&
+          res !== undefined &&
+          res.getAllBrands !== null &&
+          res.getAllBrands !== undefined
+        ) {
+          dispatch(getAllBrandsSuccess(res.getAllBrands));
+          resolve({ success: true, message: 'Fetched Brands successfully' });
+        } else {
+          dispatch(getAllBrandsError('Could not fetch Brands'));
+          resolve({ success: false, message: 'Failed to fetch brands' });
+        }
+      })
+      .catch(err => {
+        dispatch(getAllBrandsError(err.response));
+        resolve({ success: false, message: 'Failed to fetch brands' });
+      });
+  });
+};
+
 const createNewListingRequest = () => {
   return {
     type: actionTypes.CREATE_NEW_LISTING_REQUEST,
@@ -91,6 +139,30 @@ const createNewListingError = errorMessage => {
   };
 };
 
+// QUERY Actions
+
+// brands
+const getAllBrandsRequest = () => {
+  return {
+    type: actionTypes.GET_BRANDS_REQUEST,
+  };
+};
+
+const getAllBrandsSuccess = data => {
+  return {
+    type: actionTypes.GET_BRANDS_SUCCESS,
+    payload: { data },
+  };
+};
+
+const getAllBrandsError = errorMessage => {
+  console.log(errorMessage);
+  return {
+    type: actionTypes.GET_BRANDS_ERROR,
+    payload: { errorMessage },
+  };
+};
+
 // Reducers
 const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -106,6 +178,29 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         creatingNewListing: false,
       });
+    // Brands
+    case actionTypes.GET_BRANDS_REQUEST: {
+      return Object.assign({}, state, {
+        brands: Object.assign({}, state.brands, { isFetching: true }),
+      });
+    }
+    case actionTypes.GET_BRANDS_SUCCESS: {
+      return Object.assign({}, state, {
+        brands: Object.assign({}, state.brands, {
+          data: action.payload.data || [],
+          isFetching: false,
+        }),
+      });
+    }
+    case actionTypes.GET_BRANDS_ERROR: {
+      return Object.assign({}, state, {
+        brands: Object.assign({}, state.brands, {
+          data: [],
+          isFetching: false,
+          errorMessage: action.payload.errorMessage,
+        }),
+      });
+    }
     default:
       return state;
   }
@@ -116,5 +211,6 @@ export default {
   reducer,
   actionCreators: {
     createNewListing,
+    getAllBrands,
   },
 };

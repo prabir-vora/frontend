@@ -16,6 +16,7 @@ class ImageUploader extends Component {
   state = {
     file: null,
     isUploading: false,
+    imageURL: '',
   };
 
   componentDidMount() {
@@ -65,6 +66,7 @@ class ImageUploader extends Component {
         type: 'success',
       });
       this.props.onUploadImage(imageURL);
+      this.setState({ imageURL });
     } else {
       ShowConfirmNotif({
         message,

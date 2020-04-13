@@ -8,16 +8,47 @@ import { PlusIcon, SneakerIcon } from 'assets/Icons';
 
 import { withRouter } from 'react-router-dom';
 
+import { connect } from 'react-redux';
+import UserDuck from 'stores/ducks/User.duck';
+
 class SellPage extends Component {
+  componentDidMount() {
+    console.log(this.props);
+  }
+
   createListing = () => {
     this.props.history.push('/sell/createListing');
   };
 
   becomeReseller = () => {
-    this.props.history.push('/reseller');
+    const { user } = this.props;
+    const { resellItems } = user;
+    if (resellItems && resellItems.length >= 5) {
+      this.props.history.push('/resellerSetup');
+    }
+  };
+
+  renderResellerMessage = () => {
+    const { user } = this.props;
+    const { resellItems } = user;
+    const listingsNeeded = 5 - resellItems.length;
+    return resellItems && resellItems.length >= 5 ? (
+      <div style={{ color: '#1DB954' }}>
+        You are qualified to become a reseller
+      </div>
+    ) : (
+      <div style={{ color: 'red' }}>
+        You need {listingsNeeded} more listings to qualify
+      </div>
+    );
   };
 
   render() {
+    const { user } = this.props;
+    if (!user) {
+      return null;
+    }
+
     return (
       <div>
         <MainNavBar />
@@ -59,6 +90,7 @@ class SellPage extends Component {
                   </div>
                   <div>
                     <h4>Become a Reseller</h4>
+                    <p>{this.renderResellerMessage()}</p>
                   </div>
                 </div>
               </div>
@@ -70,4 +102,12 @@ class SellPage extends Component {
   }
 }
 
-export default withRouter(SellPage);
+const mapStateToProps = state => {
+  return {
+    user: state[UserDuck.duckName].user,
+  };
+};
+
+const x = withRouter(SellPage);
+
+export default connect(mapStateToProps)(x);

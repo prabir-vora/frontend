@@ -9,6 +9,7 @@ import AdminPage from './AdminPage';
 import LocalMarketplacePage from './LocalMarketplacePage';
 import SellPage from './SellPage';
 import CreateListingPage from './CreateListingPage';
+import ResellerSetupPage from './ResellerSetupPage';
 
 export {
   AuthenticationPage,
@@ -18,6 +19,7 @@ export {
   ProductListingPage,
   ProfilePage,
   ResellerListPage,
+  ResellerSetupPage,
   ResellerTemplatePage,
   ShopPage,
   AdminPage,

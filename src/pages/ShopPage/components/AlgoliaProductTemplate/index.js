@@ -6,11 +6,11 @@ import { Img } from 'fields';
 export default class AlgoliaProductTemplate extends Component {
   render() {
     const { hit } = this.props;
-    const { name, slug, original_image_url, askingPrice } = hit;
+    const { name, productSlug, original_image_url, askingPrice } = hit;
     return (
       <div className={Style.gridCellWrapper}>
         <div className={Style.gridCellContent}>
-          <a title={name} href={`/shop/${slug}`}>
+          <a title={name} href={`/shop/${productSlug}`}>
             <div>
               <div className={Style.gridCell}>
                 <div className={Style.gridCellImage}>

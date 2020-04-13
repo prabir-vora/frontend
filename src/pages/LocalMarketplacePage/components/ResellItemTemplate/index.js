@@ -8,7 +8,7 @@ export default class ResellItemTemplate extends Component {
     const { hit } = this.props;
     const {
       name,
-      slug,
+      resellItemSlug,
       original_image_url,
       askingPrice,
       _rankingInfo,
@@ -21,7 +21,7 @@ export default class ResellItemTemplate extends Component {
     return (
       <div className={Style.gridCellWrapper}>
         <div className={Style.gridCellContent}>
-          <a title={name} href={`/shop/${slug}`}>
+          <a title={name} href={`/local/${resellItemSlug}`}>
             <div>
               <div className={Style.gridCell}>
                 <div className={Style.gridCellImage}>

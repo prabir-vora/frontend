@@ -1,26 +1,25 @@
 //  Images
 
 .imageContainer {
-    margin: 20px 0 30px 0;
-    text-align: center;
-  }
-  
-  .image {
-    border-radius: 4px;
-    height: 160px;
-    width: 160px;
-  }
-  
+  margin: 20px 0 30px 0;
+  text-align: center;
+}
+
+.image {
+  border-radius: 4px;
+  height: 160px;
+  width: 160px;
+}
 
 .button {
-    color: #fff;
-    font-size: 1.15rem;
-    margin-top: 50px;
-    height: 40px;
-    width: 120px;
+  color: #fff;
+  font-size: 12px;
+  margin-top: 20px;
+  height: 30px;
+  width: 80px;
 }
-  
+
 .uploadButton {
-    @extend .button;
-    background: grey;
+  @extend .button;
+  background: grey;
 }

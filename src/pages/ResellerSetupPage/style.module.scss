@@ -1,0 +1,43 @@
+.pageLayout {
+  display: flex;
+  position: relative;
+  box-align: center;
+  align-items: center;
+  flex-direction: column;
+  box-pack: start;
+  justify-content: flex-start;
+  flex: 1 1 0%;
+  background: black;
+}
+
+.pageContent {
+  min-height: calc(100vh - 90px);
+  position: relative;
+  width: calc(100% - 500px);
+  align-items: center;
+  color: black;
+}
+
+.pageTitle {
+  padding: 2em 20px;
+  width: 100%;
+  color: white;
+}
+
+.setupContainer {
+  background: white;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.submitBtn {
+  margin-top: 30px;
+
+  width: 150px;
+  height: 30px;
+  background: black;
+  color: white;
+  margin-right: 20px;
+}

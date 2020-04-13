@@ -1,0 +1,49 @@
+.resellerContainer {
+  padding: 20px;
+  background: #222320;
+  color: white;
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.resellerImage {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.resellerInfo {
+  margin-left: 40px;
+  display: flex;
+  flex-direction: column;
+}
+
+.resellerStats {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.statItem {
+  display: flex;
+  margin-right: 30px;
+
+  & > svg {
+    fill: white;
+    margin-right: 5px;
+  }
+}
+
+.buttonContainer {
+  padding: 40px;
+  margin-left: auto;
+}
+
+.followButton {
+  width: 100px;
+  height: 30px;
+  background: #938cfc;
+  color: white;
+  font-weight: 600;
+  margin-bottom: '20px';
+}

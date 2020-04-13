@@ -41,6 +41,7 @@ class AppAuthContainer extends Component {
   };
 
   onSignUpWithEmail = async signUpInfo => {
+    console.log(signUpInfo);
     const {
       signUpWithEmail,
       hideModal,
