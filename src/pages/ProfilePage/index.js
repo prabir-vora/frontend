@@ -5,21 +5,44 @@ import { connect } from 'react-redux';
 import MainNavBar from 'components/MainNavBar';
 import Style from './style.module.scss';
 import UserDuck from 'stores/ducks/User.duck';
+import ConversationDuck from 'stores/ducks/Conversation.duck';
 
 import ProfileNavBar from './components/ProfileNavBar';
 
 import { Img, Button } from 'fields';
+
+import UserListings from './components/UserListings';
+import Messages from './components/Messages';
 
 class ProfilePage extends Component {
   state = {
     activeNavBarID: 'listings',
   };
 
+  componentDidMount() {
+    const { actionCreators } = ConversationDuck;
+    const { fetchBuyMessages, fetchSellMessages } = actionCreators;
+    this.props.dispatch(fetchBuyMessages());
+    this.props.dispatch(fetchSellMessages());
+  }
+
   onChangeNavBarID = activeNavBarID =>
     this.setState({ activeNavBarID }, console.log(activeNavBarID));
 
+  renderActiveNavBarContent = () => {
+    switch (this.state.activeNavBarID) {
+      case 'listings':
+        return <UserListings user={this.props.user} />;
+      case 'messages':
+        return <Messages user={this.props.user} />;
+      default:
+        return null;
+    }
+  };
+
   render() {
     console.log(this.props);
+    const { user } = this.props;
     return (
       <div>
         <MainNavBar />
@@ -56,7 +79,7 @@ class ProfilePage extends Component {
                     }}
                   >
                     <h4>Listings</h4>
-                    <p>10</p>
+                    <p>{user.resellItems ? user.resellItems.length : 0}</p>
                   </div>
                   <div
                     style={{
@@ -89,12 +112,21 @@ class ProfilePage extends Component {
                 <Button className={Style.editProfileButton}>
                   Edit Profile
                 </Button>
+                <a href="/sell/createListing">
+                  <Button className={Style.editProfileButton}>
+                    Sell Something
+                  </Button>
+                </a>
               </div>
 
               <ProfileNavBar
                 activeNavBarID={this.state.activeNavBarID}
                 onChangeNavBarID={this.onChangeNavBarID}
               />
+
+              <React.Fragment>
+                {this.renderActiveNavBarContent()}
+              </React.Fragment>
             </div>
           </div>
         )}

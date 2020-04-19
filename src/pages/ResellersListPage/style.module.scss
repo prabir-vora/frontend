@@ -14,7 +14,7 @@
 .pageContent {
   min-height: calc(100vh - 90px);
   position: relative;
-  width: calc(100% - 500px);
+  width: calc(100% - 180px);
   align-items: center;
 }
 
@@ -26,4 +26,32 @@
 .algoliaContentWrapper {
   width: 100%;
   margin-top: -20px;
+}
+
+.resultsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 45%);
+  grid-auto-rows: minmax(300px, auto);
+  grid-gap: 40px;
+}
+
+@media (min-width: 40em) {
+  .pageTitle {
+    padding: 4em 20px;
+  }
+
+  .shopAll {
+    font-size: 32px;
+    font-family: Plain;
+    line-height: 1.38;
+    letter-spacing: 0.1px;
+  }
+
+  .algoliaContentWrapper {
+    margin-top: 0px;
+  }
+
+  .resultsGrid {
+    grid-template-columns: repeat(auto-fill, 30%);
+  }
 }

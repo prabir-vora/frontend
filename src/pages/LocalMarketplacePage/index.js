@@ -1,12 +1,24 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import UserDuck from 'stores/ducks/User.duck';
+
 import MainNavBar from 'components/MainNavBar';
 
 import Style from './style.module.scss';
 
 import { EntryPage, LocalListingsPage } from './components';
 
-export default class LocalMarketplace extends Component {
+class LocalMarketplace extends Component {
   state = { lat: '', lng: '', address: '' };
+
+  componentDidMount() {
+    const { user } = this.props;
+    if (user) {
+      const { address, _geoloc } = user;
+      const { lat, lng } = _geoloc;
+      this.setState({ address, lat, lng });
+    }
+  }
 
   onSelectLocation = (address, lat, lng) => {
     this.setState({ lat, lng, address });
@@ -37,3 +49,11 @@ export default class LocalMarketplace extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    user: state[UserDuck.duckName].user,
+  };
+};
+
+export default connect(mapStateToProps)(LocalMarketplace);

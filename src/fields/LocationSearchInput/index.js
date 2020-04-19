@@ -86,7 +86,7 @@ class LocationSearchInput extends React.Component {
   };
 
   render() {
-    const { address, errorMessage } = this.state;
+    const { address } = this.state;
     console.log(address);
     return (
       <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>

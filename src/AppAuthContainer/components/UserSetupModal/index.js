@@ -6,8 +6,6 @@ import ModalStyle from '../style.module.scss';
 
 import { Button, TextInput, LocationSearchInput } from 'fields';
 
-import { CloseIcon } from 'assets/Icons';
-
 import * as immutable from 'object-path-immutable';
 
 export default class UserSetupModal extends Component {
@@ -69,7 +67,7 @@ export default class UserSetupModal extends Component {
 
   onDetermineButtonStatus = () => {
     const { setupInfo, isUsernameValid } = this.state;
-    const { address, lat, lng, username } = setupInfo;
+    const { address, lat, lng } = setupInfo;
 
     if (isUsernameValid && address !== '' && lat !== '' && lng !== '') {
       return 'active';

@@ -6,6 +6,7 @@ import ROUTES from './constants/routes';
 import 'react-toastify/dist/ReactToastify.min.css';
 import { ToastContainer, Flip } from 'react-toastify';
 import AppAuthContainer from 'AppAuthContainer';
+import ClientModals from 'ClientModals';
 
 import { withCookies } from 'react-cookie';
 
@@ -18,6 +19,7 @@ class App extends React.Component {
         <ConnectedRouter history={history}>
           <div style={{ height: 'auto' }}>
             <AppAuthContainer />
+            <ClientModals />
             <Switch>
               <Route exact path="/" component={ROUTES('homePage')} />
               <Route path="/resellers" component={ROUTES('resellerListPage')} />
@@ -30,6 +32,11 @@ class App extends React.Component {
                 exact
                 path="/shop/:productListingID"
                 component={ROUTES('productListingPage')}
+              />
+              <Route
+                exact
+                path="/shop/listing/:listingID"
+                component={ROUTES('shopListingPage')}
               />
               <Route exact path="/sell" component={ROUTES('sellPage')} />
               <Route

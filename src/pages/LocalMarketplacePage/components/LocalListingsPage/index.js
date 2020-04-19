@@ -7,7 +7,6 @@ import ResellItemTemplate from '../ResellItemTemplate';
 
 import {
   InstantSearch,
-  SearchBox,
   connectStats,
   //   Hits,
   connectRefinementList,

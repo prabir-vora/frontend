@@ -13,7 +13,6 @@ import * as immutable from 'object-path-immutable';
 import { isEmailValid } from './helper';
 
 import { GoogleLogin } from 'react-google-login';
-import AppAuthDuck from 'stores/ducks/AppAuth.duck';
 
 export default class LoginModal extends Component {
   state = {

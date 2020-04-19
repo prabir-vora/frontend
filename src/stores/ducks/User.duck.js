@@ -120,6 +120,7 @@ const fetchCurrentUser = () => dispatch => {
                     id
                     name
                   }
+                  images
                 }
             }
         }

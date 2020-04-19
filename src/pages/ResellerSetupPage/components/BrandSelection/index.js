@@ -2,18 +2,7 @@ import React, { Component } from 'react';
 
 import algoliasearch from 'algoliasearch';
 
-import {
-  InstantSearch,
-  //   SearchBox,
-  connectStats,
-  //   Hits,
-  connectRefinementList,
-  SortBy,
-  Pagination,
-  Configure,
-  connectHits,
-  connectRange,
-} from 'react-instantsearch-dom';
+import { InstantSearch, connectHits } from 'react-instantsearch-dom';
 
 import Style from './style.module.scss';
 
@@ -29,7 +18,7 @@ function Hits(props) {
   return (
     <React.Fragment>
       {props.hits.map(hit => {
-        const { name, _id, imageURL } = hit;
+        const { _id, imageURL } = hit;
         return (
           <div
             style={{ marginRight: '20px', marginBottom: '20px' }}
@@ -48,6 +37,7 @@ function Hits(props) {
                   border: '1px solid #cfcaca',
                   objectFit: 'contain',
                 }}
+                alt="not found"
               />
               {props.selectedBrands.includes(_id) && (
                 <div className={Style.after}></div>
@@ -90,7 +80,7 @@ export default class BrandSelection extends Component {
   };
 
   renderSelectionField = brand => {
-    const { name, id, imageURL } = brand;
+    const { imageURL } = brand;
     return (
       <div
         style={{ marginRight: '20px', marginBottom: '20px' }}
@@ -112,6 +102,7 @@ export default class BrandSelection extends Component {
               border: '1px solid #cfcaca',
               objectFit: 'contain',
             }}
+            alt="not found"
           />
         </div>
       </div>
@@ -119,8 +110,6 @@ export default class BrandSelection extends Component {
   };
 
   render() {
-    const { brands } = this.props;
-
     return (
       <div style={{ width: '100%', display: 'flex', flexWrap: 'wrap' }}>
         <InstantSearch indexName="test_BRANDS" searchClient={searchClient}>

@@ -68,7 +68,7 @@
 }
 
 .detailsContent {
-  font-size: 20px;
+  font-size: 16px;
   color: white;
   font-family: Druk Wide Web, futura-pt, HelveticaNeue-Light,
     Helvetica Neue Light, Helvetica Neue, Helvetica, Arial, Lucida Grande,
@@ -109,7 +109,7 @@
 
 .featureContent {
   color: white;
-  font-size: 20px;
+  font-size: 16px;
   font-family: Druk Wide Web, futura-pt, HelveticaNeue-Light,
     Helvetica Neue Light, Helvetica Neue, Helvetica, Arial, Lucida Grande,
     sans-serif;
@@ -192,6 +192,18 @@
 .pageTitle {
   padding: 2em 20px;
   width: 100%;
+}
+
+.backButton {
+  color: white;
+  font-size: 20px;
+
+  & > svg {
+    fill: white;
+    width: 15px;
+    height: 15px;
+    margin-right: 8px;
+  }
 }
 
 .algoliaWrapper {

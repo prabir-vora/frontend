@@ -41,10 +41,13 @@ const createListingWithInputType = () => {
 const createNewListing = (resellItemInfo, reseller) => dispatch => {
   dispatch(createNewListingRequest());
   const { product, askingPrice, size } = resellItemInfo;
-  const listingSlug = slugify(product.name + ' ' + reseller.name, {
-    replacement: '-',
-    lower: true, // convert to lower case, defaults to `false`
-  });
+  const listingSlug = slugify(
+    product.name + ' ' + reseller.name + ' ' + Date.now(),
+    {
+      replacement: '-',
+      lower: true, // convert to lower case, defaults to `false`
+    },
+  );
 
   const listing = immutable
     .wrap(resellItemInfo)

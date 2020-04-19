@@ -11,6 +11,7 @@ import {
   ResellerTemplatePage,
   LocalMarketplacePage,
   ShopPage,
+  ShopListingPage,
   SellPage,
   CreateListingPage,
 } from '../pages';
@@ -25,8 +26,6 @@ const ROUTES = (routeName = '', props = {}) => {
       return ResellerSetupPage;
     case 'resellerTemplatePage':
       return ResellerTemplatePage;
-    case 'shopPage':
-      return ShopPage;
     case 'productListingPage':
       return ProductListingPage;
     case 'localMarketplacePage':
@@ -39,6 +38,10 @@ const ROUTES = (routeName = '', props = {}) => {
       return AdminPage;
     case 'sellPage':
       return SellPage;
+    case 'shopPage':
+      return ShopPage;
+    case 'shopListingPage':
+      return ShopListingPage;
     case 'createListing':
       return CreateListingPage;
     default:

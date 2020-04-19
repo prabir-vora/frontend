@@ -6,18 +6,7 @@ import Style from './style.module.scss';
 
 import algoliasearch from 'algoliasearch';
 
-import {
-  InstantSearch,
-  //   SearchBox,
-  connectStats,
-  //   Hits,
-  connectRefinementList,
-  SortBy,
-  Pagination,
-  Configure,
-  connectHits,
-  connectRange,
-} from 'react-instantsearch-dom';
+import { InstantSearch, connectHits } from 'react-instantsearch-dom';
 
 import AlgoliaResellerTemplate from './components/AlgoliaResellerTemplate';
 
@@ -28,7 +17,7 @@ const searchClient = algoliasearch(
 
 function Hits(props) {
   return (
-    <div className={Style.resultsList}>
+    <div className={Style.resultsGrid}>
       {props.hits.map(hit => {
         return <AlgoliaResellerTemplate key={hit.objectID} hit={hit} />;
       })}
@@ -46,7 +35,7 @@ class ResellerListPage extends Component {
         <div className={Style.pageLayout}>
           <div className={Style.pageContent}>
             <div className={Style.pageTitle}>
-              <h1>Top Resellers</h1>
+              <h1>Browse Resellers</h1>
             </div>
             <div className={Style.algoliaContentWrapper}>
               <InstantSearch
@@ -54,7 +43,7 @@ class ResellerListPage extends Component {
                 searchClient={searchClient}
               >
                 <div className={Style.filterResultsArea}>
-                  <CustomHits className={Style.list} />
+                  <CustomHits className={Style.resultsGrid} />
                 </div>
               </InstantSearch>
             </div>

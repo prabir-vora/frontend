@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import MainNavBar from 'components/MainNavBar';
 import algoliasearch from 'algoliasearch';
 import { ImageGallery } from 'fields';
-import { TickIcon } from 'assets/Icons';
+import { LeftArrowIcon, TickIcon } from 'assets/Icons';
 
 import AlgoliaListingTemplate from './components/AlgoliaListingTemplate';
 
@@ -366,6 +366,13 @@ class ProductListingPage extends Component {
     return (
       <React.Fragment>
         <div className={Style.pageTitle}>
+          <button
+            className={Style.backButton}
+            onClick={() => this.setState({ viewResellers: false })}
+          >
+            <LeftArrowIcon />
+            Back
+          </button>
           <h1 style={{ color: 'white' }}>{name}</h1>
         </div>
         <InstantSearch

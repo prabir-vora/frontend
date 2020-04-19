@@ -22,7 +22,7 @@ export default class AlgoliaProductTemplate extends Component {
                     fontFamily:
                       'Druk Wide Web,futura-pt,HelveticaNeue-Light,Helvetica Neue Light,Helvetica Neue,Helvetica,Arial,Lucida Grande,sans-serif',
 
-                    fontSize: '16px',
+                    fontSize: '14px',
                     fontWeight: '800',
                     textTransform: 'uppercase',
                   }}

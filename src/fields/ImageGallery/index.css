@@ -355,6 +355,7 @@
   line-height: 0;
   height: 50px;
   background: white;
+  object-fit: contain;
   outline: none;
 }
 

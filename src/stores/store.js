@@ -13,6 +13,8 @@ import AdminUIDuck from './ducks/Admin/UI.duck';
 import AdminDuck from './ducks/Admin/Admin.duck';
 import TestObjectsDuck from './ducks/Admin/TestObjects.duck';
 import SellDuck from './ducks/Sell.duck';
+import ResellListingDuck from './ducks/ResellListing.duck';
+import ConversationDuck from './ducks/Conversation.duck';
 
 const initialState = {};
 const middleware = [thunk];
@@ -35,12 +37,14 @@ const combineDucks = (...ducks) => {
 // Register Ducks
 const rootReducer = combineDucks(
   AppAuthDuck,
+  ConversationDuck,
   ProductListingDuck,
   AdminUIDuck,
   AdminDuck,
   SellDuck,
   TestObjectsDuck,
   UserDuck,
+  ResellListingDuck,
 );
 
 const store = createStore(

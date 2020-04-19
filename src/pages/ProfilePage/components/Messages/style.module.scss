@@ -1,0 +1,152 @@
+.conversationsContainer {
+  padding-bottom: 90px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.messageSelectionContainer {
+  display: flex;
+  align-items: stretch;
+  border: 0;
+  border-radius: 0;
+  margin: 0;
+}
+
+.selectionButton {
+  padding: 16px 0;
+  position: relative;
+  flex: 1;
+  padding: 21px 0 20px;
+  border: 0;
+  background-color: #fafafa;
+  text-align: center;
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  color: #343434;
+  cursor: pointer;
+  transition-duration: 250ms;
+  transition-property: font-weight, background-color, color;
+
+  &.activeSelection {
+    background-color: rgb(34, 35, 32) !important;
+    color: white !important;
+    border: 1px solid #e1e1e1;
+    text-decoration: underline;
+    // border-bottom: 1px solid #e1e1e1;
+  }
+}
+
+.seperator {
+  display: none;
+}
+
+.conversationItem {
+  margin-top: 30px;
+  border-top: 1px solid #b3b3b3;
+
+  padding: 20px 35px;
+  display: flex;
+  align-items: center;
+  align-content: center;
+  cursor: pointer;
+}
+
+.listingDetails {
+  width: 30%;
+}
+
+.listingInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 1%;
+  color: white;
+  margin-left: 20px;
+}
+
+.lastMessage {
+  position: static;
+  top: 0;
+  left: 0;
+  flex: 2;
+}
+
+.lastMessageContent {
+  cursor: pointer;
+}
+
+.conversationDetails {
+  position: relative;
+  top: 0;
+  left: 0;
+  right: 20px;
+  width: auto;
+  min-width: inherit;
+  text-align: right;
+}
+
+.conversationItemActive {
+  padding: 0;
+  margin: 20px 0;
+  border: 1px solid #b3b3b3;
+  align-items: stretch;
+  flex-direction: column;
+  border-radius: 1.5px;
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.5);
+  margin-top: 30px;
+  border-top: 1px solid #b3b3b3;
+}
+
+.conversationHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 30px;
+  border-bottom: 1px solid #b3b3b3;
+}
+
+.replyButton {
+  width: 100px;
+  height: 30px;
+  background: rgb(147, 140, 252);
+  color: white;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.ActivityLog {
+  display: block;
+}
+
+.logItem {
+  display: flex;
+  padding: 22px 80px;
+}
+
+.logSender {
+  display: flex;
+  flex-direction: row;
+  width: 256px;
+  margin-right: 24px;
+  font-weight: bold;
+}
+
+.logItemContent {
+  flex: 1;
+  width: 490px;
+  margin-right: 42px;
+  font-size: 14px;
+}
+
+.profilePictureURL {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.senderDetails {
+}

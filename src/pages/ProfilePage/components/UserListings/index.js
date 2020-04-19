@@ -2,20 +2,20 @@ import React, { Component } from 'react';
 
 import { Img } from 'fields';
 
-export default class AlgoliaListingTemplate extends Component {
-  render() {
-    console.log(this.props);
-    const { hit } = this.props;
+export default class UserListings extends Component {
+  renderResellItem = resellItem => {
     const {
       condition,
       size,
       images,
       askingPrice,
-      resellItemSlug,
-      reseller_name,
-      reseller_profile_picture = '',
-    } = hit;
+      availability,
+      product,
+    } = resellItem;
 
+    console.log(resellItem);
+
+    const { name } = product;
     const conditionMap = {
       new: { label: 'New, Deadstock' },
       new_defects: { label: 'New, Defects' },
@@ -26,29 +26,22 @@ export default class AlgoliaListingTemplate extends Component {
     return (
       <div
         style={{
-          width: '100%',
-          height: '100px',
+          width: '60%',
+          height: '120px',
           marginBottom: '20px',
           display: 'flex',
           background: '#222320',
           padding: '10px',
         }}
       >
-        <a
-          href={`/shop/listing/${resellItemSlug}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Img
-            src={images && images.length > 0 && images[0]}
-            style={{
-              width: '100px',
-              height: '100px',
-              backgroundColor: '#e0e0e0',
-            }}
-          />
-        </a>
-
+        <Img
+          src={images && images.length > 0 && images[0]}
+          style={{
+            width: '100px',
+            height: '100px',
+            backgroundColor: '#e0e0e0',
+          }}
+        />
         <div
           style={{
             color: 'white',
@@ -57,25 +50,18 @@ export default class AlgoliaListingTemplate extends Component {
             marginTop: '10px',
           }}
         >
-          <a
-            href={`/shop/listing/${resellItemSlug}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <div>
-              <div style={{ marginBottom: '10px' }}>
-                Condition: {conditionMap[condition].label}
-              </div>
-              <div>Size: {size}</div>
+          <div>
+            <div style={{ marginBottom: '10px' }}>{name}</div>
+            <div style={{ marginBottom: '10px' }}>
+              Condition: {conditionMap[condition].label}
             </div>
-          </a>
+            <div>Size: {size}</div>
+          </div>
 
           <div style={{ marginTop: '20px', display: 'flex' }}>
-            <Img
-              src={reseller_profile_picture}
-              style={{ width: '25px', height: '25px', borderRadius: '50%' }}
-            />
-            <div style={{ marginLeft: '10px' }}>{reseller_name}</div>
+            <div style={{ marginLeft: '10px' }}>
+              Availability: {availability.join(', ')}
+            </div>
           </div>
         </div>
 
@@ -101,7 +87,7 @@ export default class AlgoliaListingTemplate extends Component {
                 marginBottom: '20px',
               }}
             >
-              Buy
+              Edit
             </button>
             <button
               style={{
@@ -110,12 +96,27 @@ export default class AlgoliaListingTemplate extends Component {
                 background: '#938cfc',
                 color: 'white',
                 fontWeight: '600',
+                marginBottom: '20px',
               }}
             >
-              Like
+              Share
             </button>
           </div>
         </div>
+      </div>
+    );
+  };
+  render() {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        {this.props.user.resellItems.map(this.renderResellItem)}
       </div>
     );
   }

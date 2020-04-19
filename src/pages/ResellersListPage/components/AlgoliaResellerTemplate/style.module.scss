@@ -1,3 +1,37 @@
+.gridCellWrapper {
+  position: relative;
+  box-sizing: border-box;
+}
+
+.gridCellContent {
+  background: #222320;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 100%;
+  width: 100%;
+}
+
+.gridCell {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: space-around;
+  display: flex;
+  flex-direction: column;
+  padding: 15px 22px 20px;
+}
+
 .resellerContainer {
   padding: 20px;
   background: #222320;
@@ -7,14 +41,13 @@
 }
 
 .resellerImage {
-  width: 120px;
-  height: 120px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   object-fit: cover;
 }
 
 .resellerInfo {
-  margin-left: 40px;
   display: flex;
   flex-direction: column;
 }
@@ -35,8 +68,6 @@
 }
 
 .buttonContainer {
-  padding: 40px;
-  margin-left: auto;
 }
 
 .followButton {
@@ -45,5 +76,4 @@
   background: #938cfc;
   color: white;
   font-weight: 600;
-  margin-bottom: '20px';
 }

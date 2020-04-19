@@ -5,6 +5,7 @@ import ProfilePage from './ProfilePage';
 import ResellerListPage from './ResellersListPage';
 import ResellerTemplatePage from './ResellerTemplatePage';
 import ShopPage from './ShopPage';
+import ShopListingPage from './ShopListingPage';
 import AdminPage from './AdminPage';
 import LocalMarketplacePage from './LocalMarketplacePage';
 import SellPage from './SellPage';
@@ -22,6 +23,7 @@ export {
   ResellerSetupPage,
   ResellerTemplatePage,
   ShopPage,
+  ShopListingPage,
   AdminPage,
   SellPage,
 };

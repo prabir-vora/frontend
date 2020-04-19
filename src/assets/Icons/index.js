@@ -14,6 +14,7 @@ import { ReactComponent as SneakerIcon } from './SneakerIcon.svg';
 import { ReactComponent as FollowersCountIcon } from './FollowersCountIcon.svg';
 import { ReactComponent as ListingsCountIcon } from './ListingsCountIcon.svg';
 import { ReactComponent as DollarIcon } from './DollarIcon.svg';
+import { ReactComponent as LeftArrowIcon } from './LeftArrowIcon.svg';
 
 export {
   AddPhotoIcon,
@@ -23,6 +24,7 @@ export {
   CloseIcon,
   DollarIcon,
   FollowersCountIcon,
+  LeftArrowIcon,
   ListingIcon,
   ListingsCountIcon,
   MenuIcon,
