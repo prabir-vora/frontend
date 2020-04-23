@@ -54,7 +54,17 @@ class App extends React.Component {
                 path="/localMarketplace"
                 component={ROUTES('localMarketplacePage')}
               />
-              <Route path="/user" component={ROUTES('profilePage')} />
+              <Route
+                exact
+                path="/localMarketplace/:listingID"
+                component={ROUTES('localListingPage')}
+              />
+              <Route exact path="/user" component={ROUTES('profilePage')} />
+              <Route
+                exact
+                path="/user/:username"
+                component={ROUTES('userPage')}
+              />
               <Route path="/auth" component={ROUTES('authenticationPage')} />'
               <Route path="/admin" component={ROUTES('adminPage')} />
             </Switch>

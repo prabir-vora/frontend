@@ -11,7 +11,37 @@ import moment from 'moment';
 
 import ConversationDuck from 'stores/ducks/Conversation.duck';
 
+import InfiniteScroll from 'react-infinite-scroll-component';
+
 class Messages extends Component {
+  componentDidMount() {
+    const { data } = this.props;
+    const { buying, selling } = data;
+
+    const { actionCreators } = ConversationDuck;
+    const { fetchBuyMessages, fetchSellMessages } = actionCreators;
+    this.props.dispatch(fetchBuyMessages(buying.nextPage));
+    this.props.dispatch(fetchSellMessages(selling.nextPage));
+  }
+
+  fetchMoreBuyMessages = () => {
+    const { data } = this.props;
+    const { buying } = data;
+    const { nextPage } = buying;
+    const { actionCreators } = ConversationDuck;
+    const { fetchBuyMessages } = actionCreators;
+    this.props.dispatch(fetchBuyMessages(nextPage));
+  };
+
+  fetchMoreSellMessages = () => {
+    const { data } = this.props;
+    const { selling } = data;
+    const { nextPage } = selling;
+    const { actionCreators } = ConversationDuck;
+    const { fetchSellMessages } = actionCreators;
+    this.props.dispatch(fetchSellMessages(nextPage));
+  };
+
   onClickReply = conversationID => {
     const { actionCreators } = ConversationDuck;
     const { displayReplyModal } = actionCreators;
@@ -54,10 +84,21 @@ class Messages extends Component {
   };
 
   renderConversationItem = conversation => {
-    const { id, listing, seller, listingContext, activityLog } = conversation;
+    const {
+      id,
+      listing,
+      seller,
+      buyer,
+      listingContext,
+      activityLog,
+    } = conversation;
     const { slug, images, product } = listing;
 
-    const { username } = seller;
+    const { data } = this.props;
+    const { messageSelection } = data;
+
+    let senderUsername =
+      messageSelection === 'buying' ? seller.username : buyer.username;
 
     const lastLogIndex = activityLog.length - 1;
     const { message, createdAt } = activityLog[lastLogIndex];
@@ -69,26 +110,40 @@ class Messages extends Component {
         onClick={() => this.onConversationClick(id)}
       >
         <div className={Style.listingDetails}>
-          <a href={`/${listingContext}/listing/${slug}`}>
+          <a
+            href={
+              listingContext === 'shop'
+                ? `/${listingContext}/listing/${slug}`
+                : `/${listingContext}/${slug}`
+            }
+          >
             <div style={{ cursor: 'pointer', display: 'flex' }}>
               <Img
                 src={images[0]}
                 style={{ width: '100px', height: '100px' }}
               />
               <div className={Style.listingInfo}>
-                <h4 style={{ width: '120px' }}>{product.name}</h4>
+                <h4 style={{ width: '120px', fontSize: '12px' }}>
+                  {product.name}
+                </h4>
               </div>
             </div>
           </a>
         </div>
         <div className={Style.lastMessage}>
           <div>
-            <p style={{ color: 'white', textAlign: 'center' }}>{message}</p>
+            <p
+              style={{ color: 'white', textAlign: 'center', fontSize: '14px' }}
+            >
+              {message}
+            </p>
           </div>
         </div>
         <div className={Style.conversationDetails}>
-          <p style={{ marginBottom: '20px' }}>{moment(createdAt).fromNow()}</p>
-          <p>{username}</p>
+          <p style={{ marginBottom: '20px', fontSize: '12px' }}>
+            {moment(createdAt).fromNow()}
+          </p>
+          <p style={{ fontSize: '12px' }}>{senderUsername}</p>
         </div>
       </div>
     );
@@ -124,14 +179,20 @@ class Messages extends Component {
           onClick={() => this.onConversationClick(id)}
         >
           <div className={Style.listingDetailsActive}>
-            <a href={`/${listingContext}/listing/${slug}`}>
+            <a
+              href={
+                listingContext === 'shop'
+                  ? `/${listingContext}/listing/${slug}`
+                  : `/${listingContext}/${slug}`
+              }
+            >
               <div style={{ cursor: 'pointer', display: 'flex' }}>
                 <Img
                   src={images[0]}
                   style={{ width: '100px', height: '100px' }}
                 />
                 <div className={Style.listingInfo}>
-                  <h4>{product.name}</h4>
+                  <h4 style={{ fontSize: '12px' }}>{product.name}</h4>
                 </div>
               </div>
             </a>
@@ -153,7 +214,7 @@ class Messages extends Component {
                   <Img src={''} className={Style.profilePictureURL} />
                   <div className={Style.senderDetails}>
                     <p style={{ fontSize: '12px' }}>{senderUsername}</p>
-                    <p style={{ fontSize: '12px' }}>
+                    <p style={{ fontSize: '12px', fontWeight: '400' }}>
                       {moment(createdAt).fromNow()}
                     </p>
                   </div>
@@ -170,33 +231,53 @@ class Messages extends Component {
   renderBuyMessages = () => {
     const { data } = this.props;
     const { buying } = data;
-    const { conversations, openConversations } = buying;
-    return conversations.map(conversation => {
-      const { id } = conversation;
-      return (
-        <React.Fragment>
-          {!openConversations.includes(id)
-            ? this.renderConversationItem(conversation)
-            : this.renderActiveConversationItem(conversation)}
-        </React.Fragment>
-      );
-    });
+    const { conversations, openConversations, hasMoreMessages } = buying;
+
+    return (
+      <InfiniteScroll
+        dataLength={conversations.length}
+        next={this.fetchMoreBuyMessages}
+        hasMore={hasMoreMessages}
+        loader={
+          <h4 style={{ color: 'white', fontSize: '12px' }}>Loading...</h4>
+        }
+      >
+        {conversations.map(conversation => {
+          const { id } = conversation;
+          return (
+            <React.Fragment>
+              {!openConversations.includes(id)
+                ? this.renderConversationItem(conversation)
+                : this.renderActiveConversationItem(conversation)}
+            </React.Fragment>
+          );
+        })}
+      </InfiniteScroll>
+    );
   };
 
   renderSellMessages = () => {
     const { data } = this.props;
     const { selling } = data;
-    const { conversations, openConversations } = selling;
-    return conversations.map(conversation => {
-      const { id } = conversation;
-      return (
-        <React.Fragment>
-          {!openConversations.includes(id)
-            ? this.renderConversationItem(conversation)
-            : this.renderActiveConversationItem(conversation)}
-        </React.Fragment>
-      );
-    });
+    const { conversations, openConversations, hasMoreMessages } = selling;
+    return (
+      <InfiniteScroll
+        dataLength={conversations.length}
+        next={this.fetchMoreSellMessages}
+        hasMore={hasMoreMessages}
+      >
+        {conversations.map(conversation => {
+          const { id } = conversation;
+          return (
+            <React.Fragment>
+              {!openConversations.includes(id)
+                ? this.renderConversationItem(conversation)
+                : this.renderActiveConversationItem(conversation)}
+            </React.Fragment>
+          );
+        })}
+      </InfiniteScroll>
+    );
   };
 
   render() {

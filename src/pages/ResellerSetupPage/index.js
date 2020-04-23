@@ -17,6 +17,7 @@ import UserDuck from 'stores/ducks/User.duck';
 import { withRouter } from 'react-router-dom';
 
 import BrandSelection from './components/BrandSelection';
+import MainFooter from 'components/MainFooter';
 
 class ResellerSetupPage extends Component {
   confirmNotif = null;
@@ -246,6 +247,7 @@ class ResellerSetupPage extends Component {
             <div className={Style.setupContainer}>{this.renderSetup()}</div>
           </div>
         </div>
+        <MainFooter />
       </div>
     );
   }

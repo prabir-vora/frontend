@@ -57,6 +57,7 @@ const initialState = {
     loadingConversation: false,
     unread_count: 0,
     openConversations: [],
+    hasMoreMessages: true,
   },
   selling: {
     conversations: [],
@@ -64,6 +65,7 @@ const initialState = {
     loadingConversations: false,
     unread_count: 0,
     openConversations: [],
+    hasMoreMessages: true,
   },
 };
 
@@ -209,12 +211,12 @@ const fetchConversations = () => dispatch => {
 
 // Fetch Buy Conversations
 
-const fetchBuyMessages = () => dispatch => {
+const fetchBuyMessages = page => dispatch => {
   dispatch(fetchBuyConversationsRequest());
   return new Promise((resolve, reject) => {
     fetchGraphQL(`
     query {
-      fetchBuyConversations {
+      fetchBuyConversations(page: ${page}) {
         data {
           id
           listing {
@@ -270,12 +272,12 @@ const fetchBuyMessages = () => dispatch => {
   });
 };
 
-const fetchSellMessages = () => dispatch => {
+const fetchSellMessages = page => dispatch => {
   dispatch(fetchSellConversationsRequest());
   return new Promise((resolve, reject) => {
     fetchGraphQL(`
     query {
-      fetchSellConversations {
+      fetchSellConversations(page: ${page}) {
         data {
           id
           listing {
@@ -444,9 +446,10 @@ const fetchBuyConversationsRequest = () => {
 };
 
 const fetchBuyConversationsSuccess = ({ data, metadata }) => {
+  const hasMoreMessages = data.length === 3 ? true : false;
   return {
     type: actionTypes.FETCH_BUY_CONVERSATIONS_SUCCESS,
-    payload: { data, metadata },
+    payload: { data, metadata, hasMoreMessages },
   };
 };
 
@@ -463,9 +466,10 @@ const fetchSellConversationsRequest = () => {
 };
 
 const fetchSellConversationsSuccess = ({ data, metadata }) => {
+  const hasMoreMessages = data.length === 3 ? true : false;
   return {
     type: actionTypes.FETCH_SELL_CONVERSATIONS_SUCCESS,
-    payload: { data, metadata },
+    payload: { data, metadata, hasMoreMessages },
   };
 };
 
@@ -541,12 +545,18 @@ const reducer = (state = initialState, action) => {
         buying: immutable.set(state.buying, 'loadingConversations', true),
       });
     case actionTypes.FETCH_BUY_CONVERSATIONS_SUCCESS:
-      console.log(action);
+      const buyConversations = [
+        ...state.buying.conversations,
+        ...action.payload.data,
+      ];
+      const updatedNextPage = state.buying.nextPage + 1;
       return Object.assign({}, state, {
         buying: immutable
           .wrap(state.buying)
-          .set('conversations', action.payload.data)
+          .set('conversations', buyConversations)
           .set('unread_count', action.payload.metadata.unread_count)
+          .set('hasMoreMessages', action.payload.hasMoreMessages)
+          .set('nextPage', updatedNextPage)
           .set('loadingConversations', false)
           .value(),
       });
@@ -559,12 +569,19 @@ const reducer = (state = initialState, action) => {
         selling: immutable.set(state.selling, 'loadingConversations', true),
       });
     case actionTypes.FETCH_SELL_CONVERSATIONS_SUCCESS:
-      console.log(action);
+      const sellConversations = [
+        ...state.selling.conversations,
+        ...action.payload.data,
+      ];
+      const updatedNextSellPage = state.selling.nextPage + 1;
+
       return Object.assign({}, state, {
         selling: immutable
           .wrap(state.selling)
-          .set('conversations', action.payload.data)
+          .set('conversations', sellConversations)
           .set('unread_count', action.payload.metadata.unread_count)
+          .set('hasMoreMessages', action.payload.hasMoreMessages)
+          .set('nextPage', updatedNextSellPage)
           .set('loadingConversations', false)
           .value(),
       });

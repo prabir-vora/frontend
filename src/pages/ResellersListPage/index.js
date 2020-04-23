@@ -9,6 +9,7 @@ import algoliasearch from 'algoliasearch';
 import { InstantSearch, connectHits } from 'react-instantsearch-dom';
 
 import AlgoliaResellerTemplate from './components/AlgoliaResellerTemplate';
+import MainFooter from 'components/MainFooter';
 
 const searchClient = algoliasearch(
   'UYWEM6FQPE',
@@ -49,6 +50,7 @@ class ResellerListPage extends Component {
             </div>
           </div>
         </div>
+        <MainFooter />
       </div>
     );
   }

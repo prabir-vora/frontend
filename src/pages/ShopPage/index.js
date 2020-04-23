@@ -21,6 +21,8 @@ import Style from './style.module.scss';
 import cx from 'classnames';
 
 import { AlgoliaProduceTemplate } from './components';
+import MainFooter from 'components/MainFooter';
+import ReactTooltip from 'react-tooltip';
 
 const searchClient = algoliasearch(
   'UYWEM6FQPE',
@@ -347,9 +349,20 @@ const CustomRangeSlider = connectRange(RangeSlider);
 export default class ShopPage extends Component {
   state = { showFilters: false, productCategory: 'sneakers' };
 
+  componentDidUpdate() {
+    ReactTooltip.rebuild();
+  }
   render() {
     return (
       <div>
+        <ReactTooltip
+          html={true}
+          id="like"
+          effect="solid"
+          multiline={true}
+          type="light"
+        />
+
         <MainNavBar />
         <div className={Style.pageLayout}>
           <div className={Style.pageContent}>
@@ -507,6 +520,7 @@ export default class ShopPage extends Component {
             </div>
           </div>
         </div>
+        <MainFooter />
       </div>
     );
   }

@@ -127,7 +127,7 @@
 .resultsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, 45%);
-  grid-auto-rows: minmax(350px, auto);
+  grid-auto-rows: minmax(300px, auto);
   grid-gap: 40px;
 }
 

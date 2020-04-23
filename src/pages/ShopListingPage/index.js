@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import MainNavBar from 'components/MainNavBar';
+import MainFooter from 'components/MainFooter';
 
 import { connect } from 'react-redux';
 import ResellListingDuck from 'stores/ducks/ResellListing.duck';
@@ -117,7 +118,9 @@ class ShopListingPage extends Component {
               src={data.reseller.imageURL || ''}
               style={{ width: '25px', height: '25px', borderRadius: '50%' }}
             />
-            <div style={{ marginLeft: '10px' }}>{data.reseller.name}</div>
+            <a href={`/user/${data.reseller.username}`}>
+              <div className={Style.resellerLink}>{data.reseller.username}</div>
+            </a>
           </div>
         </div>
         {/* {this.renderProductFeaturesList(data)} */}
@@ -184,6 +187,7 @@ class ShopListingPage extends Component {
             </div>
           </div>
         </div>
+        <MainFooter />
       </div>
     );
   }

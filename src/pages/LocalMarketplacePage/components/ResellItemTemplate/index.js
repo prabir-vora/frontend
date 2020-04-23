@@ -12,7 +12,7 @@ export default class ResellItemTemplate extends Component {
       original_image_url,
       askingPrice,
       _rankingInfo,
-      reseller_name,
+      reseller_username,
     } = hit;
     const { matchedGeoLocation } = _rankingInfo;
     const { distance } = matchedGeoLocation;
@@ -21,9 +21,25 @@ export default class ResellItemTemplate extends Component {
     return (
       <div className={Style.gridCellWrapper}>
         <div className={Style.gridCellContent}>
-          <a title={name} href={`/local/${resellItemSlug}`}>
+          <a
+            title={name}
+            href={`/localMarketplace/${resellItemSlug}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <div>
               <div className={Style.gridCell}>
+                <div
+                  style={{
+                    textAlign: 'center',
+                    position: 'absolute',
+                    top: '7%',
+                    right: '7%',
+                    fontSize: '13px',
+                  }}
+                >
+                  {distanceInMiles} miles away
+                </div>
                 <div className={Style.gridCellImage}>
                   <Img src={original_image_url} className={Style.gridImage} />
                 </div>
@@ -33,7 +49,7 @@ export default class ResellItemTemplate extends Component {
                     fontFamily:
                       'Druk Wide Web,futura-pt,HelveticaNeue-Light,Helvetica Neue Light,Helvetica Neue,Helvetica,Arial,Lucida Grande,sans-serif',
 
-                    fontSize: '16px',
+                    fontSize: '13px',
                     fontWeight: '800',
                     textTransform: 'uppercase',
                   }}
@@ -41,12 +57,13 @@ export default class ResellItemTemplate extends Component {
                   {name}
                 </div>
                 <br />
-                <div style={{ textAlign: 'center', color: 'red' }}>
-                  @{reseller_name}
-                </div>
-                <br />
                 <div style={{ textAlign: 'center' }}>
-                  {distanceInMiles} miles away
+                  <a
+                    className={Style.userLink}
+                    href={`/user/${reseller_username}`}
+                  >
+                    @{reseller_username}
+                  </a>
                 </div>
                 <br />
                 <div style={{ textAlign: 'center' }}>${askingPrice}</div>

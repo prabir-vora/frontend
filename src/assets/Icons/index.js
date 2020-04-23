@@ -15,6 +15,12 @@ import { ReactComponent as FollowersCountIcon } from './FollowersCountIcon.svg';
 import { ReactComponent as ListingsCountIcon } from './ListingsCountIcon.svg';
 import { ReactComponent as DollarIcon } from './DollarIcon.svg';
 import { ReactComponent as LeftArrowIcon } from './LeftArrowIcon.svg';
+import { ReactComponent as FacebookIcon } from './FacebookIcon.svg';
+import { ReactComponent as InstagramIcon } from './InstagramIcon.svg';
+import { ReactComponent as TwitterIcon } from './TwitterIcon.svg';
+import { ReactComponent as YoutubeIcon } from './YoutubeIcon.svg';
+import { ReactComponent as FireIcon } from './FireIcon.svg';
+import { ReactComponent as ShareIcon } from './ShareIcon.svg';
 
 export {
   AddPhotoIcon,
@@ -33,5 +39,11 @@ export {
   ShoppingCartIcon,
   PlusIcon,
   SneakerIcon,
+  ShareIcon,
   TickIcon,
+  FacebookIcon,
+  FireIcon,
+  InstagramIcon,
+  TwitterIcon,
+  YoutubeIcon,
 };

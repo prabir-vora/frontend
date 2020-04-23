@@ -118,6 +118,13 @@
   text-transform: capitalize;
 }
 
+.buttonContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
 .viewResellersButton {
   padding: 19px 28px;
   border-radius: 38px;
@@ -131,6 +138,7 @@
   box-shadow: inset 0 0 0 2px #888;
   color: #aaaaaa;
   cursor: pointer;
+  margin-right: 20px;
 
   &:hover {
     box-shadow: inset 0 0 0 4px #ffffff !important;
@@ -140,6 +148,40 @@
 
 .buttonText {
   transition: 300ms color cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+.likeButton {
+  box-shadow: inset 0 0 0 2px #888;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 10px;
+  margin-right: 20px;
+
+  & > svg {
+    height: 20px;
+    width: 20px;
+    fill: #888;
+  }
+
+  &.active {
+    & > svg {
+      fill: #cc360f;
+    }
+  }
+}
+
+.shareIcon {
+  box-shadow: inset 0 0 0 2px #888;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 10px;
+  margin-right: 20px;
+
+  & > svg {
+    height: 20px;
+    width: 20px;
+    fill: #888;
+  }
 }
 
 .listingsList {

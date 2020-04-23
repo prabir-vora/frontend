@@ -38,11 +38,36 @@
   justify-content: center;
   width: 100%;
   position: relative;
-  flex: 1 1 50%;
+  margin-top: 40px;
 }
 
 .gridImage {
   height: 100px;
   width: 150px;
   background-color: none;
+}
+
+.likeButton {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  text-align: center;
+  position: absolute;
+  top: 7%;
+  right: 7%;
+  font-size: 13px;
+  color: #888;
+
+  & > svg {
+    height: 20px;
+    width: 20px;
+    fill: #888;
+    margin-right: 5px;
+  }
+
+  &.active {
+    & > svg {
+      fill: #cc360f;
+    }
+  }
 }

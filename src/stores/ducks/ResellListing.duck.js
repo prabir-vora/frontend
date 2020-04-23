@@ -39,6 +39,7 @@ const getResellListing = resellItemSlug => dispatch => {
                 reseller {
                     id
                     name
+                    username
                     imageURL
                     isReseller
                     resellerPageName

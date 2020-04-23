@@ -11,11 +11,14 @@ import LocalMarketplacePage from './LocalMarketplacePage';
 import SellPage from './SellPage';
 import CreateListingPage from './CreateListingPage';
 import ResellerSetupPage from './ResellerSetupPage';
+import LocalListingPage from './LocalListingPage';
+import UserPage from './UserPage';
 
 export {
   AuthenticationPage,
   CreateListingPage,
   HomePage,
+  LocalListingPage,
   LocalMarketplacePage,
   ProductListingPage,
   ProfilePage,
@@ -26,4 +29,5 @@ export {
   ShopListingPage,
   AdminPage,
   SellPage,
+  UserPage,
 };

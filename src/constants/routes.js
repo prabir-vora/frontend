@@ -9,11 +9,13 @@ import {
   ResellerListPage,
   ResellerSetupPage,
   ResellerTemplatePage,
+  LocalListingPage,
   LocalMarketplacePage,
   ShopPage,
   ShopListingPage,
   SellPage,
   CreateListingPage,
+  UserPage,
 } from '../pages';
 
 const ROUTES = (routeName = '', props = {}) => {
@@ -28,6 +30,8 @@ const ROUTES = (routeName = '', props = {}) => {
       return ResellerTemplatePage;
     case 'productListingPage':
       return ProductListingPage;
+    case 'localListingPage':
+      return LocalListingPage;
     case 'localMarketplacePage':
       return LocalMarketplacePage;
     case 'profilePage':
@@ -44,6 +48,8 @@ const ROUTES = (routeName = '', props = {}) => {
       return ShopListingPage;
     case 'createListing':
       return CreateListingPage;
+    case 'userPage':
+      return UserPage;
     default:
       return () => <div>404 not found</div>;
   }

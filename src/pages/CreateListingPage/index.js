@@ -28,6 +28,7 @@ import Autocomplete from './components/Autocomplete';
 import algoliasearch from 'algoliasearch/lite';
 import { InstantSearch, Configure } from 'react-instantsearch-dom';
 import { ShowConfirmNotif } from 'functions';
+import MainFooter from 'components/MainFooter';
 
 const searchClient = algoliasearch(
   'UYWEM6FQPE',
@@ -471,6 +472,7 @@ class CreateListingPage extends Component {
             </div>
           </div>
         </div>
+        <MainFooter />
       </div>
     );
   }

@@ -5,26 +5,18 @@ import { connect } from 'react-redux';
 import MainNavBar from 'components/MainNavBar';
 import Style from './style.module.scss';
 import UserDuck from 'stores/ducks/User.duck';
-import ConversationDuck from 'stores/ducks/Conversation.duck';
-
 import ProfileNavBar from './components/ProfileNavBar';
 
 import { Img, Button } from 'fields';
 
 import UserListings from './components/UserListings';
 import Messages from './components/Messages';
+import MainFooter from 'components/MainFooter';
 
 class ProfilePage extends Component {
   state = {
     activeNavBarID: 'listings',
   };
-
-  componentDidMount() {
-    const { actionCreators } = ConversationDuck;
-    const { fetchBuyMessages, fetchSellMessages } = actionCreators;
-    this.props.dispatch(fetchBuyMessages());
-    this.props.dispatch(fetchSellMessages());
-  }
 
   onChangeNavBarID = activeNavBarID =>
     this.setState({ activeNavBarID }, console.log(activeNavBarID));
@@ -130,6 +122,7 @@ class ProfilePage extends Component {
             </div>
           </div>
         )}
+        <MainFooter />
       </div>
     );
   }

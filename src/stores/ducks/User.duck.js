@@ -13,6 +13,10 @@ const actionTypes = createActionTypes(
     RESELLER_SETUP_SUCCESS: 'RESELLER_SETUP_SUCCESS',
     RESELLER_SETUP_FAILURE: 'RESELLER_SETUP_FAILURE',
 
+    FOLLOW_PRODUCT: 'FOLLOW_PRODUCT',
+
+    UNFOLLOW_PRODUCT: 'UNFOLLOW_PRODUCT',
+
     FETCH_CURRENT_USER_REQUEST: 'FETCH_CURRENT_USER_REQUEST',
     FETCH_CURRENT_USER_SUCCESS: 'FETCH_CURRENT_USER_SUCCESS',
     FETCH_CURRENT_USER_FAILURE: 'FETCH_CURRENT_USER_FAILURE',
@@ -91,6 +95,60 @@ const resellerSetup = resellerInfo => dispatch => {
   });
 };
 
+const followProduct = productID => dispatch => {
+  return new Promise((resolve, reject) => {
+    fetchGraphQL(`
+      mutation {
+        followProduct(productID: "${productID}")
+      }
+    `).then(res => {
+      console.log(res);
+      if (
+        res !== null &&
+        res !== undefined &&
+        res.followProduct !== null &&
+        res.followProduct !== undefined
+      ) {
+        dispatch(followProductSuccess(productID));
+        resolve({
+          success: true,
+          message: 'Followed product successfully',
+        });
+      } else {
+        resolve({ success: false, message: 'Followed product unsuccessfully' });
+      }
+    });
+  });
+};
+
+const unfollowProduct = productID => dispatch => {
+  return new Promise((resolve, reject) => {
+    fetchGraphQL(`
+      mutation {
+        unfollowProduct(productID: "${productID}")
+      }
+    `).then(res => {
+      if (
+        res !== null &&
+        res !== undefined &&
+        res.unfollowProduct !== null &&
+        res.unfollowProduct !== undefined
+      ) {
+        dispatch(unfollowProductSuccess(productID));
+        resolve({
+          success: true,
+          message: 'Unfollowed product successfully',
+        });
+      } else {
+        resolve({
+          success: false,
+          message: 'Unfollowed product unsuccessfully',
+        });
+      }
+    });
+  });
+};
+
 const fetchCurrentUser = () => dispatch => {
   dispatch(fetchCurrentUserRequest());
 
@@ -122,6 +180,7 @@ const fetchCurrentUser = () => dispatch => {
                   }
                   images
                 }
+                likedProducts
             }
         }
         `)
@@ -169,6 +228,20 @@ const fetchIsUsernameValid = username => dispatch => {
         resolve({ success: false, isUsernameValid: false });
       });
   });
+};
+
+const followProductSuccess = productID => {
+  return {
+    type: actionTypes.FOLLOW_PRODUCT,
+    payload: { productID },
+  };
+};
+
+const unfollowProductSuccess = productID => {
+  return {
+    type: actionTypes.UNFOLLOW_PRODUCT,
+    payload: { productID },
+  };
 };
 
 const logOutUser = () => dispatch => {
@@ -223,6 +296,24 @@ const reducer = (state = initialState, action) => {
         isVerified: false,
       });
     }
+    case actionTypes.FOLLOW_PRODUCT: {
+      const { user } = state;
+      const { likedProducts } = user;
+      const updatedLikeProducts = [...likedProducts, action.payload.productID];
+      return Object.assign({}, state, {
+        user: immutable.set(user, 'likedProducts', updatedLikeProducts),
+      });
+    }
+    case actionTypes.UNFOLLOW_PRODUCT: {
+      const { user } = state;
+      const { likedProducts } = user;
+      const updatedLikeProducts = likedProducts.filter(
+        productID => productID !== action.payload.productID,
+      );
+      return Object.assign({}, state, {
+        user: immutable.set(user, 'likedProducts', updatedLikeProducts),
+      });
+    }
     default:
       return state;
   }
@@ -234,6 +325,8 @@ export default {
   actionCreators: {
     fetchCurrentUser,
     logOutUser,
+    followProduct,
+    unfollowProduct,
     fetchIsUsernameValid,
     userSetup,
     resellerSetup,

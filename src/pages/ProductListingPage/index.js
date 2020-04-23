@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import MainNavBar from 'components/MainNavBar';
 import algoliasearch from 'algoliasearch';
 import { ImageGallery } from 'fields';
-import { LeftArrowIcon, TickIcon } from 'assets/Icons';
+import { LeftArrowIcon, TickIcon, FireIcon, ShareIcon } from 'assets/Icons';
 
 import AlgoliaListingTemplate from './components/AlgoliaListingTemplate';
 
@@ -10,6 +10,9 @@ import moment from 'moment';
 
 import { connect } from 'react-redux';
 import ProductListingDuck from 'stores/ducks/ProductListing.duck';
+import UserDuck from 'stores/ducks/User.duck';
+
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import {
   InstantSearch,
@@ -25,6 +28,10 @@ import Style from './style.module.scss';
 import cx from 'classnames';
 
 import { Img } from 'fields';
+import MainFooter from 'components/MainFooter';
+
+import ReactTooltip from 'react-tooltip';
+import { ShowConfirmNotif } from 'functions';
 
 const searchClient = algoliasearch(
   'UYWEM6FQPE',
@@ -176,6 +183,7 @@ function renderSizeRefinementList(props) {
 }
 
 class ProductListingPage extends Component {
+  confirmNotif = null;
   state = { viewResellers: false, selectedResellItem: '' };
 
   async componentDidMount() {
@@ -203,6 +211,20 @@ class ProductListingPage extends Component {
       console.log(message);
     }
   }
+
+  onClickLike = async productID => {
+    const { user } = this.props;
+    const { likedProducts } = user;
+
+    const { actionCreators } = UserDuck;
+    const { followProduct, unfollowProduct } = actionCreators;
+
+    if (likedProducts.includes(productID)) {
+      this.props.dispatch(unfollowProduct(productID));
+    } else {
+      this.props.dispatch(followProduct(productID));
+    }
+  };
 
   renderImageGallery = data => {
     let imageGalleryInput = [];
@@ -272,6 +294,10 @@ class ProductListingPage extends Component {
   };
 
   renderProductDetails = data => {
+    const { id } = data;
+    const likedProducts = this.props.user ? this.props.user.likedProducts : [];
+    const isLiked = likedProducts.includes(id);
+    const { productListingID } = this.props.match.params;
     return (
       <React.Fragment>
         <div className={Style.detailsContainer}>
@@ -295,14 +321,38 @@ class ProductListingPage extends Component {
           </div>
         )}
         {this.renderProductFeaturesList(data)}
-        <button
-          className={Style.viewResellersButton}
-          onClick={() => {
-            this.setState({ viewResellers: true });
-          }}
-        >
-          <span className={Style.buttonText}>View Listings</span>
-        </button>
+        <div className={Style.buttonContainer}>
+          <button
+            className={Style.viewResellersButton}
+            onClick={() => {
+              this.setState({ viewResellers: true });
+            }}
+          >
+            <span className={Style.buttonText}>View Listings</span>
+          </button>
+          <button
+            className={
+              isLiked ? cx(Style.likeButton, Style.active) : Style.likeButton
+            }
+            onClick={() => this.onClickLike(id)}
+            data-tip="Like"
+          >
+            <FireIcon />
+          </button>
+          <CopyToClipboard
+            text={`localhost:3000/shop/${productListingID}`}
+            onCopy={() => {
+              this.confirmNotif = ShowConfirmNotif({
+                message: 'Link Copied',
+                type: 'success',
+              });
+            }}
+          >
+            <button className={Style.shareIcon} data-tip="Share">
+              <ShareIcon />
+            </button>
+          </CopyToClipboard>
+        </div>
       </React.Fragment>
     );
   };
@@ -479,6 +529,8 @@ class ProductListingPage extends Component {
             <div className={Style.pageContent}>{this.renderListings()}</div>
           )}
         </div>
+        <ReactTooltip effect="solid" multiline={true} type="light" />
+        <MainFooter />
       </div>
     );
   }
@@ -489,6 +541,7 @@ const mapStateToProps = state => {
 
   return {
     productListing: state[duckName],
+    user: state[UserDuck.duckName].user,
   };
 };
 

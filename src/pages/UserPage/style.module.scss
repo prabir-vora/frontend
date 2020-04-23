@@ -1,0 +1,77 @@
+.pageLayout {
+  display: flex;
+  position: relative;
+  box-align: center;
+  align-items: center;
+  flex-direction: column;
+  box-pack: start;
+  justify-content: flex-start;
+  flex: 1 1 0%;
+  background: black;
+  color: white;
+}
+
+.pageContent {
+  min-height: calc(100vh - 90px);
+  position: relative;
+  width: calc(100% - 180px);
+  align-items: center;
+}
+
+.profileContainer {
+  padding: 1em 20px 0em 20px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.followButton {
+  width: 150px;
+  height: 30px;
+  background: #938cfc;
+  color: white;
+  font-weight: 600;
+  margin-right: 20px;
+}
+
+.listingSelectionContainer {
+  display: flex;
+  align-items: stretch;
+  border: 0;
+  border-radius: 0;
+  margin: 40px 0px;
+}
+
+.selectionButton {
+  padding: 16px 0;
+  position: relative;
+  flex: 1;
+  padding: 21px 0 20px;
+  border: 0;
+  background-color: black;
+  text-align: center;
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  color: white;
+  cursor: pointer;
+  transition-duration: 250ms;
+  transition-property: font-weight, background-color, color;
+  border: 1px solid #e1e1e1;
+
+  &.activeSelection {
+    background-color: rgb(34, 35, 32) !important;
+    color: white !important;
+    border-bottom: 2px solid white;
+    // border-bottom: 1px solid #e1e1e1;
+  }
+}
+
+.seperator {
+  display: none;
+}
+
+.algoliaContentWrapper {
+  width: 100%;
+  margin-top: -20px;
+}

@@ -180,7 +180,7 @@ class MainNavBar extends Component {
             to="/"
             className={cx(Style.mainHeaderNavLink, Style.logo)}
           >
-            DripVerse
+            Dripverse
           </NavLink>
           <NavLink
             exact

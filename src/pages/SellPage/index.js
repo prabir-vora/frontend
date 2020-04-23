@@ -10,6 +10,7 @@ import { withRouter } from 'react-router-dom';
 
 import { connect } from 'react-redux';
 import UserDuck from 'stores/ducks/User.duck';
+import MainFooter from 'components/MainFooter';
 
 class SellPage extends Component {
   componentDidMount() {
@@ -97,6 +98,7 @@ class SellPage extends Component {
             </div>
           </div>
         </div>
+        <MainFooter />
       </div>
     );
   }

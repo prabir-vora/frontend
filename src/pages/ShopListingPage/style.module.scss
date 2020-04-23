@@ -101,3 +101,11 @@
 .buttonText {
   transition: 300ms color cubic-bezier(0.4, 0, 0.6, 1);
 }
+
+.resellerLink {
+  margin-left: 10px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

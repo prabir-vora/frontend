@@ -7,6 +7,7 @@ import MainNavBar from 'components/MainNavBar';
 import Style from './style.module.scss';
 
 import { EntryPage, LocalListingsPage } from './components';
+import MainFooter from 'components/MainFooter';
 
 class LocalMarketplace extends Component {
   state = { lat: '', lng: '', address: '' };
@@ -45,6 +46,7 @@ class LocalMarketplace extends Component {
             />
           )}
         </div>
+        <MainFooter />
       </div>
     );
   }
