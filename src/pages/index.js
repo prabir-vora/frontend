@@ -13,6 +13,7 @@ import CreateListingPage from './CreateListingPage';
 import ResellerSetupPage from './ResellerSetupPage';
 import LocalListingPage from './LocalListingPage';
 import UserPage from './UserPage';
+import MyListPage from './MyListPage';
 
 export {
   AuthenticationPage,
@@ -30,4 +31,5 @@ export {
   AdminPage,
   SellPage,
   UserPage,
+  MyListPage,
 };

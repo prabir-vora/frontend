@@ -6,8 +6,14 @@ import MainFooter from 'components/MainFooter';
 import { connect } from 'react-redux';
 import ResellListingDuck from 'stores/ducks/ResellListing.duck';
 import ConversationDuck from 'stores/ducks/Conversation.duck';
+import UserDuck from 'stores/ducks/User.duck';
+import ReactTooltip from 'react-tooltip';
 
 import { ImageGallery, Img } from 'fields';
+
+import { TickIcon, PlusIcon, ShareIcon } from 'assets/Icons';
+import { ShowConfirmNotif } from 'functions';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import Style from './style.module.scss';
 
@@ -39,6 +45,27 @@ class ShopListingPage extends Component {
       console.log(message);
     }
   }
+
+  componentDidUpdate() {
+    ReactTooltip.rebuild();
+  }
+
+  onClickAddToList = async listingID => {
+    if (listingID === '') {
+      return;
+    }
+    const { user } = this.props;
+    const { myShopList } = user;
+
+    const { actionCreators } = UserDuck;
+    const { addToShopList, removeFromShopList } = actionCreators;
+
+    if (myShopList.includes(listingID)) {
+      await this.props.dispatch(removeFromShopList(listingID));
+    } else {
+      await this.props.dispatch(addToShopList(listingID));
+    }
+  };
 
   openMessageModal = () => {
     const { actionCreators } = ConversationDuck;
@@ -85,6 +112,16 @@ class ShopListingPage extends Component {
       new_opened: { label: 'New, Opened' },
       preowned: { label: 'Preowned' },
     };
+
+    const { listingID } = this.props.match.params;
+
+    const { user } = this.props;
+
+    if (user === null) {
+      return null;
+    }
+    const { myShopList } = user;
+    const isAddedToList = myShopList.includes(data.id);
 
     return (
       <React.Fragment>
@@ -133,27 +170,54 @@ class ShopListingPage extends Component {
         <div
           style={{
             display: 'flex',
+            flexDirection: 'column',
             justifyContent: 'space-around',
             alignItems: 'center',
             marginTop: '50px',
           }}
         >
-          <button
-            className={Style.buttonStyle}
-            // onClick={() => {
-            //   this.setState({ viewResellers: true });
-            // }}
-          >
-            <span className={Style.buttonText}>Buy</span>
-          </button>
-          <button
-            className={Style.buttonStyle}
-            onClick={() => {
-              this.openMessageModal();
-            }}
-          >
-            <span className={Style.buttonText}>Message</span>
-          </button>
+          <div className={Style.buttonContainer}>
+            <button
+              className={Style.addToListButton}
+              onClick={() => this.onClickAddToList(data.id)}
+              data-tip={
+                isAddedToList ? 'Remove from My List' : 'Add to My List'
+              }
+            >
+              {isAddedToList ? <TickIcon /> : <PlusIcon />}
+            </button>
+            <CopyToClipboard
+              text={`localhost:3000/shop/listing/${listingID}`}
+              onCopy={() => {
+                this.confirmNotif = ShowConfirmNotif({
+                  message: 'Link Copied',
+                  type: 'success',
+                });
+              }}
+            >
+              <button className={Style.shareIcon} data-tip="Share">
+                <ShareIcon />
+              </button>
+            </CopyToClipboard>
+          </div>
+          <div>
+            <button
+              className={Style.buttonStyle}
+              // onClick={() => {
+              //   this.setState({ viewResellers: true });
+              // }}
+            >
+              <span className={Style.buttonText}>Buy</span>
+            </button>
+            <button
+              className={Style.buttonStyle}
+              onClick={() => {
+                this.openMessageModal();
+              }}
+            >
+              <span className={Style.buttonText}>Message</span>
+            </button>
+          </div>
         </div>
       </React.Fragment>
     );
@@ -170,6 +234,12 @@ class ShopListingPage extends Component {
     return (
       <div>
         <MainNavBar />
+        <ReactTooltip
+          effect="solid"
+          multiline={true}
+          type="light"
+          place="bottom"
+        />
         <div className={Style.pageLayout}>
           <div style={{ display: 'flex' }}>
             <div className={Style.mediaContainer}>
@@ -198,6 +268,7 @@ const mapStateToProps = state => {
 
   return {
     resellListing: state[duckName],
+    user: state[UserDuck.duckName].user,
   };
 };
 

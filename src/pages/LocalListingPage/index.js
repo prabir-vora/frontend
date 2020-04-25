@@ -7,6 +7,12 @@ import { connect } from 'react-redux';
 
 import LocalListingDuck from 'stores/ducks/LocalListing.duck';
 import ConversationDuck from 'stores/ducks/Conversation.duck';
+import UserDuck from 'stores/ducks/User.duck';
+import ReactTooltip from 'react-tooltip';
+
+import { TickIcon, PlusIcon, ShareIcon } from 'assets/Icons';
+import { ShowConfirmNotif } from 'functions';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import { ImageGallery, Img } from 'fields';
 
@@ -41,6 +47,28 @@ class LocalListingPage extends Component {
       console.log(message);
     }
   }
+
+  componentDidUpdate() {
+    ReactTooltip.rebuild();
+  }
+
+  onClickAddToList = async listingID => {
+    console.log(listingID);
+    if (listingID === '') {
+      return;
+    }
+    const { user } = this.props;
+    const { myLocalList } = user;
+
+    const { actionCreators } = UserDuck;
+    const { addToLocalList, removeFromLocalList } = actionCreators;
+
+    if (myLocalList.includes(listingID)) {
+      await this.props.dispatch(removeFromLocalList(listingID));
+    } else {
+      await this.props.dispatch(addToLocalList(listingID));
+    }
+  };
 
   openMessageModal = () => {
     const { actionCreators } = ConversationDuck;
@@ -88,6 +116,16 @@ class LocalListingPage extends Component {
       preowned: { label: 'Preowned' },
     };
 
+    const { listingID } = this.props.match.params;
+
+    const { user } = this.props;
+
+    if (user === null) {
+      return null;
+    }
+    const { myLocalList } = user;
+    const isAddedToList = myLocalList.includes(data.id);
+
     return (
       <React.Fragment>
         <div className={Style.detailsContainer}>
@@ -120,7 +158,11 @@ class LocalListingPage extends Component {
               src={data.reseller.imageURL || ''}
               style={{ width: '25px', height: '25px', borderRadius: '50%' }}
             />
-            <a href={`/user/${data.reseller.username}`}>
+            <a
+              href={`/user/${data.reseller.username}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <div className={Style.resellerLink}>{data.reseller.username}</div>
             </a>
           </div>
@@ -158,7 +200,7 @@ class LocalListingPage extends Component {
         <div
           style={{
             display: 'flex',
-            justifyContent: 'space-around',
+            justifyContent: 'center',
             alignItems: 'center',
             marginTop: '50px',
           }}
@@ -171,6 +213,26 @@ class LocalListingPage extends Component {
           >
             <span className={Style.buttonText}>Message</span>
           </button>
+          <button
+            className={Style.addToListButton}
+            onClick={() => this.onClickAddToList(data.id)}
+            data-tip={isAddedToList ? 'Remove from My List' : 'Add to My List'}
+          >
+            {isAddedToList ? <TickIcon /> : <PlusIcon />}
+          </button>
+          <CopyToClipboard
+            text={`localhost:3000/localMarketplace/${listingID}`}
+            onCopy={() => {
+              this.confirmNotif = ShowConfirmNotif({
+                message: 'Link Copied',
+                type: 'success',
+              });
+            }}
+          >
+            <button className={Style.shareIcon} data-tip="Share">
+              <ShareIcon />
+            </button>
+          </CopyToClipboard>
         </div>
       </React.Fragment>
     );
@@ -187,6 +249,12 @@ class LocalListingPage extends Component {
     return (
       <div>
         <MainNavBar />
+        <ReactTooltip
+          effect="solid"
+          multiline={true}
+          type="light"
+          place="bottom"
+        />
         <div className={Style.pageLayout}>
           <div style={{ display: 'flex' }}>
             <div className={Style.mediaContainer}>
@@ -215,6 +283,7 @@ const mapStateToProps = state => {
 
   return {
     localListing: state[duckName],
+    user: state[UserDuck.duckName].user,
   };
 };
 

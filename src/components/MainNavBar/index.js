@@ -23,7 +23,7 @@ class MainNavBar extends Component {
       const { showModal } = AppAuthDuck.actionCreators;
       this.props.dispatch(showModal('login'));
     } else {
-      this.props.history.push('/sell');
+      this.props.history.push(`/${route}`);
     }
   };
 
@@ -130,6 +130,13 @@ class MainNavBar extends Component {
             >
               <span className={Style.navLinkText}>Sell</span>
             </label>
+            <label
+              className={Style.sideBarNavLink}
+              activeClassName={Style.sideBarNavLinkActive}
+              onClick={() => this.protectedRouteClick('myList')}
+            >
+              <span className={Style.navLinkText}>My List</span>
+            </label>
             <React.Fragment>
               {!this.props.user ? (
                 <div className={Style.sideBarAuthLink}>
@@ -213,6 +220,15 @@ class MainNavBar extends Component {
           >
             Resellers
           </NavLink>
+          {this.props.user && (
+            <NavLink
+              to="/myList"
+              className={Style.mainHeaderNavLink}
+              activeClassName={Style.mainHeaderNavLinkActive}
+            >
+              My List
+            </NavLink>
+          )}
           {this.props.user && (
             <NavLink to="/user" className={Style.mainHeaderNavLink}>
               <div style={{}}>

@@ -1,0 +1,91 @@
+.resellerLink {
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.buyButton {
+  width: 100px;
+  height: 35px;
+  background: #938cfc;
+  color: white;
+  font-weight: 600;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  & > svg {
+    width: 20px;
+    height: 20px;
+    fill: white;
+    margin-right: 8px;
+  }
+
+  &:hover {
+    // width: 104px;
+    // height: 38px;
+    background: #574edc;
+  }
+}
+
+.addToListIcon {
+  box-shadow: inset 0 0 0 2px #888;
+  border-radius: 50%;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  background: black;
+  margin-right: 20px;
+
+  & > svg {
+    width: 15px;
+    height: 15px;
+    fill: #888;
+  }
+
+  &:hover {
+    width: 32px;
+    height: 32px;
+    box-shadow: inset 0 0 0 2px white;
+
+    & > svg {
+      width: 18px;
+      height: 18px;
+      fill: white;
+    }
+  }
+}
+
+.shareIcon {
+  box-shadow: inset 0 0 0 2px #888;
+  border-radius: 50%;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  background: black;
+
+  & > svg {
+    width: 15px;
+    height: 15px;
+    fill: #888;
+  }
+
+  &:hover {
+    width: 32px;
+    height: 32px;
+    box-shadow: inset 0 0 0 2px white;
+
+    & > svg {
+      width: 18px;
+      height: 18px;
+      fill: white;
+    }
+  }
+}
+
+.listButtonContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

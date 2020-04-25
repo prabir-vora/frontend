@@ -11,6 +11,7 @@ class MapContainer extends Component {
         defaultCenter={this.props._geoloc}
         options={{
           streetViewControl: false,
+          mapTypeControl: false,
         }}
         // style={{ width: '500px', height: '200px' }}
       >

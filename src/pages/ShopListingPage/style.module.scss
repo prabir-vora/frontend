@@ -50,7 +50,7 @@
 .detailsContainer {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   flex-wrap: wrap;
   text-align: center;
@@ -90,7 +90,7 @@
   color: #aaaaaa;
   cursor: pointer;
   width: 150px;
-  margin-bottom: 20px;
+  margin-right: 20px;
 
   &:hover {
     box-shadow: inset 0 0 0 4px #ffffff !important;
@@ -108,4 +108,50 @@
   &:hover {
     text-decoration: underline;
   }
+}
+
+.addToListButton {
+  box-shadow: inset 0 0 0 2px #888;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 10px;
+  margin-right: 20px;
+
+  & > svg {
+    height: 20px;
+    width: 20px;
+    fill: #888;
+  }
+
+  &:hover {
+    box-shadow: inset 0 0 0 2px #ffffff !important;
+
+    & > svg {
+      fill: white;
+    }
+  }
+}
+
+.shareIcon {
+  box-shadow: inset 0 0 0 2px #888;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 10px;
+
+  & > svg {
+    height: 20px;
+    width: 20px;
+    fill: #888;
+  }
+
+  &:hover {
+    box-shadow: inset 0 0 0 2px white;
+    & > svg {
+      fill: white;
+    }
+  }
+}
+
+.buttonContainer {
+  margin-bottom: 20px;
 }

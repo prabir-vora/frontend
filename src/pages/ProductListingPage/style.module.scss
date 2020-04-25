@@ -182,6 +182,13 @@
     width: 20px;
     fill: #888;
   }
+
+  &:hover {
+    box-shadow: inset 0 0 0 2px white;
+    & > svg {
+      fill: white;
+    }
+  }
 }
 
 .listingsList {

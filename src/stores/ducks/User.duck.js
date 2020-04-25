@@ -14,8 +14,13 @@ const actionTypes = createActionTypes(
     RESELLER_SETUP_FAILURE: 'RESELLER_SETUP_FAILURE',
 
     FOLLOW_PRODUCT: 'FOLLOW_PRODUCT',
-
     UNFOLLOW_PRODUCT: 'UNFOLLOW_PRODUCT',
+
+    ADD_TO_SHOP_LIST: 'ADD_TO_SHOP_LIST',
+    REMOVE_FROM_SHOP_LIST: 'REMOVE_FROM_SHOP_LIST',
+
+    ADD_TO_LOCAL_LIST: 'ADD_TO_LOCAL_LIST',
+    REMOVE_FROM_LOCAL_LIST: 'REMOVE_FROM_LOCAL_LIST',
 
     FETCH_CURRENT_USER_REQUEST: 'FETCH_CURRENT_USER_REQUEST',
     FETCH_CURRENT_USER_SUCCESS: 'FETCH_CURRENT_USER_SUCCESS',
@@ -149,6 +154,114 @@ const unfollowProduct = productID => dispatch => {
   });
 };
 
+const addToShopList = listingID => dispatch => {
+  return new Promise((resolve, reject) => {
+    fetchGraphQL(`
+      mutation {
+        addToShopList(listingID: "${listingID}")
+      }
+    `).then(res => {
+      console.log(res);
+      if (
+        res !== null &&
+        res !== undefined &&
+        res.addToShopList !== null &&
+        res.addToShopList !== undefined
+      ) {
+        dispatch(addToShopListSuccess(listingID));
+        resolve({
+          success: true,
+          message: 'Added to list successfully',
+        });
+      } else {
+        resolve({ success: false, message: 'Added to list unsuccessfully' });
+      }
+    });
+  });
+};
+
+const removeFromShopList = listingID => dispatch => {
+  return new Promise((resolve, reject) => {
+    fetchGraphQL(`
+      mutation {
+        removeFromShopList(listingID: "${listingID}")
+      }
+    `).then(res => {
+      if (
+        res !== null &&
+        res !== undefined &&
+        res.removeFromShopList !== null &&
+        res.removeFromShopList !== undefined
+      ) {
+        dispatch(removeFromShopListSuccess(listingID));
+        resolve({
+          success: true,
+          message: 'Removed from list successfully',
+        });
+      } else {
+        resolve({
+          success: false,
+          message: 'Removed from list unsuccessfully',
+        });
+      }
+    });
+  });
+};
+
+const addToLocalList = listingID => dispatch => {
+  return new Promise((resolve, reject) => {
+    fetchGraphQL(`
+      mutation {
+        addToLocalList(listingID: "${listingID}")
+      }
+    `).then(res => {
+      console.log(res);
+      if (
+        res !== null &&
+        res !== undefined &&
+        res.addToLocalList !== null &&
+        res.addToLocalList !== undefined
+      ) {
+        dispatch(addToLocalListSuccess(listingID));
+        resolve({
+          success: true,
+          message: 'Added to list successfully',
+        });
+      } else {
+        resolve({ success: false, message: 'Added to list unsuccessfully' });
+      }
+    });
+  });
+};
+
+const removeFromLocalList = listingID => dispatch => {
+  return new Promise((resolve, reject) => {
+    fetchGraphQL(`
+      mutation {
+        removeFromLocalList(listingID: "${listingID}")
+      }
+    `).then(res => {
+      if (
+        res !== null &&
+        res !== undefined &&
+        res.removeFromLocalList !== null &&
+        res.removeFromLocalList !== undefined
+      ) {
+        dispatch(removeFromLocalListSuccess(listingID));
+        resolve({
+          success: true,
+          message: 'Removed from list successfully',
+        });
+      } else {
+        resolve({
+          success: false,
+          message: 'Removed from list unsuccessfully',
+        });
+      }
+    });
+  });
+};
+
 const fetchCurrentUser = () => dispatch => {
   dispatch(fetchCurrentUserRequest());
 
@@ -181,6 +294,8 @@ const fetchCurrentUser = () => dispatch => {
                   images
                 }
                 likedProducts
+                myShopList
+                myLocalList
             }
         }
         `)
@@ -241,6 +356,34 @@ const unfollowProductSuccess = productID => {
   return {
     type: actionTypes.UNFOLLOW_PRODUCT,
     payload: { productID },
+  };
+};
+
+const addToShopListSuccess = listingID => {
+  return {
+    type: actionTypes.ADD_TO_SHOP_LIST,
+    payload: { listingID },
+  };
+};
+
+const removeFromShopListSuccess = listingID => {
+  return {
+    type: actionTypes.REMOVE_FROM_SHOP_LIST,
+    payload: { listingID },
+  };
+};
+
+const addToLocalListSuccess = listingID => {
+  return {
+    type: actionTypes.ADD_TO_LOCAL_LIST,
+    payload: { listingID },
+  };
+};
+
+const removeFromLocalListSuccess = listingID => {
+  return {
+    type: actionTypes.REMOVE_FROM_LOCAL_LIST,
+    payload: { listingID },
   };
 };
 
@@ -314,6 +457,42 @@ const reducer = (state = initialState, action) => {
         user: immutable.set(user, 'likedProducts', updatedLikeProducts),
       });
     }
+    case actionTypes.ADD_TO_SHOP_LIST: {
+      const { user } = state;
+      const { myShopList } = user;
+      const updatedShopList = [...myShopList, action.payload.listingID];
+      return Object.assign({}, state, {
+        user: immutable.set(user, 'myShopList', updatedShopList),
+      });
+    }
+    case actionTypes.REMOVE_FROM_SHOP_LIST: {
+      const { user } = state;
+      const { myShopList } = user;
+      const updatedShopList = myShopList.filter(
+        listingID => listingID !== action.payload.listingID,
+      );
+      return Object.assign({}, state, {
+        user: immutable.set(user, 'myShopList', updatedShopList),
+      });
+    }
+    case actionTypes.ADD_TO_LOCAL_LIST: {
+      const { user } = state;
+      const { myLocalList } = user;
+      const updatedLocalList = [...myLocalList, action.payload.listingID];
+      return Object.assign({}, state, {
+        user: immutable.set(user, 'myLocalList', updatedLocalList),
+      });
+    }
+    case actionTypes.REMOVE_FROM_LOCAL_LIST: {
+      const { user } = state;
+      const { myLocalList } = user;
+      const updatedLocalList = myLocalList.filter(
+        listingID => listingID !== action.payload.listingID,
+      );
+      return Object.assign({}, state, {
+        user: immutable.set(user, 'myLocalList', updatedLocalList),
+      });
+    }
     default:
       return state;
   }
@@ -330,5 +509,9 @@ export default {
     fetchIsUsernameValid,
     userSetup,
     resellerSetup,
+    addToShopList,
+    removeFromShopList,
+    addToLocalList,
+    removeFromLocalList,
   },
 };

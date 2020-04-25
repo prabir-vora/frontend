@@ -231,13 +231,18 @@ class Messages extends Component {
   renderBuyMessages = () => {
     const { data } = this.props;
     const { buying } = data;
-    const { conversations, openConversations, hasMoreMessages } = buying;
+    const {
+      conversations,
+      openConversations,
+      hasMoreMessages,
+      loadingConversations,
+    } = buying;
 
     return (
       <InfiniteScroll
         dataLength={conversations.length}
         next={this.fetchMoreBuyMessages}
-        hasMore={hasMoreMessages}
+        hasMore={hasMoreMessages && !loadingConversations}
         loader={
           <h4 style={{ color: 'white', fontSize: '12px' }}>Loading...</h4>
         }
@@ -259,12 +264,17 @@ class Messages extends Component {
   renderSellMessages = () => {
     const { data } = this.props;
     const { selling } = data;
-    const { conversations, openConversations, hasMoreMessages } = selling;
+    const {
+      conversations,
+      openConversations,
+      hasMoreMessages,
+      loadingConversations,
+    } = selling;
     return (
       <InfiniteScroll
         dataLength={conversations.length}
         next={this.fetchMoreSellMessages}
-        hasMore={hasMoreMessages}
+        hasMore={hasMoreMessages && !loadingConversations}
       >
         {conversations.map(conversation => {
           const { id } = conversation;

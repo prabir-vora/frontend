@@ -17,6 +17,8 @@ import ResellListingDuck from './ducks/ResellListing.duck';
 import ConversationDuck from './ducks/Conversation.duck';
 import LocalListingDuck from './ducks/LocalListing.duck';
 import BrowseUserDuck from './ducks/BrowseUser.duck';
+import MyListDuck from './ducks/MyList.duck';
+import UserListingsDuck from './ducks/UserListings.duck';
 
 const initialState = {};
 const middleware = [thunk];
@@ -49,6 +51,8 @@ const rootReducer = combineDucks(
   ResellListingDuck,
   LocalListingDuck,
   BrowseUserDuck,
+  MyListDuck,
+  UserListingsDuck,
 );
 
 const store = createStore(

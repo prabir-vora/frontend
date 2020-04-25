@@ -74,7 +74,7 @@ class AlgoliaProductTemplate extends Component {
                     ? cx(Style.likeButton, Style.active)
                     : Style.likeButton
                 }
-                data-tip="Straight Fire"
+                data-tip="Cop or not?"
                 data-for="like"
                 onClick={() => this.onClickLike(_id)}
               >

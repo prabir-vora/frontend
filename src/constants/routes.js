@@ -16,12 +16,15 @@ import {
   SellPage,
   CreateListingPage,
   UserPage,
+  MyListPage,
 } from '../pages';
 
 const ROUTES = (routeName = '', props = {}) => {
   switch (routeName) {
     case 'homePage':
       return HomePage;
+    case 'myListPage':
+      return MyListPage;
     case 'resellerListPage':
       return ResellerListPage;
     case 'resellerSetupPage':

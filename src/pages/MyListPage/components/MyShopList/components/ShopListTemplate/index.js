@@ -5,13 +5,12 @@ import { Img } from 'fields';
 
 import { BuyIcon, PlusIcon, TickIcon, ShareIcon } from 'assets/Icons';
 import Style from './style.module.scss';
-import ReactTooltip from 'react-tooltip';
 import UserDuck from 'stores/ducks/User.duck';
 
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { ShowConfirmNotif } from 'functions';
 
-class AlgoliaListingTemplate extends Component {
+class ShopListTemplate extends Component {
   onClickAddToList = async listingID => {
     if (listingID === '') {
       return;
@@ -30,18 +29,19 @@ class AlgoliaListingTemplate extends Component {
   };
 
   render() {
-    console.log(this.props);
-    const { hit } = this.props;
+    const { listing } = this.props;
     const {
-      listingID = '',
+      id,
+      askingPrice,
       condition,
       size,
+      product,
       images,
-      askingPrice,
-      resellItemSlug,
-      reseller_username,
-      reseller_profile_picture = '',
-    } = hit;
+      reseller,
+      slug,
+    } = listing;
+    const { name, original_image_url } = product;
+    const { username } = reseller;
 
     const conditionMap = {
       new: { label: 'New, Deadstock' },
@@ -53,13 +53,13 @@ class AlgoliaListingTemplate extends Component {
     const { user } = this.props;
     const { myShopList } = user;
 
-    const isAddedToList = myShopList.includes(listingID);
+    const isAddedToList = myShopList.includes(id);
 
     return (
       <div
         style={{
-          width: '100%',
-          height: '120px',
+          width: '80%',
+          height: '140px',
           marginBottom: '20px',
           alignItems: 'center',
           display: 'flex',
@@ -67,14 +67,8 @@ class AlgoliaListingTemplate extends Component {
           padding: '10px',
         }}
       >
-        <ReactTooltip
-          effect="solid"
-          multiline={true}
-          type="light"
-          place="bottom"
-        />
         <a
-          href={`/shop/listing/${resellItemSlug}`}
+          href={`/shop/listing/${slug}`}
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -96,8 +90,9 @@ class AlgoliaListingTemplate extends Component {
             marginTop: '10px',
           }}
         >
+          <h4>{name}</h4>
           <a
-            href={`/shop/listing/${resellItemSlug}`}
+            href={`/shop/listing/${slug}`}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -111,16 +106,16 @@ class AlgoliaListingTemplate extends Component {
 
           <div style={{ marginTop: '20px', display: 'flex' }}>
             <Img
-              src={reseller_profile_picture}
+              src={''}
               style={{ width: '25px', height: '25px', borderRadius: '50%' }}
             />
             <a
               className={Style.resellerLink}
-              href={`/user/${reseller_username}`}
+              href={`/user/${username}`}
               target="_blank"
               rel="noopener noreferrer"
             >
-              <div style={{ marginLeft: '10px' }}>{reseller_username}</div>
+              <div style={{ marginLeft: '10px' }}>{username}</div>
             </a>
           </div>
         </div>
@@ -144,7 +139,7 @@ class AlgoliaListingTemplate extends Component {
             <div className={Style.listButtonContainer}>
               <button
                 className={Style.addToListIcon}
-                onClick={() => this.onClickAddToList(listingID)}
+                onClick={() => this.onClickAddToList(id)}
                 data-tip={
                   isAddedToList ? 'Remove from My List' : 'Add to My List'
                 }
@@ -152,7 +147,7 @@ class AlgoliaListingTemplate extends Component {
                 {isAddedToList ? <TickIcon /> : <PlusIcon />}
               </button>
               <CopyToClipboard
-                text={`localhost:3000/shop/listing/${resellItemSlug}`}
+                text={`localhost:3000/shop/listing/${slug}`}
                 onCopy={() => {
                   this.confirmNotif = ShowConfirmNotif({
                     message: 'Link Copied',
@@ -176,4 +171,4 @@ const mapStateToProps = state => {
   return { user: state[UserDuck.duckName].user };
 };
 
-export default connect(mapStateToProps)(AlgoliaListingTemplate);
+export default connect(mapStateToProps)(ShopListTemplate);

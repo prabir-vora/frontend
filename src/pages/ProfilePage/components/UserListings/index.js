@@ -1,123 +1,121 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import { Img } from 'fields';
 
-export default class UserListings extends Component {
-  renderResellItem = resellItem => {
-    const {
-      condition,
-      size,
-      images,
-      askingPrice,
-      availability,
-      product,
-    } = resellItem;
+import UserListingsDuck from 'stores/ducks/UserListings.duck';
 
-    console.log(resellItem);
+import InfiniteScroll from 'react-infinite-scroll-component';
 
-    const { name } = product;
-    const conditionMap = {
-      new: { label: 'New, Deadstock' },
-      new_defects: { label: 'New, Defects' },
-      new_opened: { label: 'New, Opened' },
-      preowned: { label: 'Preowned' },
-    };
+import { GridViewIcon, ListViewIcon } from 'assets/Icons';
+import ReactTooltip from 'react-tooltip';
 
-    return (
-      <div
-        style={{
-          width: '60%',
-          height: '120px',
-          marginBottom: '20px',
-          display: 'flex',
-          background: '#222320',
-          padding: '10px',
-        }}
-      >
-        <Img
-          src={images && images.length > 0 && images[0]}
-          style={{
-            width: '100px',
-            height: '100px',
-            backgroundColor: '#e0e0e0',
-          }}
-        />
-        <div
-          style={{
-            color: 'white',
-            fontSize: '12px',
-            marginLeft: '30px',
-            marginTop: '10px',
-          }}
-        >
-          <div>
-            <div style={{ marginBottom: '10px' }}>{name}</div>
-            <div style={{ marginBottom: '10px' }}>
-              Condition: {conditionMap[condition].label}
-            </div>
-            <div>Size: {size}</div>
-          </div>
+import Style from './style.module.scss';
+import cx from 'classnames';
 
-          <div style={{ marginTop: '20px', display: 'flex' }}>
-            <div style={{ marginLeft: '10px' }}>
-              Availability: {availability.join(', ')}
-            </div>
-          </div>
-        </div>
+import ShopListTemplate from './components/ShopListTemplate';
+import ShopGridTemplate from './components/ShopGridTemplate';
 
-        <div
-          style={{
-            marginLeft: 'auto',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <div style={{ marginRight: '20px' }}>
-            <h2 style={{ color: 'white', margin: '10px' }}>${askingPrice}</h2>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <button
-              style={{
-                width: '100px',
-                height: '30px',
-                background: '#938cfc',
-                color: 'white',
-                fontWeight: '600',
-                marginBottom: '20px',
-              }}
-            >
-              Edit
-            </button>
-            <button
-              style={{
-                width: '100px',
-                height: '30px',
-                background: '#938cfc',
-                color: 'white',
-                fontWeight: '600',
-                marginBottom: '20px',
-              }}
-            >
-              Share
-            </button>
-          </div>
-        </div>
-      </div>
-    );
+class UserListings extends Component {
+  state = { viewType: 'gridView' };
+
+  componentDidMount() {
+    const { data } = this.props;
+
+    const { actionCreators } = UserListingsDuck;
+    const { fetchUserListings } = actionCreators;
+    this.props.dispatch(fetchUserListings(data.nextPage));
+  }
+
+  onChangeViewType = selectedViewType => {
+    const { viewType } = this.state;
+    if (viewType !== selectedViewType) {
+      this.setState({
+        viewType: selectedViewType,
+      });
+    }
   };
+
+  fetchMoreListings = () => {
+    const { data } = this.props;
+    const { nextPage } = data;
+    const { actionCreators } = UserListingsDuck;
+    const { fetchUserListings } = actionCreators;
+    this.props.dispatch(fetchUserListings(nextPage));
+  };
+
   render() {
+    const { viewType } = this.state;
+    const { listings, hasMoreListings, loadingListings } = this.props.data;
+
+    console.log(listings);
+
     return (
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        {this.props.user.resellItems.map(this.renderResellItem)}
-      </div>
+      <React.Fragment>
+        <ReactTooltip effect="solid" multiline={true} type="light" />
+        <div className={Style.filterSummary}>
+          <div className={Style.filterSummaryRowItem}>
+            <div className={Style.viewTypeSelectionContainer}>
+              <button
+                data-tip="Grid View"
+                className={
+                  viewType === 'gridView'
+                    ? cx(Style.viewTypeButton, Style.active)
+                    : Style.viewTypeButton
+                }
+                onClick={() => this.onChangeViewType('gridView')}
+              >
+                <GridViewIcon />
+              </button>
+              <button
+                data-tip="List View"
+                className={
+                  viewType === 'listView'
+                    ? cx(Style.viewTypeButton, Style.active)
+                    : Style.viewTypeButton
+                }
+                onClick={() => this.onChangeViewType('listView')}
+              >
+                <ListViewIcon />
+              </button>
+            </div>
+          </div>
+        </div>
+        <InfiniteScroll
+          dataLength={listings.length}
+          next={this.fetchMoreListings}
+          hasMore={hasMoreListings && !loadingListings}
+          loader={
+            <h4 style={{ color: 'white', fontSize: '12px' }}>Loading...</h4>
+          }
+        >
+          <div
+            className={
+              viewType === 'gridView' ? Style.gridView : Style.listView
+            }
+          >
+            {listings.map(listing => {
+              return (
+                <React.Fragment>
+                  {viewType === 'gridView' ? (
+                    <ShopGridTemplate key={listing.id} listing={listing} />
+                  ) : (
+                    <ShopListTemplate key={listing.id} listing={listing} />
+                  )}
+                </React.Fragment>
+              );
+            })}
+          </div>
+        </InfiniteScroll>
+      </React.Fragment>
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    data: state[UserListingsDuck.duckName],
+  };
+};
+
+export default connect(mapStateToProps)(UserListings);

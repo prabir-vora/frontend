@@ -54,6 +54,7 @@ class App extends React.Component {
                 path="/localMarketplace"
                 component={ROUTES('localMarketplacePage')}
               />
+              <Route exact path="/myList" component={ROUTES('myListPage')} />
               <Route
                 exact
                 path="/localMarketplace/:listingID"
