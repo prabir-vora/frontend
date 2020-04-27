@@ -1,0 +1,49 @@
+.pageLayout {
+  display: flex;
+  position: relative;
+  box-align: center;
+  align-items: center;
+  flex-direction: column;
+  box-pack: start;
+  justify-content: flex-start;
+  flex: 1 1 0%;
+  background: black;
+  color: white;
+}
+
+.pageContent {
+  min-height: calc(100vh - 90px);
+  position: relative;
+  width: calc(100% - 180px);
+  align-items: center;
+}
+
+.pageTitle {
+  padding: 2em 20px;
+  width: 100%;
+}
+
+.filterResultsArea {
+  width: 100%;
+  position: relative;
+  align-self: stretch;
+  margin-bottom: 100px;
+  padding-bottom: 50px;
+}
+
+.resultsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 18%);
+  grid-auto-rows: minmax(250px, auto);
+  grid-gap: 4% 2%;
+}
+
+.seeAllButton {
+  margin-left: auto;
+  color: white;
+  font-size: 12px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

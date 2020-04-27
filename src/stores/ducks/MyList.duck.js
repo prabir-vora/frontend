@@ -76,6 +76,7 @@ const fetchUserLocalList = () => dispatch => {
                     askingPrice
                     condition
                     size
+                    slug
                     product {
                       id
                       name
@@ -83,6 +84,10 @@ const fetchUserLocalList = () => dispatch => {
                     }
                     reseller {
                         username
+                        _geoloc {
+                          lat
+                          lng
+                        }
                     }
                     images
                   }

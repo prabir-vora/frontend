@@ -4,6 +4,7 @@ import ProductListingPage from './ProductListingPage';
 import ProfilePage from './ProfilePage';
 import ResellerListPage from './ResellersListPage';
 import ResellerTemplatePage from './ResellerTemplatePage';
+import SearchPage from './SearchPage';
 import ShopPage from './ShopPage';
 import ShopListingPage from './ShopListingPage';
 import AdminPage from './AdminPage';
@@ -26,6 +27,7 @@ export {
   ResellerListPage,
   ResellerSetupPage,
   ResellerTemplatePage,
+  SearchPage,
   ShopPage,
   ShopListingPage,
   AdminPage,

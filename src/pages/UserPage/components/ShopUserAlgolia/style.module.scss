@@ -141,6 +141,7 @@
   }
 
   .resultsGrid {
-    grid-template-columns: repeat(auto-fill, 30%);
+    grid-template-columns: repeat(auto-fill, 23%);
+    grid-gap: 4% 2%;
   }
 }

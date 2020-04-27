@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import MainNavBar from 'components/MainNavBar';
+import MainFooter from 'components/MainFooter';
 import UserDuck from 'stores/ducks/User.duck';
 import MyListDuck from 'stores/ducks/MyList.duck';
 
@@ -69,11 +70,15 @@ class MyListPage extends Component {
               {listingSelection === 'shop' ? (
                 <MyShopList listings={this.props.myShopList} />
               ) : (
-                <MyLocalList listings={this.props.myLocalList} />
+                <MyLocalList
+                  listings={this.props.myLocalList}
+                  user={this.props.user}
+                />
               )}
             </div>
           </div>
         </div>
+        <MainFooter />
       </div>
     );
   }

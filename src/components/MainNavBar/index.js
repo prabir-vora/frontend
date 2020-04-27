@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { NavLink, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { MenuIcon } from 'assets/Icons';
+import { MenuIcon, SearchIcon, CloseIcon } from 'assets/Icons';
 
 import AppAuthDuck from 'stores/ducks/AppAuth.duck';
 import UserDuck from 'stores/ducks/User.duck';
@@ -11,12 +11,27 @@ import { withCookies } from 'react-cookie';
 
 import { Img } from 'fields';
 
+import qs from 'query-string';
+
 // Style
 import Style from './style.module.scss';
 import cx from 'classnames';
 
 class MainNavBar extends Component {
   state = { showSideNavBar: false };
+
+  removeSearch = () => {
+    return this.props.history.push({ pathname: '/search' });
+  };
+
+  onChangeSearchInput = searchInput => {
+    if (searchInput === '') {
+      return this.props.history.push({ pathname: '/search' });
+    }
+    const query = qs.stringify({ searchInput });
+
+    this.props.history.push({ search: query });
+  };
 
   protectedRouteClick = route => {
     if (!this.props.user) {
@@ -178,10 +193,17 @@ class MainNavBar extends Component {
   render() {
     console.log(this.props);
 
+    const { url = '' } = this.props.match;
+
+    const parsed = qs.parse(this.props.location.search);
+
+    const { searchInput = '' } = parsed;
+
     return (
       <nav className={Style.mainNavBar}>
         <div className={Style.navBarContent}>
           {this.sideNavigationMenu()}
+
           <NavLink
             exact
             to="/"
@@ -189,6 +211,43 @@ class MainNavBar extends Component {
           >
             Dripverse
           </NavLink>
+          {url === '/search' ? (
+            <div className={Style.searchContainer}>
+              <label className={Style.searchInputContainer}>
+                <input
+                  className={Style.searchInput}
+                  maxLength="80"
+                  autoCorrect="off"
+                  autoCapitalize="off"
+                  spellCheck={false}
+                  placeholder="Search Product, Brand, Designer, SKU ..."
+                  onChange={e => this.onChangeSearchInput(e.target.value)}
+                  value={searchInput}
+                  autoFocus
+                />
+              </label>
+              <div className={Style.searchInputOverlay}>
+                <span className={Style.searchLogo}>
+                  <SearchIcon />
+                </span>
+                <button
+                  className={Style.cancelSearchButton}
+                  onClick={() => this.removeSearch()}
+                >
+                  <CloseIcon />
+                </button>
+              </div>
+            </div>
+          ) : (
+            <NavLink
+              exact
+              to="/search"
+              className={cx(Style.mainHeaderNavLink, Style.searchIcon)}
+            >
+              <SearchIcon />
+            </NavLink>
+          )}
+
           <NavLink
             exact
             to="/"
@@ -197,6 +256,7 @@ class MainNavBar extends Component {
           >
             Discover
           </NavLink>
+
           <NavLink
             exact
             to="/shop"
@@ -205,6 +265,7 @@ class MainNavBar extends Component {
           >
             Shop
           </NavLink>
+
           <NavLink
             exact
             to="/localMarketplace"

@@ -24,6 +24,7 @@ import { ReactComponent as ShareIcon } from './ShareIcon.svg';
 import { ReactComponent as BuyIcon } from './BuyIcon.svg';
 import { ReactComponent as GridViewIcon } from './GridViewIcon.svg';
 import { ReactComponent as ListViewIcon } from './ListViewIcon.svg';
+import { ReactComponent as SearchIcon } from './SearchIcon.svg';
 
 export {
   AddPhotoIcon,
@@ -44,6 +45,7 @@ export {
   PencilIcon,
   ShoppingCartIcon,
   PlusIcon,
+  SearchIcon,
   SneakerIcon,
   ShareIcon,
   TickIcon,

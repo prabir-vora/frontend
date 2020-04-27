@@ -27,6 +27,7 @@ class App extends React.Component {
                 path="/resellers/:resellerID"
                 component={ROUTES('resellerTemplatePage')}
               />
+              <Route path="/search/" component={ROUTES('searchPage')} />
               <Route exact path="/shop" component={ROUTES('shopPage')} />
               <Route
                 exact
