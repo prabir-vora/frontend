@@ -69,12 +69,12 @@
   display: inline-flex;
   align-items: center;
   border-radius: 68px;
-  box-shadow: inset 0 0 0 2px #888;
+  box-shadow: 0 0 0 2px #888;
   color: #aaaaaa;
   cursor: pointer;
 
   &:hover {
-    box-shadow: inset 0 0 0 4px #ffffff !important;
+    box-shadow: 0 0 0 4px #ffffff !important;
     color: #ffffff;
   }
 }

@@ -1,0 +1,108 @@
+.pageLayout {
+  display: flex;
+  position: relative;
+  box-align: center;
+  align-items: center;
+  flex-direction: column;
+  box-pack: start;
+  justify-content: flex-start;
+  flex: 1 1 0%;
+  background: black;
+  color: white;
+}
+
+.pageContent {
+  min-height: calc(100vh - 90px);
+  position: relative;
+  width: calc(100% - 180px);
+  align-items: center;
+}
+
+.pageTitle {
+  padding: 2em 20px;
+  width: 100%;
+}
+
+.algoliaContentWrapper {
+  width: 100%;
+  margin-top: -20px;
+}
+
+.resultsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 45%);
+  grid-auto-rows: minmax(180px, auto);
+  grid-gap: 40px;
+  margin-bottom: 40px;
+}
+
+.gridCellWrapper {
+  position: relative;
+  box-sizing: border-box;
+}
+
+.gridCellContent {
+  background: #222320;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 100%;
+  width: 100%;
+}
+
+.gridCell {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  box-sizing: border-box;
+  align-items: stretch;
+  justify-content: space-around;
+  display: flex;
+  flex-direction: column;
+  padding: 15px 22px 20px;
+}
+
+.imageContainer {
+  position: relative;
+  width: 100px;
+  height: 100px;
+}
+
+.gridCellImage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  position: relative;
+  margin-top: 10px;
+}
+
+@media (min-width: 40em) {
+  .pageTitle {
+    padding: 4em 20px;
+  }
+
+  .shopAll {
+    font-size: 32px;
+    font-family: Plain;
+    line-height: 1.38;
+    letter-spacing: 0.1px;
+  }
+
+  .algoliaContentWrapper {
+    margin-top: 0px;
+  }
+
+  .resultsGrid {
+    grid-template-columns: repeat(auto-fill, 18%);
+    grid-gap: 2vw;
+  }
+}

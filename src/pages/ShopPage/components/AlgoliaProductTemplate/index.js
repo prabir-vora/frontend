@@ -8,10 +8,11 @@ import { Img } from 'fields';
 import { FireIcon } from 'assets/Icons';
 import NumberOfLikesDuck from 'stores/ducks/NumberOfLikes.duck';
 import UserDuck from 'stores/ducks/User.duck';
+import AppAuthDuck from 'stores/ducks/AppAuth.duck';
 import ReactTooltip from 'react-tooltip';
 
 class AlgoliaProductTemplate extends Component {
-  state = { numberOfLikes: null, fetchingLikes: false };
+  state = { numberOfLikes: null, fetchingLikes: true };
 
   async componentDidMount() {
     this.setState({ fetchingLikes: true });
@@ -30,6 +31,13 @@ class AlgoliaProductTemplate extends Component {
 
   onClickLike = async productID => {
     const { user, hit } = this.props;
+
+    if (!user) {
+      const { actionCreators } = AppAuthDuck;
+      const { showModal } = actionCreators;
+      return this.props.dispatch(showModal('login'));
+    }
+
     const { likedProducts } = user;
 
     const { actionCreators } = UserDuck;
@@ -60,9 +68,6 @@ class AlgoliaProductTemplate extends Component {
     const likedProducts = this.props.user ? this.props.user.likedProducts : [];
     const isLiked = likedProducts.includes(_id);
 
-    if (this.state.fetchingLikes) {
-      return null;
-    }
     return (
       <div className={Style.gridCellWrapper}>
         <div className={Style.gridCellContent}>

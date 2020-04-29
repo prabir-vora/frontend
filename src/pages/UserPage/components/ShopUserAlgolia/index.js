@@ -164,6 +164,7 @@ function renderGenderRefinementList(props) {
           textTransform: 'uppercase',
           fontSize: '14px',
           fontWeight: '600',
+          marginBottom: '10px',
         }}
       >
         Gender

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import MainNavBar from 'components/MainNavBar';
 import MainFooter from 'components/MainFooter';
+import LoadingScreen from 'components/LoadingScreen';
+
 import { connect } from 'react-redux';
 import BrowseUserDuck from 'stores/ducks/BrowseUser.duck';
 
@@ -60,107 +62,110 @@ class UserPage extends Component {
     const { user, listingSelection } = this.props;
     return (
       <div>
-        <MainNavBar />
+        {!this.props.user && <LoadingScreen />}
 
         {this.props.user && (
-          <div className={Style.pageLayout}>
-            <div className={Style.pageContent}>
-              <div className={Style.profileContainer}>
-                <div
-                  style={{
-                    width: '80px',
-                    height: '80px',
-                    marginRight: '100px',
-                  }}
-                >
-                  <Img
-                    src={
-                      this.props.user.profilePictureURL ||
-                      'https://i.ya-webdesign.com/images/placeholder-image-png-4.png'
+          <React.Fragment>
+            <MainNavBar />
+            <div className={Style.pageLayout}>
+              <div className={Style.pageContent}>
+                <div className={Style.profileContainer}>
+                  <div
+                    style={{
+                      width: '80px',
+                      height: '80px',
+                      marginRight: '100px',
+                    }}
+                  >
+                    <Img
+                      src={
+                        this.props.user.profilePictureURL ||
+                        'https://i.ya-webdesign.com/images/placeholder-image-png-4.png'
+                      }
+                      alt={`${this.props.user.username} image`}
+                      style={{ width: '80px', height: '80px' }}
+                    />
+                  </div>
+
+                  <div
+                    style={{ display: 'flex', justifyContent: 'space-around' }}
+                  >
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        marginRight: '100px',
+                      }}
+                    >
+                      <h4>Listings</h4>
+                      <p>{user.resellItems ? user.resellItems.length : 0}</p>
+                    </div>
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        marginRight: '100px',
+                      }}
+                    >
+                      <h4>Reviews</h4>
+                      <p>20</p>
+                    </div>
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        marginRight: '100px',
+                      }}
+                    >
+                      <h4>Joined</h4>
+                      <p>March 2020</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className={Style.profileContainer}>
+                  <div style={{ marginRight: '20px' }}>
+                    <div>@{this.props.user.username}</div>
+                  </div>
+                  <Button className={Style.followButton}>Follow</Button>
+                </div>
+
+                <div className={Style.listingSelectionContainer}>
+                  <span
+                    className={
+                      listingSelection === 'shop'
+                        ? cx(Style.selectionButton, Style.activeSelection)
+                        : Style.selectionButton
                     }
-                    alt={`${this.props.user.username} image`}
-                    style={{ width: '80px', height: '80px' }}
-                  />
+                    onClick={() => this.toggleSelection('shop')}
+                  >
+                    SHOP LISTINGS
+                  </span>
+                  <span className={Style.seperator}></span>
+                  <span
+                    className={
+                      listingSelection === 'local'
+                        ? cx(Style.selectionButton, Style.activeSelection)
+                        : Style.selectionButton
+                    }
+                    onClick={() => this.toggleSelection('local')}
+                  >
+                    LOCAL LISTINGS
+                  </span>
                 </div>
 
-                <div
-                  style={{ display: 'flex', justifyContent: 'space-around' }}
-                >
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      marginRight: '100px',
-                    }}
-                  >
-                    <h4>Listings</h4>
-                    <p>{user.resellItems ? user.resellItems.length : 0}</p>
-                  </div>
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      marginRight: '100px',
-                    }}
-                  >
-                    <h4>Reviews</h4>
-                    <p>20</p>
-                  </div>
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      marginRight: '100px',
-                    }}
-                  >
-                    <h4>Joined</h4>
-                    <p>March 2020</p>
-                  </div>
+                <div className={Style.algoliaContentWrapper}>
+                  {listingSelection === 'shop' ? (
+                    <ShopUserAlgolia reseller_username={user.username} />
+                  ) : (
+                    <LocalUserAlgolia user={user} />
+                  )}
                 </div>
-              </div>
-
-              <div className={Style.profileContainer}>
-                <div style={{ marginRight: '20px' }}>
-                  <div>@{this.props.user.username}</div>
-                </div>
-                <Button className={Style.followButton}>Follow</Button>
-              </div>
-
-              <div className={Style.listingSelectionContainer}>
-                <span
-                  className={
-                    listingSelection === 'shop'
-                      ? cx(Style.selectionButton, Style.activeSelection)
-                      : Style.selectionButton
-                  }
-                  onClick={() => this.toggleSelection('shop')}
-                >
-                  SHOP LISTINGS
-                </span>
-                <span className={Style.seperator}></span>
-                <span
-                  className={
-                    listingSelection === 'local'
-                      ? cx(Style.selectionButton, Style.activeSelection)
-                      : Style.selectionButton
-                  }
-                  onClick={() => this.toggleSelection('local')}
-                >
-                  LOCAL LISTINGS
-                </span>
-              </div>
-
-              <div className={Style.algoliaContentWrapper}>
-                {listingSelection === 'shop' ? (
-                  <ShopUserAlgolia reseller_username={user.username} />
-                ) : (
-                  <LocalUserAlgolia user={user} />
-                )}
               </div>
             </div>
-          </div>
+            <MainFooter />
+          </React.Fragment>
         )}
-        <MainFooter />
       </div>
     );
   }

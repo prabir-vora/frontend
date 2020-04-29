@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import MainNavBar from 'components/MainNavBar';
 import MainFooter from 'components/MainFooter';
+import LoadingScreen from 'components/LoadingScreen';
 
 import { connect } from 'react-redux';
 import ResellListingDuck from 'stores/ducks/ResellListing.duck';
@@ -200,7 +201,13 @@ class ShopListingPage extends Component {
               </button>
             </CopyToClipboard>
           </div>
-          <div>
+          <div
+            style={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'space-around',
+            }}
+          >
             <button
               className={Style.buttonStyle}
               // onClick={() => {
@@ -228,7 +235,7 @@ class ShopListingPage extends Component {
     const data = listingsMap[currentSlug];
 
     if (data === null || data === undefined) {
-      return null;
+      return <LoadingScreen />;
     }
 
     return (

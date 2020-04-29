@@ -7,16 +7,25 @@ import { BuyIcon, PlusIcon, TickIcon, ShareIcon } from 'assets/Icons';
 import Style from './style.module.scss';
 import ReactTooltip from 'react-tooltip';
 import UserDuck from 'stores/ducks/User.duck';
+import AppAuthDuck from 'stores/ducks/AppAuth.duck';
 
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { ShowConfirmNotif } from 'functions';
 
 class AlgoliaListingTemplate extends Component {
   onClickAddToList = async listingID => {
+    const { user } = this.props;
+
+    if (!user) {
+      const { actionCreators } = AppAuthDuck;
+      const { showModal } = actionCreators;
+      return this.props.dispatch(showModal('login'));
+    }
+
     if (listingID === '') {
       return;
     }
-    const { user } = this.props;
+
     const { myShopList } = user;
 
     const { actionCreators } = UserDuck;
@@ -51,7 +60,10 @@ class AlgoliaListingTemplate extends Component {
     };
 
     const { user } = this.props;
-    const { myShopList } = user;
+
+    let myShopList;
+
+    myShopList = user ? user.myShopList : [];
 
     const isAddedToList = myShopList.includes(listingID);
 

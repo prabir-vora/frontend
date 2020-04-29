@@ -1,4 +1,5 @@
 import AuthenticationPage from './AuthenticationPage';
+import BrandsPage from './BrandsPage';
 import HomePage from './HomePage';
 import ProductListingPage from './ProductListingPage';
 import ProfilePage from './ProfilePage';
@@ -15,9 +16,12 @@ import ResellerSetupPage from './ResellerSetupPage';
 import LocalListingPage from './LocalListingPage';
 import UserPage from './UserPage';
 import MyListPage from './MyListPage';
+import AboutPage from './AboutPage';
 
 export {
+  AboutPage,
   AuthenticationPage,
+  BrandsPage,
   CreateListingPage,
   HomePage,
   LocalListingPage,

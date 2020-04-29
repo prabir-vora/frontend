@@ -60,11 +60,12 @@
   color: #808080;
   border-width: 0px;
   cursor: pointer;
+  margin-right: 40px;
 }
 
 .activeProductCategory {
   color: white;
-  text-decoration: underline;
+  font-size: 22px;
 }
 
 .filterSummary {
@@ -180,6 +181,6 @@
 
   .resultsGrid {
     grid-template-columns: repeat(auto-fill, 23%);
-    grid-gap: 4% 2%;
+    grid-gap: 2vw;
   }
 }

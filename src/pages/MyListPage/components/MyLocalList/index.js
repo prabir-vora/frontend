@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 
 import LocalListTemplate from './components/LocalListTemplate';
 import LocalGridTemplate from './components/LocalGridTemplate';
@@ -9,7 +10,7 @@ import ReactTooltip from 'react-tooltip';
 import Style from './style.module.scss';
 import cx from 'classnames';
 
-export default class MyLocalList extends Component {
+class MyLocalList extends Component {
   state = { viewType: 'gridView' };
 
   onChangeViewType = selectedViewType => {
@@ -19,6 +20,10 @@ export default class MyLocalList extends Component {
         viewType: selectedViewType,
       });
     }
+  };
+
+  goToLocalMarketplace = () => {
+    this.props.history.push('/localMarketplace');
   };
 
   render() {
@@ -55,6 +60,19 @@ export default class MyLocalList extends Component {
             </div>
           </div>
         </div>
+        <div>
+          {this.props.listings.length === 0 && (
+            <div className={Style.noResults}>
+              <h3>No saved listings.</h3>
+              <button
+                className={Style.pillButton}
+                onClick={() => this.goToLocalMarketplace()}
+              >
+                Browse Listings nearby
+              </button>
+            </div>
+          )}
+        </div>
         <div
           className={viewType === 'gridView' ? Style.gridView : Style.listView}
         >
@@ -82,3 +100,5 @@ export default class MyLocalList extends Component {
     );
   }
 }
+
+export default withRouter(MyLocalList);

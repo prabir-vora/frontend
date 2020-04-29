@@ -21,12 +21,7 @@ export default class ResellItemTemplate extends Component {
     return (
       <div className={Style.gridCellWrapper}>
         <div className={Style.gridCellContent}>
-          <a
-            title={name}
-            href={`/localMarketplace/${resellItemSlug}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a title={name} href={`/localMarketplace/${resellItemSlug}`}>
             <div>
               <div className={Style.gridCell}>
                 <div

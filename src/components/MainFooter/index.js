@@ -29,7 +29,7 @@ export default class MainFooter extends Component {
         </div>
         <ul className={Style.footerLinksContainer}>
           <li className={Style.footerLink}>
-            <a>About</a>
+            <a href="/about">About</a>
           </li>
           <li className={Style.footerLink}>
             <a>FAQs</a>

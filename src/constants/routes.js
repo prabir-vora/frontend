@@ -1,8 +1,10 @@
 //  Import all the pages
 import React from 'react';
 import {
+  AboutPage,
   AdminPage,
   AuthenticationPage,
+  BrandsPage,
   HomePage,
   ProductListingPage,
   ProfilePage,
@@ -24,6 +26,10 @@ const ROUTES = (routeName = '', props = {}) => {
   switch (routeName) {
     case 'homePage':
       return HomePage;
+    case 'aboutPage':
+      return AboutPage;
+    case 'brandsPage':
+      return BrandsPage;
     case 'myListPage':
       return MyListPage;
     case 'resellerListPage':

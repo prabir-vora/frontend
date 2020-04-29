@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import LocalListingDuck from 'stores/ducks/LocalListing.duck';
 import ConversationDuck from 'stores/ducks/Conversation.duck';
 import UserDuck from 'stores/ducks/User.duck';
+import AppAuthDuck from 'stores/ducks/AppAuth.duck';
 import ReactTooltip from 'react-tooltip';
 
 import { TickIcon, PlusIcon, ShareIcon } from 'assets/Icons';
@@ -18,6 +19,7 @@ import { ImageGallery, Img } from 'fields';
 
 import Style from './style.module.scss';
 import MainFooter from 'components/MainFooter';
+import LoadingScreen from 'components/LoadingScreen';
 
 class LocalListingPage extends Component {
   async componentDidMount() {
@@ -54,10 +56,19 @@ class LocalListingPage extends Component {
 
   onClickAddToList = async listingID => {
     console.log(listingID);
+
+    const { user } = this.props;
+
+    if (!user) {
+      const { actionCreators } = AppAuthDuck;
+      const { showModal } = actionCreators;
+      return this.props.dispatch(showModal('login'));
+    }
+
     if (listingID === '') {
       return;
     }
-    const { user } = this.props;
+
     const { myLocalList } = user;
 
     const { actionCreators } = UserDuck;
@@ -120,10 +131,10 @@ class LocalListingPage extends Component {
 
     const { user } = this.props;
 
-    if (user === null) {
-      return null;
-    }
-    const { myLocalList } = user;
+    let myLocalList;
+
+    myLocalList = user ? user.myLocalList : [];
+
     const isAddedToList = myLocalList.includes(data.id);
 
     return (
@@ -243,7 +254,7 @@ class LocalListingPage extends Component {
     const data = listingsMap[currentSlug];
 
     if (data === null || data === undefined) {
-      return null;
+      return <LoadingScreen />;
     }
 
     return (

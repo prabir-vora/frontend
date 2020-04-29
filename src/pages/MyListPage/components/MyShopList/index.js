@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 
 import ShopListTemplate from './components/ShopListTemplate';
 import ShopGridTemplate from './components/ShopGridTemplate';
@@ -9,7 +10,7 @@ import ReactTooltip from 'react-tooltip';
 import Style from './style.module.scss';
 import cx from 'classnames';
 
-export default class MyShopList extends Component {
+class MyShopList extends Component {
   state = { viewType: 'gridView' };
 
   onChangeViewType = selectedViewType => {
@@ -21,6 +22,9 @@ export default class MyShopList extends Component {
     }
   };
 
+  goToShop = () => {
+    this.props.history.push('/shop');
+  };
   render() {
     const { viewType } = this.state;
 
@@ -55,6 +59,19 @@ export default class MyShopList extends Component {
             </div>
           </div>
         </div>
+        <div>
+          {this.props.listings.length === 0 && (
+            <div className={Style.noResults}>
+              <h3>No saved listings.</h3>
+              <button
+                className={Style.pillButton}
+                onClick={() => this.goToShop()}
+              >
+                Go to Shop
+              </button>
+            </div>
+          )}
+        </div>
         <div
           className={viewType === 'gridView' ? Style.gridView : Style.listView}
         >
@@ -74,3 +91,5 @@ export default class MyShopList extends Component {
     );
   }
 }
+
+export default withRouter(MyShopList);

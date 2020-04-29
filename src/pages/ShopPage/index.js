@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import UserDuck from 'stores/ducks/User.duck';
+
 import algoliasearch from 'algoliasearch';
 import MainNavBar from 'components/MainNavBar';
 import { TickIcon } from 'assets/Icons';
 import { Rheostat } from 'fields';
+import './pagination.css';
+import { withCookies } from 'react-cookie';
 
 import {
   InstantSearch,
-  //   SearchBox,
   connectStats,
   //   Hits,
   connectRefinementList,
@@ -22,6 +26,7 @@ import cx from 'classnames';
 
 import { AlgoliaProduceTemplate } from './components';
 import MainFooter from 'components/MainFooter';
+import LoadingScreen from 'components/LoadingScreen';
 import ReactTooltip from 'react-tooltip';
 
 const searchClient = algoliasearch(
@@ -32,6 +37,10 @@ const searchClient = algoliasearch(
 // Custom Components
 
 function Hits(props) {
+  console.log(props);
+  if (props.hits.length === 0) {
+    return null;
+  }
   return (
     <div className={Style.resultsGrid}>
       {props.hits.map(hit => {
@@ -169,6 +178,7 @@ function renderGenderRefinementList(props) {
           textTransform: 'uppercase',
           fontSize: '14px',
           fontWeight: '600',
+          marginBottom: '10px',
         }}
       >
         Gender
@@ -346,13 +356,45 @@ const CustomRefinementList = connectRefinementList(RefinementListCustom);
 
 const CustomRangeSlider = connectRange(RangeSlider);
 
-export default class ShopPage extends Component {
-  state = { showFilters: false, productCategory: 'sneakers' };
+class ShopPage extends Component {
+  state = {
+    showFilters: false,
+    productCategory: 'sneakers',
+    isUserPresent: false,
+  };
 
-  componentDidUpdate() {
+  componentDidMount() {
+    const jwt = this.props.cookies.get('jwt');
+    if (jwt) {
+      this.setState({ isUserPresent: true });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
     ReactTooltip.rebuild();
+
+    const jwt = this.props.cookies.get('jwt');
+    if (jwt && !prevState.isUserPresent) {
+      this.setState({ isUserPresent: true });
+    }
+
+    if (!jwt && prevState.isUserPresent) {
+      this.setState({ isUserPresent: false });
+    }
   }
   render() {
+    const { user } = this.props;
+
+    if (this.state.isUserPresent && !user) {
+      return <LoadingScreen />;
+    }
+
+    let filters;
+
+    filters = user
+      ? `productCategory:${this.state.productCategory} AND (NOT reseller_username:${user.username})`
+      : `productCategory:${this.state.productCategory}`;
+
     return (
       <div>
         <ReactTooltip
@@ -503,18 +545,61 @@ export default class ShopPage extends Component {
                       <CustomRangeSlider attribute="askingPrice" />
                     </div>
                     <Configure
-                      hitsPerPage={9}
-                      filters={`productCategory:${this.state.productCategory}`}
+                      hitsPerPage={8}
+                      filters={filters}
                       distinct={true}
                     />
                   </div>
                   <div className={Style.filterResultsArea}>
                     <CustomHits className={Style.resultsGrid} />
-                    {/* <Hits hitComponent={AlgoliaProduceTemplate} /> */}
                   </div>
                 </div>
                 <div className={Style.pagination}>
-                  <Pagination />
+                  <Pagination
+                    padding={2}
+                    showFirst={false}
+                    showLast={false}
+                    translations={{
+                      previous: (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="10"
+                          height="10"
+                          viewBox="0 0 10 10"
+                        >
+                          <g
+                            fill="none"
+                            fillRule="evenodd"
+                            stroke="#fff"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="1.143"
+                          >
+                            <path d="M9 5H1M5 9L1 5l4-4" />
+                          </g>
+                        </svg>
+                      ),
+                      next: (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="10"
+                          height="10"
+                          viewBox="0 0 10 10"
+                        >
+                          <g
+                            fill="none"
+                            fillRule="evenodd"
+                            stroke="#fff"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="1.143"
+                          >
+                            <path d="M1 5h8M5 9l4-4-4-4" />
+                          </g>
+                        </svg>
+                      ),
+                    }}
+                  />{' '}
                 </div>
               </InstantSearch>
             </div>
@@ -525,3 +610,12 @@ export default class ShopPage extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    user: state[UserDuck.duckName].user,
+  };
+};
+
+const x = withCookies(ShopPage);
+export default connect(mapStateToProps)(x);

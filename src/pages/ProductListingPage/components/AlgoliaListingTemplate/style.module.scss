@@ -30,7 +30,7 @@
 }
 
 .addToListIcon {
-  box-shadow: inset 0 0 0 2px #888;
+  box-shadow: 0 0 0 2px #888;
   border-radius: 50%;
   cursor: pointer;
   width: 30px;
@@ -47,7 +47,7 @@
   &:hover {
     width: 32px;
     height: 32px;
-    box-shadow: inset 0 0 0 2px white;
+    box-shadow: 0 0 0 2px white;
 
     & > svg {
       width: 18px;
@@ -58,7 +58,7 @@
 }
 
 .shareIcon {
-  box-shadow: inset 0 0 0 2px #888;
+  box-shadow: 0 0 0 2px #888;
   border-radius: 50%;
   cursor: pointer;
   width: 30px;
@@ -74,7 +74,7 @@
   &:hover {
     width: 32px;
     height: 32px;
-    box-shadow: inset 0 0 0 2px white;
+    box-shadow: 0 0 0 2px white;
 
     & > svg {
       width: 18px;

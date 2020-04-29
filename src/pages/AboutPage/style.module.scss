@@ -1,0 +1,84 @@
+.pageLayout {
+  display: flex;
+  position: relative;
+  box-align: center;
+  align-items: center;
+  flex-direction: column;
+  box-pack: start;
+  justify-content: flex-start;
+  flex: 1 1 0%;
+  background: black;
+  color: white;
+}
+
+.pageContent {
+  min-height: calc(100vh - 90px);
+  position: relative;
+  width: calc(100% - 180px);
+  align-items: center;
+}
+
+.pageTitle {
+  padding: 2em 20px;
+  width: 100%;
+}
+
+.missionContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.ribbonsContainer {
+  margin-top: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.toContainer {
+  font-size: 45px;
+  font-weight: 700;
+  line-height: 1.15556;
+  z-index: 10;
+}
+
+.sellerContainer {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 60px;
+  margin-bottom: 40px;
+}
+
+.buyerContainer {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: auto;
+  margin-right: 60px;
+}
+
+.toRibbon {
+  display: inline;
+  position: relative;
+
+  &::after {
+    background: #938cfc;
+    bottom: 0;
+    content: '';
+    display: block;
+    height: 25%;
+    left: -10px;
+    position: absolute;
+    right: -10px;
+    z-index: -1;
+  }
+}
+
+.learnMore {
+  text-decoration: underline;
+}

@@ -5,6 +5,8 @@ import { Rheostat } from 'fields';
 
 import ResellItemTemplate from '../ResellItemTemplate';
 
+import './pagination.css';
+
 import {
   InstantSearch,
   connectStats,
@@ -373,6 +375,13 @@ export default class LocalListingsPage extends Component {
   };
 
   render() {
+    const { user } = this.props;
+    let filters;
+
+    filters = user
+      ? `productCategory:${this.state.productCategory} AND (NOT reseller_username:${user.username})`
+      : `productCategory:${this.state.productCategory}`;
+
     return (
       <div className={Style.pageContent}>
         <div className={Style.pageTitle}>
@@ -530,7 +539,7 @@ export default class LocalListingsPage extends Component {
                 </div>
                 <Configure
                   hitsPerPage={9}
-                  filters={`productCategory:${this.state.productCategory}`}
+                  filters={filters}
                   distinct={false}
                   aroundLatLng={`${this.props.latitude},${this.props.longitude}`}
                   aroundRadius={this.state.selectedRadius.value}
@@ -542,7 +551,51 @@ export default class LocalListingsPage extends Component {
               </div>
             </div>
             <div className={Style.pagination}>
-              <Pagination />
+              <Pagination
+                padding={2}
+                showFirst={false}
+                showLast={false}
+                translations={{
+                  previous: (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="10"
+                      height="10"
+                      viewBox="0 0 10 10"
+                    >
+                      <g
+                        fill="none"
+                        fillRule="evenodd"
+                        stroke="#fff"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="1.143"
+                      >
+                        <path d="M9 5H1M5 9L1 5l4-4" />
+                      </g>
+                    </svg>
+                  ),
+                  next: (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="10"
+                      height="10"
+                      viewBox="0 0 10 10"
+                    >
+                      <g
+                        fill="none"
+                        fillRule="evenodd"
+                        stroke="#fff"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="1.143"
+                      >
+                        <path d="M1 5h8M5 9l4-4-4-4" />
+                      </g>
+                    </svg>
+                  ),
+                }}
+              />{' '}
             </div>
           </InstantSearch>
         </div>

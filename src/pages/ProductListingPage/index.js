@@ -10,6 +10,7 @@ import moment from 'moment';
 
 import { connect } from 'react-redux';
 import ProductListingDuck from 'stores/ducks/ProductListing.duck';
+import AppAuthDuck from 'stores/ducks/AppAuth.duck';
 import UserDuck from 'stores/ducks/User.duck';
 
 import { CopyToClipboard } from 'react-copy-to-clipboard';
@@ -32,6 +33,7 @@ import MainFooter from 'components/MainFooter';
 
 import ReactTooltip from 'react-tooltip';
 import { ShowConfirmNotif } from 'functions';
+import LoadingScreen from 'components/LoadingScreen';
 
 const searchClient = algoliasearch(
   'UYWEM6FQPE',
@@ -214,8 +216,14 @@ class ProductListingPage extends Component {
 
   onClickLike = async productID => {
     const { user } = this.props;
-    const { likedProducts } = user;
 
+    if (!user) {
+      const { actionCreators } = AppAuthDuck;
+      const { showModal } = actionCreators;
+      return this.props.dispatch(showModal('login'));
+    }
+
+    const { likedProducts } = user;
     const { actionCreators } = UserDuck;
     const { followProduct, unfollowProduct } = actionCreators;
 
@@ -357,62 +365,15 @@ class ProductListingPage extends Component {
     );
   };
 
-  renderResellers = data => {
-    const { resellItems } = data;
-    if (resellItems.length === 0) {
-      return <div>No Resell items found</div>;
-    }
-
-    const conditionMap = {
-      new: { label: 'New, Deadstock' },
-      new_defects: { label: 'New, Defects' },
-      new_opened: { label: 'New, Opened' },
-      preowned: { label: 'Preowned' },
-    };
-
-    return (
-      <div className={Style.listingsContainer}>
-        <button
-          className={Style.viewResellersButton}
-          onClick={() => {
-            this.setState({ viewResellers: false });
-          }}
-        >
-          <span className={Style.buttonText}>Back</span>
-        </button>
-        <ul className={Style.listingsList}>
-          {resellItems.map(resellItem => {
-            const { reseller, condition, askingPrice, size } = resellItem;
-            const { name, imageURL } = reseller;
-
-            return (
-              <li
-                className={
-                  resellItem.id === this.state.selectedResellItem.id
-                    ? cx(Style.resellerListItem, Style.selected)
-                    : Style.resellerListItem
-                }
-                onClick={() =>
-                  this.setState({ selectedResellItem: resellItem })
-                }
-              >
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <Img className={Style.resellerImage} src={imageURL} />
-                  <div>{name}</div>
-                </div>
-                <div> {conditionMap[condition].label}</div>
-                <div>Size: {size}</div>
-                <div>${askingPrice}</div>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-    );
-  };
-
   renderListings = () => {
+    const { user } = this.props;
     const { name, productCategory } = this.state.product;
+    let filters;
+
+    filters = user
+      ? `name:"${name}" AND (NOT reseller_username:${user.username})`
+      : `name:"${name}"`;
+
     return (
       <React.Fragment>
         <div className={Style.pageTitle}>
@@ -483,11 +444,7 @@ class ProductListingPage extends Component {
               </div>
               <div className={Style.filterResultsArea}>
                 <CustomHits className={Style.resultsGrid} />
-                <Configure
-                  hitsPerPage={9}
-                  filters={`name:"${name}"`}
-                  distinct={false}
-                />
+                <Configure hitsPerPage={9} filters={filters} distinct={false} />
               </div>
             </div>
           </div>
@@ -502,7 +459,7 @@ class ProductListingPage extends Component {
     const data = listingsMap[currentSlug];
 
     if (data === null || data === undefined) {
-      return null;
+      return <LoadingScreen />;
     }
 
     return (

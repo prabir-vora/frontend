@@ -23,7 +23,32 @@
   margin-bottom: 20px;
 }
 
-.filterSummaryRowItem {
+.noResults {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.pillButton {
+  padding: 19px 28px;
+  border-radius: 38px;
+  transform: matrix(1, 0, 0, 1, 0, 1.14936);
+  opacity: 1;
+  font-weight: 600;
+  font-size: 16px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 68px;
+  box-shadow: 0 0 0 2px #888;
+  color: #aaaaaa;
+  cursor: pointer;
+
+  &:hover {
+    box-shadow: 0 0 0 4px #ffffff !important;
+    color: #ffffff;
+  }
 }
 
 .viewTypeSelectionContainer {
@@ -54,6 +79,6 @@
 @media (min-width: 40em) {
   .gridView {
     grid-template-columns: repeat(auto-fill, 23%);
-    grid-gap: 4% 2%;
+    grid-gap: 2vw;
   }
 }

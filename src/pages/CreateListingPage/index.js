@@ -228,7 +228,9 @@ class CreateListingPage extends Component {
       case 'autocomplete':
         return (
           <InstantSearch indexName="test_PRODUCTS" searchClient={searchClient}>
-            <h4 style={{ fontWeight: '400' }}>{field.label}</h4>
+            <h4 style={{ fontWeight: '500', color: '#919496' }}>
+              {field.label}
+            </h4>
             <Configure
               hitsPerPage={8}
               filters={`productCategory:${this.state.resellItemInfo.productType}`}
@@ -280,7 +282,9 @@ class CreateListingPage extends Component {
         return (
           <div style={{ marginBottom: '30px' }} key={id}>
             <div>
-              <h4 style={{ fontWeight: '400' }}>{field.label}</h4>
+              <h4 style={{ fontWeight: '500', color: '#919496' }}>
+                {field.label}
+              </h4>
               {this.renderRadioButtons(id, options)}
             </div>
           </div>
@@ -289,7 +293,9 @@ class CreateListingPage extends Component {
       case 'textarea':
         return (
           <div key={id} style={{ marginBottom: '20px', margin: '20px 0px' }}>
-            <h4 style={{ fontWeight: '400' }}>Asking Price $</h4>
+            <h4 style={{ fontWeight: '500', color: '#919496' }}>
+              Asking Price $
+            </h4>
             <TextInput
               {...field}
               hasMultipleLines={fieldKind === 'textarea' ? true : false}
@@ -302,21 +308,27 @@ class CreateListingPage extends Component {
       case 'dropdown':
         return (
           <div key={id}>
-            <h4 style={{ fontWeight: '400' }}>{field.label}</h4>
+            <h4 style={{ fontWeight: '500', color: '#919496' }}>
+              {field.label}
+            </h4>
             {this.renderDropdown(id)}
           </div>
         );
       case 'checkboxes':
         return (
           <div key={id}>
-            <h4 style={{ fontWeight: '400' }}>{field.label}</h4>
+            <h4 style={{ fontWeight: '500', color: '#919496' }}>
+              {field.label}
+            </h4>
             {this.renderCheckBoxes(options)}
           </div>
         );
       case 'multipleImagesUploader':
         return (
           <div key={id}>
-            <h4 style={{ fontWeight: '400' }}>{field.label}</h4>
+            <h4 style={{ fontWeight: '500', color: '#919496' }}>
+              {field.label}
+            </h4>
             <h6>Upload 4 - 5 images from good angles</h6>
             <MultipleImagesUploader
               imageURLs={this.state.resellItemInfo.images}

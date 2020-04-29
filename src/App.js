@@ -22,6 +22,8 @@ class App extends React.Component {
             <ClientModals />
             <Switch>
               <Route exact path="/" component={ROUTES('homePage')} />
+              <Route exact path="/about" component={ROUTES('aboutPage')} />
+              <Route exact path="/brands" component={ROUTES('brandsPage')} />
               <Route path="/resellers" component={ROUTES('resellerListPage')} />
               <Route
                 path="/resellers/:resellerID"
