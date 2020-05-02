@@ -103,7 +103,11 @@ function renderConditionRefinementList(props) {
         {sortedItems.map(item => {
           return (
             <p
-              style={{ fontSize: '12px', cursor: 'pointer' }}
+              style={{
+                fontSize: '12px',
+                cursor: 'pointer',
+                marginBottom: '7px',
+              }}
               onClick={() => props.refine(item.value)}
             >
               {item.isRefined ? (

@@ -1,0 +1,170 @@
+.Overlay {
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.7);
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 350;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.Modal {
+  border: 1px solid #e1e1e1;
+  box-sizing: border-box;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  max-width: 343px;
+  height: auto;
+  max-height: 100%;
+  padding: 0;
+  width: 100%;
+  padding: 0px;
+
+  position: relative;
+  background: #fff;
+  -webkit-overflow-scrolling: touch;
+  outline: none;
+
+  box-sizing: border-box;
+  box-shadow: 0 0 18px rgba(0, 0, 0, 0.4);
+  overflow-y: auto;
+}
+
+.header {
+  justify-content: left;
+  padding: 0 24px;
+  width: 100%;
+  min-height: 60px;
+  border-bottom: 1px solid #e1e1e1;
+  padding: 0 20px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.body {
+  padding: 15px 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  display: inline;
+  position: relative;
+  z-index: 2;
+
+  &::after {
+    background: #938cfc;
+    bottom: 0;
+    content: '';
+    display: block;
+    height: 25%;
+    left: -10px;
+    position: absolute;
+    right: -10px;
+    z-index: -1;
+  }
+}
+
+.StepsContainer {
+  display: flex;
+}
+
+.Step {
+  width: 23%;
+  margin-right: 2%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+
+  & > svg {
+    width: 40%;
+    height: 85px;
+    margin-bottom: 20px;
+  }
+}
+
+.StepTitleContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.StepTitle {
+  text-align: center;
+}
+
+.StepCount {
+  background: #938cfc;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 1.75rem;
+  font-weight: 700;
+  height: 2.5rem;
+  left: 50%;
+  line-height: 2.5rem;
+  width: 2.5rem;
+  margin-right: 10px;
+}
+
+.StepDescription {
+  font-size: 13px;
+  color: grey;
+  margin-bottom: 10px;
+}
+
+.dontCancelContainer {
+  width: 100%;
+  padding: 20px;
+  display: flex;
+}
+
+.points {
+  background: red;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  height: 4rem;
+  left: 50%;
+  line-height: 4rem;
+  width: 4rem;
+  margin-right: 10px;
+}
+
+.ModalButton {
+  padding: 14px 25px;
+  width: 50%;
+  background: black;
+  color: white;
+  border-radius: 10px;
+  font-size: 14px;
+  margin-bottom: 1em;
+  margin-top: 1em;
+}
+
+@media only screen and (min-width: 771px) {
+  .Modal {
+    max-width: 90%;
+    width: 80%;
+    height: auto;
+    max-height: 95%;
+  }
+
+  .header {
+    padding: 0 40px;
+    border-bottom: none;
+  }
+
+  .body {
+    padding: 15px 40px 20px 40px;
+  }
+}

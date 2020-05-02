@@ -1,0 +1,94 @@
+.pageLayout {
+  display: flex;
+  position: relative;
+  box-align: center;
+  align-items: center;
+  flex-direction: column;
+  box-pack: start;
+  justify-content: flex-start;
+  flex: 1 1 0%;
+  background: black;
+  color: white;
+}
+
+.pageContent {
+  min-height: calc(100vh - 90px);
+  position: relative;
+  width: calc(100% - 180px);
+  align-items: center;
+}
+
+.pageTitle {
+  display: flex;
+  justify-content: center;
+  padding: 2em 20px;
+  width: 100%;
+  z-index: 10;
+}
+
+.ribbon {
+  text-align: 'center';
+  display: inline;
+  position: relative;
+  z-index: 10;
+
+  &::after {
+    background: #938cfc;
+    bottom: 0;
+    content: '';
+    display: block;
+    height: 25%;
+    left: -10px;
+    position: absolute;
+    right: -10px;
+    z-index: -1;
+  }
+}
+
+.bodyContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.dosAndDontsContainer {
+  display: flex;
+}
+
+.dosContainer {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+
+  & > svg {
+    width: 100px;
+    height: 100px;
+    fill: green;
+  }
+}
+
+.dosListItem {
+  font-size: 20px;
+  margin-bottom: 25px;
+  font-weight: 500;
+  list-style-type: disc;
+}
+
+.dontsContainer {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  & > svg {
+    width: 80px;
+    height: 80px;
+    fill: red;
+    margin-bottom: 20px;
+  }
+}

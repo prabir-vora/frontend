@@ -3,7 +3,12 @@ import { connect } from 'react-redux';
 import AppAuthDuck from 'stores/ducks/AppAuth.duck';
 import UserDuck from 'stores/ducks/User.duck';
 
-import { SignUpModal, LoginModal, UserSetupModal } from './components';
+import {
+  SignUpModal,
+  LoginModal,
+  UserSetupModal,
+  VerificationModal,
+} from './components';
 
 import { withCookies } from 'react-cookie';
 
@@ -14,13 +19,17 @@ class AppAuthContainer extends Component {
       const { actionCreators } = UserDuck;
       const { fetchCurrentUser } = actionCreators;
 
-      const { success, isSetup } = await this.props.dispatch(
+      const { success, isSetup, isVerified } = await this.props.dispatch(
         fetchCurrentUser(),
       );
 
-      console.log(isSetup);
+      console.log(isVerified);
 
       const { showModal } = AppAuthDuck.actionCreators;
+
+      if (success && !isVerified) {
+        return this.props.dispatch(showModal('verification'));
+      }
 
       if (success && !isSetup) {
         this.props.dispatch(showModal('setup'));
@@ -57,12 +66,12 @@ class AppAuthContainer extends Component {
 
       this.props.cookies.set('jwt', token, { path: '/' });
       this.props.dispatch(hideModal('signUp'));
-      const { success, isSetup } = await this.props.dispatch(
+      const { success, isSetup, isVerified } = await this.props.dispatch(
         fetchCurrentUser(),
       );
 
-      if (success && !isSetup) {
-        this.props.dispatch(showModal('setup'));
+      if (success && !isVerified) {
+        this.props.dispatch(showModal('verification'));
       }
     }
   };
@@ -155,6 +164,18 @@ class AppAuthContainer extends Component {
     return { success, isUsernameValid };
   };
 
+  submitVerificationCode = async authCode => {
+    const { userVerification } = UserDuck.actionCreators;
+    const { hideModal } = AppAuthDuck.actionCreators;
+    const { success } = await this.props.dispatch(userVerification(authCode));
+    if (success) {
+      this.props.dispatch(hideModal('verification'));
+      return { success };
+    } else {
+      return { success };
+    }
+  };
+
   onSubmitUserSetup = async setupInfo => {
     const { userSetup } = UserDuck.actionCreators;
     const { hideModal } = AppAuthDuck.actionCreators;
@@ -177,7 +198,13 @@ class AppAuthContainer extends Component {
   };
 
   render() {
-    const { showSignUpModal, showLoginModal, showSetupModal } = this.props;
+    const {
+      showSignUpModal,
+      showLoginModal,
+      showSetupModal,
+      showVerificationModal,
+      isLoggingIn,
+    } = this.props;
     return (
       <React.Fragment>
         {showSignUpModal && (
@@ -201,6 +228,12 @@ class AppAuthContainer extends Component {
             onLoginWithGoogle={this.onLoginWithGoogle}
             onClose={this.onCloseLoginModal}
             toggleToSignUp={this.toggleToSignUp}
+            isLoggingIn={isLoggingIn}
+          />
+        )}
+        {showVerificationModal && (
+          <VerificationModal
+            submitVerificationCode={this.submitVerificationCode}
           />
         )}
       </React.Fragment>
@@ -213,6 +246,8 @@ const mapStateToProps = state => {
     showLoginModal: state[AppAuthDuck.duckName].showLoginModal,
     showSignUpModal: state[AppAuthDuck.duckName].showSignUpModal,
     showSetupModal: state[AppAuthDuck.duckName].showSetupModal,
+    showVerificationModal: state[AppAuthDuck.duckName].showVerificationModal,
+    isLoggingIn: state[AppAuthDuck.duckName].isLoggingIn,
     user: state[UserDuck.duckName].user,
   };
 };

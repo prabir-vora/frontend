@@ -13,6 +13,7 @@ import * as immutable from 'object-path-immutable';
 import { isEmailValid } from './helper';
 
 import { GoogleLogin } from 'react-google-login';
+import { ClipLoader } from 'react-spinners';
 
 export default class LoginModal extends Component {
   state = {
@@ -130,6 +131,32 @@ export default class LoginModal extends Component {
   }
 
   render() {
+    console.log(this.props);
+    if (this.props.isLoggingIn) {
+      return (
+        <ReactModal
+          isOpen={true}
+          // onAfterOpen={}
+          // onRequestClose={}
+          // style={}
+          className={ModalStyle.Modal}
+          overlayClassName={ModalStyle.Overlay}
+          contentLabel="Example Modal"
+        >
+          <div
+            style={{
+              height: '300px',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <ClipLoader color={'#000000'} />
+          </div>
+        </ReactModal>
+      );
+    }
     return (
       <ReactModal
         isOpen={true}

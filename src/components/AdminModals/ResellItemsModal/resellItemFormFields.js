@@ -41,7 +41,7 @@ const RESELL_ITEM_FIELDS = [
   {
     fieldKind: 'text',
     id: 'askingPrice',
-    label: 'Asking Price $',
+    label: 'Asking Price $(USD)',
     placeholder: '',
     required: true,
   },

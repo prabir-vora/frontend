@@ -118,10 +118,10 @@ class ShopListingPage extends Component {
 
     const { user } = this.props;
 
-    if (user === null) {
-      return null;
-    }
-    const { myShopList } = user;
+    let myShopList;
+
+    myShopList = user ? user.myShopList : [];
+
     const isAddedToList = myShopList.includes(data.id);
 
     return (

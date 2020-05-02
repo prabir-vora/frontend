@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import ConversationDuck from 'stores/ducks/Conversation.duck';
+import SellDuck from 'stores/ducks/Sell.duck';
 
 import MessageModal from './MessageModal';
 import ReplyModal from './ReplyModal';
+import HowSellingWorksModal from './HowSellingWorksModal';
 
 import { ShowConfirmNotif } from 'functions';
 
@@ -69,9 +71,18 @@ class ClientModals extends Component {
     return { success };
   };
 
+  onCloseHowSellingWorksModal = () => {
+    const { hideModal } = SellDuck.actionCreators;
+    this.props.dispatch(hideModal('howSellingWorks'));
+  };
+
   render() {
     console.log(this.props);
-    const { showMessageModal, showReplyModal } = this.props;
+    const {
+      showMessageModal,
+      showReplyModal,
+      showHowSellingWorksModal,
+    } = this.props;
     return (
       <React.Fragment>
         {showMessageModal && (
@@ -86,6 +97,11 @@ class ClientModals extends Component {
             onSendReply={this.onSendReply}
           />
         )}
+        {showHowSellingWorksModal && (
+          <HowSellingWorksModal
+            onCloseModal={this.onCloseHowSellingWorksModal}
+          />
+        )}
       </React.Fragment>
     );
   }
@@ -98,6 +114,7 @@ const mapStateToProps = state => {
     listingContext: state[ConversationDuck.duckName].currentListingContext,
     showReplyModal: state[ConversationDuck.duckName].showReplyModal,
     replyConversationID: state[ConversationDuck.duckName].replyConversationID,
+    showHowSellingWorksModal: state[SellDuck.duckName].showHowSellingWorksModal,
   };
 };
 

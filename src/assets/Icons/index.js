@@ -1,5 +1,6 @@
 import { ReactComponent as ArrowIcon } from './ArrowIcon.svg';
 import { ReactComponent as CloseIcon } from './CloseIcon.svg';
+import { ReactComponent as CrossIcon } from './CrossIcon.svg';
 import { ReactComponent as MenuIcon } from './MenuIcon.svg';
 import { ReactComponent as AddPhotoIcon } from './AddPhoto.svg';
 import { ReactComponent as PencilIcon } from './PencilIcon.svg';
@@ -25,15 +26,23 @@ import { ReactComponent as BuyIcon } from './BuyIcon.svg';
 import { ReactComponent as GridViewIcon } from './GridViewIcon.svg';
 import { ReactComponent as ListViewIcon } from './ListViewIcon.svg';
 import { ReactComponent as SearchIcon } from './SearchIcon.svg';
+import { ReactComponent as CreateListingIcon } from './CreateListingIcon.svg';
+import { ReactComponent as EngageMessagesIcon } from './EngageMessagesIcon.svg';
+import { ReactComponent as PackageIcon } from './PackageIcon.svg';
+import { ReactComponent as CashOutIcon } from './CashOutIcon.svg';
 
 export {
   AddPhotoIcon,
   ArrowIcon,
   BuyIcon,
+  CashOutIcon,
+  CreateListingIcon,
   ChatIcon,
   CheckIcon,
   CloseIcon,
+  CrossIcon,
   DollarIcon,
+  EngageMessagesIcon,
   FollowersCountIcon,
   GridViewIcon,
   LeftArrowIcon,
@@ -44,6 +53,7 @@ export {
   NetworkIcon,
   PencilIcon,
   ShoppingCartIcon,
+  PackageIcon,
   PlusIcon,
   SearchIcon,
   SneakerIcon,

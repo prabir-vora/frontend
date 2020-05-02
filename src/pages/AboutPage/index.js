@@ -104,9 +104,9 @@ export default class AboutPage extends Component {
                     fontWeight: '400',
                   }}
                 >
-                  Join a community of fashion lovers or hypebeasts. Get products
-                  for lower price than other marketplaces simply due to our
-                  lower seller fees globally and near you.
+                  Join a community of fashion lovers, hypebeasts or whatever you
+                  indentify as. Get products for lower price. Find authentic
+                  products globally and locally.
                 </h2>
                 <h4
                   style={{

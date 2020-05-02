@@ -22,6 +22,8 @@ const actionTypes = createActionTypes(
     ADD_TO_LOCAL_LIST: 'ADD_TO_LOCAL_LIST',
     REMOVE_FROM_LOCAL_LIST: 'REMOVE_FROM_LOCAL_LIST',
 
+    USER_VERIFICATION_SUCCESS: 'USER_VERIFICATION_SUCCESS',
+
     FETCH_CURRENT_USER_REQUEST: 'FETCH_CURRENT_USER_REQUEST',
     FETCH_CURRENT_USER_SUCCESS: 'FETCH_CURRENT_USER_SUCCESS',
     FETCH_CURRENT_USER_FAILURE: 'FETCH_CURRENT_USER_FAILURE',
@@ -308,6 +310,7 @@ const fetchCurrentUser = () => dispatch => {
             isSetup:
               res.fetchUser.username !== null &&
               res.fetchUser.username !== undefined,
+            isVerified: res.fetchUser.authCode === 0,
           });
         } else {
           dispatch(fetchCurrentUserFailure());
@@ -343,6 +346,34 @@ const fetchIsUsernameValid = username => dispatch => {
         resolve({ success: false, isUsernameValid: false });
       });
   });
+};
+
+const userVerification = authCode => dispatch => {
+  const verificationCode = parseInt(authCode);
+  return new Promise((resolve, reject) => {
+    fetchGraphQL(`
+      mutation {
+        userVerification(verificationCode: ${verificationCode}) 
+      }
+    `)
+      .then(res => {
+        if (res !== null && res !== undefined && res.userVerification) {
+          resolve({ success: true });
+          dispatch(userVerificationSuccess());
+        } else {
+          resolve({ success: false });
+        }
+      })
+      .catch(e => {
+        resolve({ success: false });
+      });
+  });
+};
+
+const userVerificationSuccess = () => {
+  return {
+    type: actionTypes.USER_VERIFICATION_SUCCESS,
+  };
 };
 
 const followProductSuccess = productID => {
@@ -493,6 +524,11 @@ const reducer = (state = initialState, action) => {
         user: immutable.set(user, 'myLocalList', updatedLocalList),
       });
     }
+    case actionTypes.USER_VERIFICATION_SUCCESS: {
+      return Object.assign({}, state, {
+        user: immutable.set(state.user, 'authCode', 0),
+      });
+    }
     default:
       return state;
   }
@@ -513,5 +549,6 @@ export default {
     removeFromShopList,
     addToLocalList,
     removeFromLocalList,
+    userVerification,
   },
 };

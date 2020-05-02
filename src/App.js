@@ -63,6 +63,11 @@ class App extends React.Component {
                 path="/localMarketplace/:listingID"
                 component={ROUTES('localListingPage')}
               />
+              <Route
+                exact
+                path="/photoGuidelines"
+                component={ROUTES('photoGuidelinesPage')}
+              />
               <Route exact path="/user" component={ROUTES('profilePage')} />
               <Route
                 exact

@@ -16,6 +16,9 @@ const actionTypes = createActionTypes(
     SHOW_SETUP_MODAL: 'SHOW_SETUP_MODAL',
     HIDE_SETUP_MODAL: 'HIDE_SETUP_MODAL',
 
+    SHOW_VERIFICATION_MODAL: 'SHOW_VERIFICATION_MODAL',
+    HIDE_VERIFICATION_MODAL: 'HIDE_VERIFICATION_MODAL',
+
     SIGN_UP_REQUEST: 'SIGN_UP_REQUEST',
     SIGN_UP_SUCCESS: 'SIGN_UP_SUCCESS',
     SIGN_UP_FAILURE: 'SIGN_UP_FAILURE',
@@ -31,6 +34,7 @@ const initialState = {
   showLoginModal: false,
   showSignUpModal: false,
   showSetupModal: false,
+  showVerificationModal: false,
   isSigningUp: false,
   isLoggingIn: false,
 };
@@ -50,6 +54,8 @@ const showModal = type => dispatch => {
     case 'setup':
       dispatch(showSetupModal());
       return;
+    case 'verification':
+      dispatch(showVerificationModal());
     default:
       return;
   }
@@ -66,6 +72,8 @@ const hideModal = type => dispatch => {
     case 'setup':
       dispatch(hideSetupModal());
       return;
+    case 'verification':
+      dispatch(hideVerificationModal());
     default:
       return;
   }
@@ -233,6 +241,18 @@ const hideSetupModal = () => {
   };
 };
 
+const showVerificationModal = () => {
+  return {
+    type: actionTypes.SHOW_VERIFICATION_MODAL,
+  };
+};
+
+const hideVerificationModal = () => {
+  return {
+    type: actionTypes.HIDE_VERIFICATION_MODAL,
+  };
+};
+
 const signUpRequest = () => {
   return {
     type: actionTypes.SIGN_UP_REQUEST,
@@ -284,6 +304,10 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         showSetupModal: true,
       });
+    case actionTypes.SHOW_VERIFICATION_MODAL:
+      return Object.assign({}, state, {
+        showVerificationModal: true,
+      });
     case actionTypes.HIDE_LOGIN_MODAL:
       return Object.assign({}, state, {
         showLoginModal: false,
@@ -295,6 +319,10 @@ const reducer = (state = initialState, action) => {
     case actionTypes.HIDE_SETUP_MODAL:
       return Object.assign({}, state, {
         showSetupModal: false,
+      });
+    case actionTypes.HIDE_VERIFICATION_MODAL:
+      return Object.assign({}, state, {
+        showVerificationModal: false,
       });
     case actionTypes.SIGN_UP_REQUEST:
       return Object.assign({}, state, {

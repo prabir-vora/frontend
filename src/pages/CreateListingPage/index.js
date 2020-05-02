@@ -294,7 +294,7 @@ class CreateListingPage extends Component {
         return (
           <div key={id} style={{ marginBottom: '20px', margin: '20px 0px' }}>
             <h4 style={{ fontWeight: '500', color: '#919496' }}>
-              Asking Price $
+              Asking Price $ (USD)
             </h4>
             <TextInput
               {...field}
@@ -329,7 +329,19 @@ class CreateListingPage extends Component {
             <h4 style={{ fontWeight: '500', color: '#919496' }}>
               {field.label}
             </h4>
-            <h6>Upload 4 - 5 images from good angles</h6>
+            <h6 style={{ fontSize: '13px' }}>
+              Upload 4 - 5 images from good angles.
+              <a
+                style={{ color: '#938cfc' }}
+                href="/photoGuidelines"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {' '}
+                Read our photo guidelines.
+              </a>
+            </h6>
+
             <MultipleImagesUploader
               imageURLs={this.state.resellItemInfo.images}
               typeOfUpload={'resellItem'}

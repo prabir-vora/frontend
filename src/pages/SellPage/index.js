@@ -10,11 +10,23 @@ import { withRouter } from 'react-router-dom';
 
 import { connect } from 'react-redux';
 import UserDuck from 'stores/ducks/User.duck';
+import SellDuck from 'stores/ducks/Sell.duck';
+
 import MainFooter from 'components/MainFooter';
 
 class SellPage extends Component {
   componentDidMount() {
     console.log(this.props);
+    const { showModal } = SellDuck.actionCreators;
+
+    const { user } = this.props;
+    if (user) {
+      const { resellItems } = user;
+      const noOfListings = resellItems.length;
+      if (noOfListings === 0) {
+        this.props.dispatch(showModal('howSellingWorks'));
+      }
+    }
   }
 
   createListing = () => {

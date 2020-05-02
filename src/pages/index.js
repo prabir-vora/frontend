@@ -1,6 +1,7 @@
 import AuthenticationPage from './AuthenticationPage';
 import BrandsPage from './BrandsPage';
 import HomePage from './HomePage';
+import PhotoGuidelinesPage from './PhotoGuidelinesPage';
 import ProductListingPage from './ProductListingPage';
 import ProfilePage from './ProfilePage';
 import ResellerListPage from './ResellersListPage';
@@ -26,6 +27,7 @@ export {
   HomePage,
   LocalListingPage,
   LocalMarketplacePage,
+  PhotoGuidelinesPage,
   ProductListingPage,
   ProfilePage,
   ResellerListPage,

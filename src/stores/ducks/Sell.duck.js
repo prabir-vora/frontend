@@ -6,6 +6,9 @@ import slugify from 'slugify';
 const duckName = 'SELL';
 const actionTypes = createActionTypes(
   {
+    SHOW_MODAL: 'SHOW_MODAL',
+    HIDE_MODAL: 'HIDE_MODAL',
+
     CREATE_NEW_LISTING_REQUEST: 'CREATE_NEW_LISTING_REQUEST',
     CREATE_NEW_LISTING_SUCCESS: 'CREATE_NEW_LISTING_SUCCESS',
     CREATE_NEW_LISTING_FAILURE: 'CREATE_NEW_LISTING_FAILURE',
@@ -19,6 +22,7 @@ const actionTypes = createActionTypes(
 );
 
 const initialState = {
+  showHowSellingWorksModal: false,
   creatingNewListing: false,
   brands: {
     data: [],
@@ -26,6 +30,24 @@ const initialState = {
     isFetching: false,
     isMutating: false,
   },
+};
+
+const showModal = modalType => dispatch => {
+  switch (modalType) {
+    case 'howSellingWorks':
+      dispatch(showHowSellingWorksModal());
+    default:
+      return null;
+  }
+};
+
+const hideModal = modalType => dispatch => {
+  switch (modalType) {
+    case 'howSellingWorks':
+      dispatch(hideHowSellingWorksModal());
+    default:
+      return null;
+  }
 };
 
 const createListingWithInputType = () => {
@@ -123,6 +145,20 @@ const getAllBrands = () => dispatch => {
   });
 };
 
+const showHowSellingWorksModal = () => {
+  return {
+    type: actionTypes.SHOW_MODAL,
+    payload: 'showHowSellingWorksModal',
+  };
+};
+
+const hideHowSellingWorksModal = () => {
+  return {
+    type: actionTypes.HIDE_MODAL,
+    payload: 'showHowSellingWorksModal',
+  };
+};
+
 const createNewListingRequest = () => {
   return {
     type: actionTypes.CREATE_NEW_LISTING_REQUEST,
@@ -169,6 +205,14 @@ const getAllBrandsError = errorMessage => {
 // Reducers
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case actionTypes.SHOW_MODAL:
+      return Object.assign({}, state, {
+        [action.payload]: true,
+      });
+    case actionTypes.HIDE_MODAL:
+      return Object.assign({}, state, {
+        [action.payload]: false,
+      });
     case actionTypes.CREATE_NEW_LISTING_REQUEST:
       return Object.assign({}, state, {
         creatingNewListing: true,
@@ -215,5 +259,7 @@ export default {
   actionCreators: {
     createNewListing,
     getAllBrands,
+    showModal,
+    hideModal,
   },
 };
