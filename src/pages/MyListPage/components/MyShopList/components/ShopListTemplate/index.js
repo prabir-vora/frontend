@@ -111,7 +111,7 @@ class ShopListTemplate extends Component {
             />
             <a
               className={Style.resellerLink}
-              href={`/user/${username}`}
+              href={`/${username}`}
               target="_blank"
               rel="noopener noreferrer"
             >

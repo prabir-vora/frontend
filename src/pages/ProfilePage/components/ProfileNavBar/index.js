@@ -5,19 +5,19 @@ import cx from 'classnames';
 const NAV_BAR_ITEMS = [
   {
     id: 'listings',
-    label: 'Listings',
+    label: 'LISTINGS',
   },
   {
     id: 'messages',
-    label: 'Messages',
+    label: 'MESSAGES',
   },
   {
     id: 'orders',
-    label: 'Orders',
+    label: 'ORDERS',
   },
   {
     id: 'settings',
-    label: 'Settings',
+    label: 'SETTINGS',
   },
 ];
 export default class ProfileNavBar extends Component {

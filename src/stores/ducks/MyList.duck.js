@@ -175,12 +175,12 @@ const reducer = (state = initialState, action) => {
     case actionTypes.FETCH_USER_SHOP_LIST_SUCCESS:
       console.log(action.payload.myShopList);
       return Object.assign({}, state, {
-        fetchUserShopList: false,
+        fetchingMyShopList: false,
         myShopList: action.payload.myShopList,
       });
     case actionTypes.FETCH_USER_SHOP_LIST_FAILURE:
       return Object.assign({}, state, {
-        fetchUserShopList: false,
+        fetchingMyShopList: false,
       });
     case actionTypes.FETCH_USER_LOCAL_LIST_REQUEST:
       return Object.assign({}, state, {
@@ -189,12 +189,12 @@ const reducer = (state = initialState, action) => {
     case actionTypes.FETCH_USER_LOCAL_LIST_SUCCESS:
       console.log(action.payload.myLocalList);
       return Object.assign({}, state, {
-        fetchUserLocalList: false,
+        fetchingMyLocalList: false,
         myLocalList: action.payload.myLocalList,
       });
     case actionTypes.FETCH_USER_LOCAL_LIST_FAILURE:
       return Object.assign({}, state, {
-        fetchUserLocalList: false,
+        fetchingMyLocalList: false,
       });
     default:
       return state;

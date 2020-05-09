@@ -68,14 +68,17 @@ class App extends React.Component {
                 path="/photoGuidelines"
                 component={ROUTES('photoGuidelinesPage')}
               />
-              <Route exact path="/user" component={ROUTES('profilePage')} />
               <Route
-                exact
-                path="/user/:username"
-                component={ROUTES('userPage')}
+                path="/user/:activeNavBarID?/:settingsNavID?"
+                component={ROUTES('profilePage')}
               />
               <Route path="/auth" component={ROUTES('authenticationPage')} />'
               <Route path="/admin" component={ROUTES('adminPage')} />
+              <Route
+                path="/stripeRedirect"
+                component={ROUTES('stripeRedirectPage')}
+              />
+              <Route exact path="/:username" component={ROUTES('userPage')} />
             </Switch>
             <ToastContainer transition={Flip} />
           </div>

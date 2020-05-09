@@ -12,6 +12,7 @@ import moment from 'moment';
 import ConversationDuck from 'stores/ducks/Conversation.duck';
 
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { ClipLoader } from 'react-spinners';
 
 class Messages extends Component {
   componentDidMount() {
@@ -238,6 +239,21 @@ class Messages extends Component {
       loadingConversations,
     } = buying;
 
+    if (loadingConversations) {
+      return (
+        <div
+          style={{
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            marginTop: '20px',
+          }}
+        >
+          <ClipLoader color={'#ffffff'} />
+        </div>
+      );
+    }
+
     return (
       <InfiniteScroll
         dataLength={conversations.length}
@@ -247,6 +263,9 @@ class Messages extends Component {
           <h4 style={{ color: 'white', fontSize: '12px' }}>Loading...</h4>
         }
       >
+        {conversations.length === 0 && (
+          <div className={Style.noMessages}>No Messages</div>
+        )}
         {conversations.map(conversation => {
           const { id } = conversation;
           return (
@@ -270,12 +289,30 @@ class Messages extends Component {
       hasMoreMessages,
       loadingConversations,
     } = selling;
+    if (loadingConversations) {
+      return (
+        <div
+          style={{
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            marginTop: '20px',
+          }}
+        >
+          <ClipLoader color={'#ffffff'} />
+        </div>
+      );
+    }
+
     return (
       <InfiniteScroll
         dataLength={conversations.length}
         next={this.fetchMoreSellMessages}
         hasMore={hasMoreMessages && !loadingConversations}
       >
+        {conversations.length === 0 && (
+          <div className={Style.noMessages}>No Messages</div>
+        )}
         {conversations.map(conversation => {
           const { id } = conversation;
           return (

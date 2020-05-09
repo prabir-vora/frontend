@@ -37,18 +37,7 @@ const fetchCurrentBrowsedUser = username => dispatch => {
                   }
                   createdAt
                   profilePictureURL
-                  resellItems {
-                    id
-                    askingPrice
-                    condition
-                    availability
-                    size
-                    product {
-                      id
-                      name
-                    }
-                    images
-                  }
+                  resellItems
               }
           }
           `)

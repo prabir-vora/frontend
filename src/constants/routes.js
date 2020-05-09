@@ -18,6 +18,7 @@ import {
   ShopPage,
   ShopListingPage,
   SellPage,
+  StripeRedirectPage,
   CreateListingPage,
   UserPage,
   MyListPage,
@@ -61,6 +62,8 @@ const ROUTES = (routeName = '', props = {}) => {
       return ShopPage;
     case 'shopListingPage':
       return ShopListingPage;
+    case 'stripeRedirectPage':
+      return StripeRedirectPage;
     case 'createListing':
       return CreateListingPage;
     case 'userPage':

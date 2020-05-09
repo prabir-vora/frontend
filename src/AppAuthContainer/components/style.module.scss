@@ -132,7 +132,7 @@
 }
 
 .formInput {
-  margin-bottom: 1em;
+  margin-bottom: 0.2em;
 }
 
 .validUsername {
@@ -143,9 +143,55 @@
   color: red;
 }
 
+.countrySelector {
+  -webkit-box-align: center;
+  align-items: center;
+  background: #fff;
+  border: 1px solid black;
+  border-radius: 6px;
+  display: -webkit-box;
+  display: flex;
+  height: 40px;
+  margin: auto 0 auto auto;
+  outline: none;
+  padding: 0 12px;
+  position: relative;
+  width: 100%;
+  margin-bottom: 30px;
+
+  &::before {
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 0;
+    border-radius: 1px;
+    border-top: 6px solid #687282;
+    content: '';
+    height: 0;
+    position: absolute;
+    right: 12px;
+    width: 0;
+  }
+}
+
+.countrySelect {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  -webkit-box-flex: 1;
+  flex: 1;
+  font-size: 1em;
+  height: 100%;
+  margin: 0 -12px 0 -42px;
+  outline: none;
+  padding-left: 42px;
+}
+
 @media only screen and (min-width: 771px) {
   .Modal {
-    max-width: 400px;
+    max-width: 600px;
     width: 680px;
     height: auto;
     max-height: 95%;
@@ -157,6 +203,10 @@
   }
 
   .body {
-    padding: 15px 40px 20px 40px;
+    padding: 20px 80px;
+  }
+
+  .countrySelector {
+    width: inherit;
   }
 }

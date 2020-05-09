@@ -11,22 +11,53 @@ import { Img, Button } from 'fields';
 
 import UserListings from './components/UserListings';
 import Messages from './components/Messages';
+import Settings from './components/Settings';
+
 import MainFooter from 'components/MainFooter';
+import LoadingScreen from 'components/LoadingScreen';
+
+import { withCookies } from 'react-cookie';
+import { withRouter } from 'react-router-dom';
 
 class ProfilePage extends Component {
   state = {
     activeNavBarID: 'listings',
+    isUserPresent: false,
   };
 
-  onChangeNavBarID = activeNavBarID =>
-    this.setState({ activeNavBarID }, console.log(activeNavBarID));
+  componentDidMount() {
+    const jwt = this.props.cookies.get('jwt');
+    if (jwt) {
+      this.setState({ isUserPresent: true });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const jwt = this.props.cookies.get('jwt');
+    if (jwt && !prevState.isUserPresent) {
+      this.setState({ isUserPresent: true });
+    }
+
+    if (!jwt && prevState.isUserPresent) {
+      this.setState({ isUserPresent: false });
+    }
+  }
+
+  onChangeNavBarID = activeNavBarID => {
+    if (activeNavBarID === 'settings') {
+      return this.props.history.push(`/user/${activeNavBarID}/editProfile`);
+    }
+    this.props.history.push(`/user/${activeNavBarID}`);
+  };
 
   renderActiveNavBarContent = () => {
-    switch (this.state.activeNavBarID) {
+    switch (this.props.match.params.activeNavBarID) {
       case 'listings':
         return <UserListings user={this.props.user} />;
       case 'messages':
         return <Messages user={this.props.user} />;
+      case 'settings':
+        return <Settings user={this.props.user} />;
       default:
         return null;
     }
@@ -35,6 +66,11 @@ class ProfilePage extends Component {
   render() {
     console.log(this.props);
     const { user } = this.props;
+
+    if (this.state.isUserPresent && !user) {
+      return <LoadingScreen />;
+    }
+
     return (
       <div>
         <MainNavBar />
@@ -112,7 +148,7 @@ class ProfilePage extends Component {
               </div>
 
               <ProfileNavBar
-                activeNavBarID={this.state.activeNavBarID}
+                activeNavBarID={this.props.match.params.activeNavBarID}
                 onChangeNavBarID={this.onChangeNavBarID}
               />
 
@@ -134,4 +170,8 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(ProfilePage);
+const x = withCookies(ProfilePage);
+
+const y = withRouter(x);
+
+export default connect(mapStateToProps)(y);

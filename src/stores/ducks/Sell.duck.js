@@ -9,6 +9,8 @@ const actionTypes = createActionTypes(
     SHOW_MODAL: 'SHOW_MODAL',
     HIDE_MODAL: 'HIDE_MODAL',
 
+    SUBMIT_LISTING_INFO: 'SUBMIT_LISTING_INFO',
+
     CREATE_NEW_LISTING_REQUEST: 'CREATE_NEW_LISTING_REQUEST',
     CREATE_NEW_LISTING_SUCCESS: 'CREATE_NEW_LISTING_SUCCESS',
     CREATE_NEW_LISTING_FAILURE: 'CREATE_NEW_LISTING_FAILURE',
@@ -23,6 +25,8 @@ const actionTypes = createActionTypes(
 
 const initialState = {
   showHowSellingWorksModal: false,
+  showConfirmListingModal: false,
+  listingInfo: null,
   creatingNewListing: false,
   brands: {
     data: [],
@@ -32,10 +36,19 @@ const initialState = {
   },
 };
 
+const submitListingInfo = listingInfo => dispatch => {
+  dispatch(setListingInfo(listingInfo));
+  return;
+};
+
 const showModal = modalType => dispatch => {
   switch (modalType) {
     case 'howSellingWorks':
       dispatch(showHowSellingWorksModal());
+      return;
+    case 'confirmListing':
+      dispatch(showConfirmListingModal());
+      return;
     default:
       return null;
   }
@@ -45,6 +58,10 @@ const hideModal = modalType => dispatch => {
   switch (modalType) {
     case 'howSellingWorks':
       dispatch(hideHowSellingWorksModal());
+      return;
+    case 'confirmListing':
+      dispatch(hideConfirmListingModal());
+      return;
     default:
       return null;
   }
@@ -145,6 +162,27 @@ const getAllBrands = () => dispatch => {
   });
 };
 
+const setListingInfo = listingInfo => {
+  return {
+    type: actionTypes.SUBMIT_LISTING_INFO,
+    payload: listingInfo,
+  };
+};
+
+const showConfirmListingModal = () => {
+  return {
+    type: actionTypes.SHOW_MODAL,
+    payload: 'showConfirmListingModal',
+  };
+};
+
+const hideConfirmListingModal = () => {
+  return {
+    type: actionTypes.HIDE_MODAL,
+    payload: 'showConfirmListingModal',
+  };
+};
+
 const showHowSellingWorksModal = () => {
   return {
     type: actionTypes.SHOW_MODAL,
@@ -205,6 +243,10 @@ const getAllBrandsError = errorMessage => {
 // Reducers
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case actionTypes.SUBMIT_LISTING_INFO:
+      return Object.assign({}, state, {
+        listingInfo: action.payload,
+      });
     case actionTypes.SHOW_MODAL:
       return Object.assign({}, state, {
         [action.payload]: true,
@@ -261,5 +303,6 @@ export default {
     getAllBrands,
     showModal,
     hideModal,
+    submitListingInfo,
   },
 };

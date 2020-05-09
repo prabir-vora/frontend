@@ -13,11 +13,7 @@ import {
   CashOutIcon,
 } from 'assets/Icons';
 
-export default class MessageModal extends Component {
-  state = {
-    message: '',
-  };
-
+export default class HowSellingWorksModal extends Component {
   onCloseModal = () => {
     this.props.onCloseModal();
   };

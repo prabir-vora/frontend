@@ -156,7 +156,7 @@ class ShopListingPage extends Component {
               src={data.reseller.imageURL || ''}
               style={{ width: '25px', height: '25px', borderRadius: '50%' }}
             />
-            <a href={`/user/${data.reseller.username}`}>
+            <a href={`/${data.reseller.username}`}>
               <div className={Style.resellerLink}>{data.reseller.username}</div>
             </a>
           </div>

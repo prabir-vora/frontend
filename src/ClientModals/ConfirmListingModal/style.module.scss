@@ -53,11 +53,28 @@
   flex-direction: column;
 }
 
+.close {
+  cursor: pointer;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: #fff;
+  height: 20px;
+  width: 20px;
+  // z-index: 2;
+
+  & > svg {
+    height: 16px;
+    width: 17px;
+    fill: black;
+  }
+}
+
 .title {
   display: inline;
   position: relative;
   z-index: 2;
-  font-size: 40px;
+  font-size: 30px;
 
   &::after {
     background: #938cfc;
@@ -72,73 +89,46 @@
   }
 }
 
-.StepsContainer {
-  display: flex;
-}
-
-.Step {
-  width: 23%;
-  margin-right: 2%;
+.ListingSummary {
+  width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-
-  & > svg {
-    width: 40%;
-    height: 85px;
-    margin-bottom: 20px;
-  }
-}
-
-.StepTitleContainer {
-  width: 100%;
-  display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 10px;
 }
 
-.StepTitle {
-  text-align: center;
+.ProductImage {
+  width: 30%;
 }
 
-.StepCount {
-  background: #938cfc;
-  border-radius: 50%;
-  color: #fff;
-  font-size: 1.75rem;
-  font-weight: 700;
-  height: 2.5rem;
-  left: 50%;
-  line-height: 2.5rem;
-  width: 2.5rem;
-  margin-right: 10px;
-}
-
-.StepDescription {
-  font-size: 13px;
-  color: grey;
-  margin-bottom: 10px;
-}
-
-.dontCancelContainer {
-  width: 100%;
-  padding: 20px;
+.detailsContainer {
   display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  text-align: center;
+  margin-bottom: 50px;
+  width: 100%;
 }
 
-.points {
-  background: red;
-  border-radius: 50%;
-  color: #fff;
-  font-size: 1rem;
+.detailsBlock {
+  width: 33%;
+}
+
+.detailsTitle {
+  font-size: 22px;
+  text-transform: uppercase;
+  color: #aaaaaa;
+  margin-bottom: 10px;
+}
+
+.detailsContent {
+  font-size: 18px;
+  font-family: Druk Wide Web, futura-pt, HelveticaNeue-Light,
+    Helvetica Neue Light, Helvetica Neue, Helvetica, Arial, Lucida Grande,
+    sans-serif;
   font-weight: 700;
-  height: 4rem;
-  left: 50%;
-  line-height: 4rem;
-  width: 4rem;
-  margin-right: 10px;
 }
 
 .ModalButton {

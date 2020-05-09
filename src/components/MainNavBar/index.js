@@ -291,7 +291,7 @@ class MainNavBar extends Component {
             </NavLink>
           )}
           {this.props.user && (
-            <NavLink to="/user" className={Style.mainHeaderNavLink}>
+            <NavLink to="/user/listings" className={Style.mainHeaderNavLink}>
               <div style={{}}>
                 <Img
                   src={

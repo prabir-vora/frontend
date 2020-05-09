@@ -149,24 +149,27 @@ class CreateListingPage extends Component {
   onSubmitListing = async () => {
     const reseller = this.props.user;
     const { resellItemInfo } = this.state;
-    const { createNewListing } = SellDuck.actionCreators;
-    const { created, message } = await this.props.dispatch(
-      createNewListing(resellItemInfo, reseller),
-    );
+    const { submitListingInfo, showModal } = SellDuck.actionCreators;
+    await this.props.dispatch(submitListingInfo(resellItemInfo));
+    await this.props.dispatch(showModal('confirmListing'));
+    // const { createNewListing } = SellDuck.actionCreators;
+    // const { created, message } = await this.props.dispatch(
+    //   createNewListing(resellItemInfo, reseller),
+    // );
 
-    if (created) {
-      this.confirmNotif = ShowConfirmNotif({
-        message,
-        type: 'success',
-      });
+    // if (created) {
+    //   this.confirmNotif = ShowConfirmNotif({
+    //     message,
+    //     type: 'success',
+    //   });
 
-      this.props.history.goBack();
-    } else {
-      this.confirmNotif = ShowConfirmNotif({
-        message,
-        type: 'error',
-      });
-    }
+    //   this.props.history.goBack();
+    // } else {
+    //   this.confirmNotif = ShowConfirmNotif({
+    //     message,
+    //     type: 'error',
+    //   });
+    // }
   };
 
   onProductSelection = selection => {

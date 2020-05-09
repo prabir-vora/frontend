@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 import ConversationDuck from 'stores/ducks/Conversation.duck';
 import SellDuck from 'stores/ducks/Sell.duck';
+import UserDuck from 'stores/ducks/User.duck';
 
 import MessageModal from './MessageModal';
 import ReplyModal from './ReplyModal';
 import HowSellingWorksModal from './HowSellingWorksModal';
+import ConfirmListingModal from './ConfirmListingModal';
 
 import { ShowConfirmNotif } from 'functions';
 
@@ -76,12 +79,42 @@ class ClientModals extends Component {
     this.props.dispatch(hideModal('howSellingWorks'));
   };
 
+  onCloseConfirmListingModal = () => {
+    const { hideModal } = SellDuck.actionCreators;
+    this.props.dispatch(hideModal('confirmListing'));
+  };
+
+  onCreateListing = async () => {
+    const reseller = this.props.user;
+    const resellItemInfo = this.props.listingInfo;
+    const { createNewListing } = SellDuck.actionCreators;
+    const { created, message } = await this.props.dispatch(
+      createNewListing(resellItemInfo, reseller),
+    );
+
+    if (created) {
+      this.confirmNotif = ShowConfirmNotif({
+        message,
+        type: 'success',
+      });
+
+      this.props.history.goBack();
+    } else {
+      this.confirmNotif = ShowConfirmNotif({
+        message,
+        type: 'error',
+      });
+    }
+  };
+
   render() {
     console.log(this.props);
     const {
       showMessageModal,
       showReplyModal,
       showHowSellingWorksModal,
+      showConfirmListingModal,
+      listingInfo,
     } = this.props;
     return (
       <React.Fragment>
@@ -102,6 +135,13 @@ class ClientModals extends Component {
             onCloseModal={this.onCloseHowSellingWorksModal}
           />
         )}
+        {showConfirmListingModal && (
+          <ConfirmListingModal
+            listingInfo={listingInfo}
+            onClose={this.onCloseConfirmListingModal}
+            onSubmitListing={this.onCreateListing}
+          />
+        )}
       </React.Fragment>
     );
   }
@@ -115,7 +155,11 @@ const mapStateToProps = state => {
     showReplyModal: state[ConversationDuck.duckName].showReplyModal,
     replyConversationID: state[ConversationDuck.duckName].replyConversationID,
     showHowSellingWorksModal: state[SellDuck.duckName].showHowSellingWorksModal,
+    showConfirmListingModal: state[SellDuck.duckName].showConfirmListingModal,
+    listingInfo: state[SellDuck.duckName].listingInfo,
+    user: state[UserDuck.duckName].user,
   };
 };
 
-export default connect(mapStateToProps)(ClientModals);
+const x = withRouter(ClientModals);
+export default connect(mapStateToProps)(x);

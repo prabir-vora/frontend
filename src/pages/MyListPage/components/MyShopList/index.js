@@ -10,6 +10,8 @@ import ReactTooltip from 'react-tooltip';
 import Style from './style.module.scss';
 import cx from 'classnames';
 
+import { ClipLoader } from 'react-spinners';
+
 class MyShopList extends Component {
   state = { viewType: 'gridView' };
 
@@ -27,6 +29,21 @@ class MyShopList extends Component {
   };
   render() {
     const { viewType } = this.state;
+
+    if (this.props.fetchingMyShopList) {
+      return (
+        <div
+          style={{
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            marginTop: '20px',
+          }}
+        >
+          <ClipLoader color={'#ffffff'} />
+        </div>
+      );
+    }
 
     return (
       <React.Fragment>

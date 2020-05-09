@@ -12,6 +12,7 @@ import ShopListingPage from './ShopListingPage';
 import AdminPage from './AdminPage';
 import LocalMarketplacePage from './LocalMarketplacePage';
 import SellPage from './SellPage';
+import StripeRedirectPage from './StripeRedirectPage';
 import CreateListingPage from './CreateListingPage';
 import ResellerSetupPage from './ResellerSetupPage';
 import LocalListingPage from './LocalListingPage';
@@ -36,6 +37,7 @@ export {
   SearchPage,
   ShopPage,
   ShopListingPage,
+  StripeRedirectPage,
   AdminPage,
   SellPage,
   UserPage,

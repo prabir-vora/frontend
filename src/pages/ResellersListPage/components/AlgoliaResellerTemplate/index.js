@@ -19,30 +19,31 @@ export default class AlgoliaResellerTemplate extends Component {
       <div className={Style.gridCellWrapper}>
         <div className={Style.gridCellContent}>
           <div className={Style.gridCell}>
-            <a href={`/user/${username}`}>
+            <a href={`/${username}`}>
               <Img src={coverPictureURL} className={Style.resellerImage} />
             </a>
-            <div className={Style.resellerInfo}>
-              <h2
-                style={{
-                  fontSize: '16px',
-                  margin: '8px 0px',
-                  textAlign: 'center',
-                }}
-              >
-                {resellerPageName}
-              </h2>
-              <h4
-                style={{
-                  fontSize: '12px',
-                  fontWeight: '500',
-                  margin: '8px 0px',
-                  textAlign: 'center',
-                }}
-              >
-                {resellerBio}
-              </h4>
-              {/* <div className={Style.resellerStats}>
+            <a href={`/${username}`}>
+              <div className={Style.resellerInfo}>
+                <h2
+                  style={{
+                    fontSize: '16px',
+                    margin: '8px 0px',
+                    textAlign: 'center',
+                  }}
+                >
+                  {resellerPageName}
+                </h2>
+                <h4
+                  style={{
+                    fontSize: '12px',
+                    fontWeight: '500',
+                    margin: '8px 0px',
+                    textAlign: 'center',
+                  }}
+                >
+                  {resellerBio}
+                </h4>
+                {/* <div className={Style.resellerStats}>
                 <div className={Style.statItem}>
                   <ListingsCountIcon />
                   <div>{listingsCount}</div>
@@ -56,7 +57,8 @@ export default class AlgoliaResellerTemplate extends Component {
                   <div>100,000</div>
                 </div>
               </div> */}
-            </div>
+              </div>
+            </a>
             <div className={Style.buttonContainer}>
               <button className={Style.followButton}>Follow</button>
             </div>

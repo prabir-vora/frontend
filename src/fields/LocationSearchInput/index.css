@@ -35,14 +35,14 @@
 .Demo__search-input,
 .Demo__search-input:focus,
 .Demo__search-input:active {
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.08);
   border: honeydew;
   display: block;
   width: 100%;
   padding: 16px;
   font-size: 16px;
   max-width: 400px;
-  border-radius: 2px;
+  border: 1px solid black;
+  border-radius: 6px;
   outline: none;
 }
 
@@ -68,7 +68,7 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   border-radius: 0 0 2px 2px;
   position: absolute;
-  z-index: 10000;
+  z-index: 100000;
   width: 100%;
   max-width: 400px;
 }

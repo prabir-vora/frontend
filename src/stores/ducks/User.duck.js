@@ -13,6 +13,14 @@ const actionTypes = createActionTypes(
     RESELLER_SETUP_SUCCESS: 'RESELLER_SETUP_SUCCESS',
     RESELLER_SETUP_FAILURE: 'RESELLER_SETUP_FAILURE',
 
+    EDIT_PROFILE_REQUEST: 'EDIT_PROFILE_REQUEST',
+    EDIT_PROFILE_SUCCESS: 'EDIT_PROFILE_SUCCESS',
+    EDIT_PROFILE_FAILURE: 'EDIT_PROFILE_FAILURE',
+
+    SAVE_STRIPE_CONNECT_AUTH_REQUEST: 'SAVE_STRIPE_CONNECT_AUTH_REQUEST',
+    SAVE_STRIPE_CONNECT_AUTH_SUCCESS: 'SAVE_STRIPE_CONNECT_AUTH_SUCCESS',
+    SAVE_STRIPE_CONNECT_AUTH_FAILURE: 'SAVE_STRIPE_CONNECT_AUTH_FAILURE',
+
     FOLLOW_PRODUCT: 'FOLLOW_PRODUCT',
     UNFOLLOW_PRODUCT: 'UNFOLLOW_PRODUCT',
 
@@ -98,6 +106,154 @@ const resellerSetup = resellerInfo => dispatch => {
       })
       .catch(e => {
         resolve({ success: false });
+      });
+  });
+};
+
+const editProfileWithInput = () => {
+  return `
+    mutation($profile: UserEditProfile!) {
+      editProfile(profile: $profile) {
+        user {
+          id
+          name
+          email
+          authCode
+          username
+          address
+          _geoloc {
+            lat
+            lng
+          }
+          createdAt
+          profilePictureURL
+          resellItems 
+          likedProducts
+          myShopList
+          myLocalList
+          stripe_connect_user_id
+          stripe_connect_access_token
+          stripe_connect_account_status
+        }
+        success
+      }
+    }
+  `;
+};
+
+const editProfile = profile => dispatch => {
+  dispatch(editProfileRequest());
+  return new Promise((resolve, reject) => {
+    fetchGraphQL(editProfileWithInput(), undefined, {
+      profile,
+    })
+      .then(res => {
+        if (
+          res !== null &&
+          res !== undefined &&
+          res.editProfile !== undefined
+        ) {
+          dispatch(editProfileSuccess(res.editProfile));
+          resolve({ success: res.editProfile.success });
+        } else {
+          dispatch(editProfileFailure());
+          resolve({ success: false });
+        }
+      })
+      .catch(e => {
+        dispatch(editProfileFailure());
+        resolve({ success: false });
+      });
+  });
+};
+
+const changePassword = (currentPassword, newPassword) => dispatch => {
+  return new Promise((resolve, reject) => {
+    fetchGraphQL(`
+      mutation {
+        changePassword(currentPassword: "${currentPassword}", newPassword: "${newPassword}")
+      }
+    `)
+      .then(res => {
+        console.log(res);
+        if (
+          res !== null &&
+          res !== undefined &&
+          res.changePassword !== null &&
+          res.changePassword !== undefined
+        ) {
+          resolve({
+            success: true,
+          });
+        } else {
+          resolve({ success: false });
+        }
+      })
+      .catch(err => {
+        resolve({ success: false });
+      });
+  });
+};
+
+const saveStripeConnectAuthCode = code => dispatch => {
+  dispatch(saveStripeConnectAuthCodeRequest());
+  return new Promise((resolve, reject) => {
+    fetchGraphQL(`
+    mutation {
+      stripeConnectAccountSetup(code: "${code}") {
+        user {
+          id
+          name
+          email
+          authCode
+          username
+          address
+          _geoloc {
+            lat
+            lng
+          }
+          createdAt
+          profilePictureURL
+          resellItems 
+          likedProducts
+          myShopList
+          myLocalList
+          stripe_connect_user_id
+          stripe_connect_access_token
+          stripe_connect_account_status
+        }
+        success
+        message
+      }
+    }
+  `)
+      .then(res => {
+        if (
+          res !== null &&
+          res !== undefined &&
+          res.saveStripeConnectAuthCode !== undefined
+        ) {
+          dispatch(
+            saveStripeConnectAuthCodeSuccess(res.saveStripeConnectAuthCode),
+          );
+          resolve({
+            success: res.saveStripeConnectAuthCode.success,
+            message: res.saveStripeConnectAuthCode.message,
+          });
+        } else {
+          dispatch(saveStripeConnectAuthCodeFailure());
+          resolve({
+            success: res.saveStripeConnectAuthCode.success,
+            message: res.saveStripeConnectAuthCode.message,
+          });
+        }
+      })
+      .catch(e => {
+        dispatch(saveStripeConnectAuthCodeFailure());
+        resolve({
+          success: false,
+          message: 'Error setting up merchant account',
+        });
       });
   });
 };
@@ -273,6 +429,7 @@ const fetchCurrentUser = () => dispatch => {
             fetchUser {
                 id
                 name
+                serviceName
                 email
                 authCode
                 username
@@ -283,21 +440,13 @@ const fetchCurrentUser = () => dispatch => {
                 }
                 createdAt
                 profilePictureURL
-                resellItems {
-                  id
-                  askingPrice
-                  condition
-                  availability
-                  size
-                  product {
-                    id
-                    name
-                  }
-                  images
-                }
+                resellItems 
                 likedProducts
                 myShopList
                 myLocalList
+                stripe_connect_user_id
+                stripe_connect_access_token
+                stripe_connect_account_status
             }
         }
         `)
@@ -447,6 +596,44 @@ const logOutUserAction = () => {
   };
 };
 
+const editProfileRequest = () => {
+  return {
+    type: actionTypes.EDIT_PROFILE_REQUEST,
+  };
+};
+
+const editProfileSuccess = ({ user, success }) => {
+  return {
+    type: actionTypes.EDIT_PROFILE_SUCCESS,
+    payload: { user },
+  };
+};
+
+const editProfileFailure = () => {
+  return {
+    type: actionTypes.EDIT_PROFILE_FAILURE,
+  };
+};
+
+const saveStripeConnectAuthCodeRequest = () => {
+  return {
+    type: actionTypes.SAVE_STRIPE_CONNECT_AUTH_REQUEST,
+  };
+};
+
+const saveStripeConnectAuthCodeSuccess = ({ user, success }) => {
+  return {
+    type: actionTypes.SAVE_STRIPE_CONNECT_AUTH_SUCCESS,
+    payload: { user },
+  };
+};
+
+const saveStripeConnectAuthCodeFailure = () => {
+  return {
+    type: actionTypes.SAVE_STRIPE_CONNECT_AUTH_FAILURE,
+  };
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.FETCH_CURRENT_USER_REQUEST:
@@ -461,6 +648,34 @@ const reducer = (state = initialState, action) => {
         isVerified: action.payload.user.authCode === 0,
       });
     case actionTypes.FETCH_CURRENT_USER_FAILURE:
+      return Object.assign({}, state, {
+        isSaving: false,
+      });
+    case actionTypes.EDIT_PROFILE_REQUEST:
+      return Object.assign({}, state, {
+        isSaving: true,
+      });
+    case actionTypes.EDIT_PROFILE_SUCCESS:
+      return Object.assign({}, state, {
+        isSaving: false,
+        user: action.payload.user,
+        isVerified: action.payload.user.authCode === 0,
+      });
+    case actionTypes.EDIT_PROFILE_FAILURE:
+      return Object.assign({}, state, {
+        isSaving: false,
+      });
+    case actionTypes.SAVE_STRIPE_CONNECT_AUTH_REQUEST:
+      return Object.assign({}, state, {
+        isSaving: true,
+      });
+    case actionTypes.SAVE_STRIPE_CONNECT_AUTH_SUCCESS:
+      return Object.assign({}, state, {
+        isSaving: false,
+        user: action.payload.user,
+        isVerified: action.payload.user.authCode === 0,
+      });
+    case actionTypes.SAVE_STRIPE_CONNECT_AUTH_FAILURE:
       return Object.assign({}, state, {
         isSaving: false,
       });
@@ -550,5 +765,8 @@ export default {
     addToLocalList,
     removeFromLocalList,
     userVerification,
+    editProfile,
+    changePassword,
+    saveStripeConnectAuthCode,
   },
 };

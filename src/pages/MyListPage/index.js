@@ -68,11 +68,15 @@ class MyListPage extends Component {
 
             <div className={Style.contentWrapper}>
               {listingSelection === 'shop' ? (
-                <MyShopList listings={this.props.myShopList} />
+                <MyShopList
+                  listings={this.props.myShopList}
+                  fetchingMyShopList={this.props.fetchingMyShopList}
+                />
               ) : (
                 <MyLocalList
                   listings={this.props.myLocalList}
                   user={this.props.user}
+                  fetchingMyLocalList={this.props.fetchingMyLocalList}
                 />
               )}
             </div>
@@ -90,6 +94,8 @@ const mapStateToProps = state => {
     listingSelection: state[MyListDuck.duckName].listingSelection,
     myShopList: state[MyListDuck.duckName].myShopList,
     myLocalList: state[MyListDuck.duckName].myLocalList,
+    fetchingMyShopList: state[MyListDuck.duckName].fetchingMyShopList,
+    fetchingMyLocalList: state[MyListDuck.duckName].fetchingMyLocalList,
   };
 };
 export default connect(mapStateToProps)(MyListPage);

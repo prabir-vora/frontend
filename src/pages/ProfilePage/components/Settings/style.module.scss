@@ -1,0 +1,64 @@
+.settingsContainer {
+  display: flex;
+}
+
+.sidebarContainer {
+  width: 20%;
+}
+
+.sidebar {
+  box-sizing: border-box;
+}
+
+.navList {
+  background: #1b1b1b;
+  margin: 0px;
+  padding: 0px;
+  font-size: 16px;
+  list-style: none;
+  &::before {
+    content: ' ';
+    display: table;
+  }
+}
+
+.navBarItem {
+  color: grey;
+  //   padding: 15px 15px 15px 30px;
+  height: 60px;
+  padding: 0px 50px;
+  position: relative;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.005);
+  border-top: 1px solid rgba(0, 0, 0, 0.025);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+
+  &::before {
+    background-color: transparent;
+    content: '';
+    height: 100%;
+    left: 0;
+    position: absolute;
+    width: 5px;
+  }
+
+  &.active {
+    color: white;
+
+    &::before {
+      content: '';
+      height: 100%;
+      left: 0;
+      position: absolute;
+      width: 5px;
+      background-color: #938cfc;
+    }
+  }
+}
+
+.contentContainer {
+  width: 75%;
+  background: #f8f8f8;
+}

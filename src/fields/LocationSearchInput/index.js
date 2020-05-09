@@ -8,6 +8,7 @@ import PlacesAutocomplete, {
   geocodeByAddress,
   getLatLng,
 } from 'react-places-autocomplete';
+import { CloseIcon } from 'assets/Icons';
 
 class LocationSearchInput extends React.Component {
   constructor(props) {
@@ -92,7 +93,7 @@ class LocationSearchInput extends React.Component {
     const { address } = this.state;
     console.log(address);
     return (
-      <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+      <div style={{ width: '400px' }}>
         <PlacesAutocomplete
           onChange={this.handleChange}
           value={address}
@@ -116,7 +117,7 @@ class LocationSearchInput extends React.Component {
                       className="Demo__clear-button"
                       onClick={this.handleCloseClick}
                     >
-                      x
+                      <CloseIcon />
                     </button>
                   )}
                 </div>

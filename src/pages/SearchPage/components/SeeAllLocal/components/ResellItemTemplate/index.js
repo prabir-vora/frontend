@@ -58,10 +58,7 @@ export default class ResellItemTemplate extends Component {
                 </div>
                 <br />
                 <div style={{ textAlign: 'center' }}>
-                  <a
-                    className={Style.userLink}
-                    href={`/user/${reseller_username}`}
-                  >
+                  <a className={Style.userLink} href={`/${reseller_username}`}>
                     @{reseller_username}
                   </a>
                 </div>

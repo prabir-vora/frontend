@@ -38,7 +38,7 @@ export default class ShopGridTemplate extends Component {
                 </div>
                 <br />
                 <div style={{ textAlign: 'center' }}>
-                  <a className={Style.userLink} href={`/user/${username}`}>
+                  <a className={Style.userLink} href={`/${username}`}>
                     @{username}
                   </a>
                 </div>

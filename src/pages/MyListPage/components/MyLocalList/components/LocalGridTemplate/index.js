@@ -69,7 +69,7 @@ export default class LocalGridTemplate extends Component {
                 </div>
                 <br />
                 <div style={{ textAlign: 'center' }}>
-                  <a className={Style.userLink} href={`/user/${username}`}>
+                  <a className={Style.userLink} href={`/${username}`}>
                     @{username}
                   </a>
                 </div>

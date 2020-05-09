@@ -170,7 +170,7 @@ class LocalListingPage extends Component {
               style={{ width: '25px', height: '25px', borderRadius: '50%' }}
             />
             <a
-              href={`/user/${data.reseller.username}`}
+              href={`/${data.reseller.username}`}
               target="_blank"
               rel="noopener noreferrer"
             >

@@ -392,7 +392,7 @@ export default class LocalListingsPage extends Component {
           <h1>Local Marketplace</h1>
         </div>
         <div>
-          <div>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
             <LocationSearchInput
               address={this.props.address}
               latitude={this.props.lat}

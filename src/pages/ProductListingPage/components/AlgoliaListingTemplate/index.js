@@ -128,7 +128,7 @@ class AlgoliaListingTemplate extends Component {
             />
             <a
               className={Style.resellerLink}
-              href={`/user/${reseller_username}`}
+              href={`/${reseller_username}`}
               target="_blank"
               rel="noopener noreferrer"
             >

@@ -19,6 +19,7 @@ import UserDuck from 'stores/ducks/User.duck';
 class UserPage extends Component {
   state = { listingSelection: 'shop' };
   async componentDidMount() {
+    console.log(this.props);
     const { username } = this.props.match.params;
     console.log(this.props.currentUser);
     if (
