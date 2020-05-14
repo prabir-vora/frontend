@@ -19,7 +19,7 @@ export default class SellerSettings extends Component {
     const { email, username } = user;
 
     const queryParameters = {
-      client_id: 'ca_HEcN4Mg9DrjQMmXJPYojfqpqxDiumfU6',
+      client_id: 'ca_HEFQOOaKgt2E08XtNo3uTO5Nu9WI0dMJ',
       scope: 'read_write',
       redirect_uri: 'https://localhost:3000/stripeRedirect',
       response_type: 'code',
@@ -86,6 +86,10 @@ export default class SellerSettings extends Component {
     </div>
   );
 
+  renderSellerAddressComponent = () => {
+    return null;
+  };
+
   render() {
     const {
       stripe_connect_user_id,
@@ -106,6 +110,10 @@ export default class SellerSettings extends Component {
           {isStripeConnectComplete
             ? this.renderSuccessMessage()
             : this.renderStripeConnectButton()}
+          <br />
+          <br />
+          <p className={Style.formInputLabel}>Seller Address</p>
+          {this.renderSellerAddressComponent()}
         </div>
       </div>
     );

@@ -7,6 +7,8 @@ import LoadingScreen from 'components/LoadingScreen';
 import { connect } from 'react-redux';
 import ResellListingDuck from 'stores/ducks/ResellListing.duck';
 import ConversationDuck from 'stores/ducks/Conversation.duck';
+import CheckoutDuck from 'stores/ducks/Checkout.duck';
+
 import UserDuck from 'stores/ducks/User.duck';
 import ReactTooltip from 'react-tooltip';
 
@@ -17,6 +19,8 @@ import { ShowConfirmNotif } from 'functions';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import Style from './style.module.scss';
+
+import { withRouter } from 'react-router-dom';
 
 class ShopListingPage extends Component {
   async componentDidMount() {
@@ -76,6 +80,21 @@ class ShopListingPage extends Component {
     const data = listingsMap[currentSlug];
     const { id } = data;
     this.props.dispatch(showMessageModal('shop', id));
+  };
+
+  onClickBuy = async () => {
+    const { actionCreators } = CheckoutDuck;
+    const { createOrder } = actionCreators;
+
+    const { currentSlug, listingsMap } = this.props.resellListing;
+    const data = listingsMap[currentSlug];
+    const { id } = data;
+    const { success, message, orderNumber } = await this.props.dispatch(
+      createOrder(id),
+    );
+    if (success) {
+      this.props.history.push(`/orders/${orderNumber}`);
+    }
   };
 
   renderImageGallery = data => {
@@ -210,9 +229,9 @@ class ShopListingPage extends Component {
           >
             <button
               className={Style.buttonStyle}
-              // onClick={() => {
-              //   this.setState({ viewResellers: true });
-              // }}
+              onClick={() => {
+                this.onClickBuy();
+              }}
             >
               <span className={Style.buttonText}>Buy</span>
             </button>
@@ -248,7 +267,7 @@ class ShopListingPage extends Component {
           place="bottom"
         />
         <div className={Style.pageLayout}>
-          <div style={{ display: 'flex' }}>
+          <div style={{ display: 'flex', width: '100%' }}>
             <div className={Style.mediaContainer}>
               {this.renderImageGallery(data)}
             </div>
@@ -279,4 +298,5 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(ShopListingPage);
+const x = withRouter(ShopListingPage);
+export default connect(mapStateToProps)(x);

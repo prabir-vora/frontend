@@ -1,0 +1,75 @@
+.pageLayout {
+  display: flex;
+  position: relative;
+  box-align: center;
+  align-items: center;
+  flex-direction: column;
+  box-pack: start;
+  justify-content: flex-start;
+  flex: 1 1;
+  background: black;
+  color: white;
+  height: calc(100vh - 90px);
+}
+
+.resellItemContainer {
+  position: relative;
+  width: 50%;
+  border-right: 1px solid white;
+  padding: 60px;
+}
+
+.checkoutContainer {
+  position: relative;
+  width: 50%;
+  padding: 40px;
+}
+
+.contentContainer {
+  display: flex;
+  position: relative;
+  box-align: center;
+  align-items: center;
+  flex-direction: column;
+  box-pack: start;
+  justify-content: flex-start;
+}
+
+.imageContainer {
+  justify-content: center;
+  width: 65%;
+}
+
+.productImage {
+  width: 100%;
+}
+
+.detailsContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  text-align: center;
+  margin: 50px 0px;
+}
+
+.detailsBlock {
+  width: 33%;
+}
+
+.detailsTitle {
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #aaaaaa;
+  margin-bottom: 10px;
+}
+
+.detailsContent {
+  font-size: 16px;
+  color: white;
+  font-family: Druk Wide Web, futura-pt, HelveticaNeue-Light,
+    Helvetica Neue Light, Helvetica Neue, Helvetica, Arial, Lucida Grande,
+    sans-serif;
+  font-weight: 700;
+}

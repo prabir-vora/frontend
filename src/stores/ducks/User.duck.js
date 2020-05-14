@@ -36,6 +36,10 @@ const actionTypes = createActionTypes(
     FETCH_CURRENT_USER_SUCCESS: 'FETCH_CURRENT_USER_SUCCESS',
     FETCH_CURRENT_USER_FAILURE: 'FETCH_CURRENT_USER_FAILURE',
 
+    FETCH_USER_ADDRESSES_REQUEST: 'FETCH_USER_ADDRESSES_REQUEST',
+    FETCH_USER_ADDRESSES_SUCCESS: 'FETCH_USER_ADDRESSES_SUCCESS',
+    FETCH_USER_ADDRESSES_FAILURE: 'FETCH_USER_ADDRESSES_FAILURE',
+
     LOG_OUT_USER: 'LOG_OUT_USER',
   },
   duckName,
@@ -134,6 +138,18 @@ const editProfileWithInput = () => {
           stripe_connect_user_id
           stripe_connect_access_token
           stripe_connect_account_status
+          addresses {
+            id
+            postal_code
+            city_locality
+            state_province
+            country_code
+            country
+            address1
+            address2
+            name
+            phone
+          }
         }
         success
       }
@@ -221,6 +237,18 @@ const saveStripeConnectAuthCode = code => dispatch => {
           stripe_connect_user_id
           stripe_connect_access_token
           stripe_connect_account_status
+          addresses {
+            id
+            postal_code
+            city_locality
+            state_province
+            country_code
+            country
+            address1
+            address2
+            name
+            phone
+          }
         }
         success
         message
@@ -420,6 +448,38 @@ const removeFromLocalList = listingID => dispatch => {
   });
 };
 
+const fetchUserAddresses = () => dispatch => {
+  dispatch(fetchUserAddressesRequest());
+  return new Promise((resolve, reject) => {
+    fetchGraphQL(`
+      query {
+        fetchUserAddresses {
+          id
+          postal_code
+          city_locality
+          state_province
+          country_code
+          country
+          address1
+          address2
+          name
+          phone
+        }
+      }
+    `)
+      .then(res => {
+        if (res !== null && res !== undefined && res.fetchUserAddresses) {
+          dispatch(fetchUserAddressesSuccess(res.fetchUserAddresses));
+        } else {
+          dispatch(fetchUserAddressesFailure());
+        }
+      })
+      .catch(err => {
+        dispatch(fetchUserAddressesFailure());
+      });
+  });
+};
+
 const fetchCurrentUser = () => dispatch => {
   dispatch(fetchCurrentUserRequest());
 
@@ -447,6 +507,18 @@ const fetchCurrentUser = () => dispatch => {
                 stripe_connect_user_id
                 stripe_connect_access_token
                 stripe_connect_account_status
+                addresses {
+                  id
+                  postal_code
+                  city_locality
+                  state_province
+                  country_code
+                  country
+                  address1
+                  address2
+                  name
+                  phone
+                }
             }
         }
         `)
@@ -590,6 +662,25 @@ const fetchCurrentUserFailure = () => {
   };
 };
 
+const fetchUserAddressesRequest = () => {
+  return {
+    type: actionTypes.FETCH_USER_ADDRESSES_REQUEST,
+  };
+};
+
+const fetchUserAddressesSuccess = addresses => {
+  return {
+    type: actionTypes.FETCH_USER_ADDRESSES_SUCCESS,
+    payload: { addresses },
+  };
+};
+
+const fetchUserAddressesFailure = () => {
+  return {
+    type: actionTypes.FETCH_USER_ADDRESSES_FAILURE,
+  };
+};
+
 const logOutUserAction = () => {
   return {
     type: actionTypes.LOG_OUT_USER,
@@ -648,6 +739,22 @@ const reducer = (state = initialState, action) => {
         isVerified: action.payload.user.authCode === 0,
       });
     case actionTypes.FETCH_CURRENT_USER_FAILURE:
+      return Object.assign({}, state, {
+        isSaving: false,
+      });
+    case actionTypes.FETCH_USER_ADDRESSES_REQUEST:
+      return state;
+    case actionTypes.FETCH_USER_ADDRESSES_SUCCESS:
+      return Object.assign({}, state, {
+        user: immutable.set(
+          this.state.user,
+          'addresses',
+          action.payload.addresses,
+        ),
+      });
+    case actionTypes.FETCH_USER_ADDRESSES_FAILURE:
+      return state;
+    case actionTypes.FETCH_USER_ADDRESSES_FAILURE:
       return Object.assign({}, state, {
         isSaving: false,
       });
@@ -753,6 +860,7 @@ export default {
   duckName,
   reducer,
   actionCreators: {
+    fetchUserAddresses,
     fetchCurrentUser,
     logOutUser,
     followProduct,
