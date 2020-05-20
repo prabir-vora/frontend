@@ -17,6 +17,8 @@ import { NewAddressInput, NewPaymentInput, ReviewOrder } from './components';
 class OrderPage extends Component {
   state = {
     isUserPresent: false,
+    addNewAddress: false,
+    addNewPayment: false,
   };
 
   async componentDidMount() {
@@ -55,6 +57,18 @@ class OrderPage extends Component {
     }
   }
 
+  onAddNewAddress = () => {
+    this.setState({
+      addNewAddress: true,
+    });
+  };
+
+  onAddNewPayment = () => {
+    this.setState({
+      addNewPayment: true,
+    });
+  };
+
   fetchCurrentOrder = async orderNumber => {
     // const { checkout } = this.props;
 
@@ -81,6 +95,12 @@ class OrderPage extends Component {
       createShippingAddress(orderNumber, address),
     );
 
+    const { fetchUpdatedUser } = UserDuck.actionCreators;
+
+    if (response.updated) {
+      this.props.dispatch(fetchUpdatedUser());
+    }
+
     return response;
   };
 
@@ -93,7 +113,20 @@ class OrderPage extends Component {
       createPaymentMethod(orderNumber, paymentMethodID),
     );
 
+    const { fetchUpdatedUser } = UserDuck.actionCreators;
+
+    if (response.updated) {
+      this.props.dispatch(fetchUpdatedUser());
+    }
+
     return response;
+  };
+
+  goBack = () => {
+    this.setState({
+      addNewAddress: false,
+      addNewPayment: false,
+    });
   };
 
   renderResellItem = data => {
@@ -139,24 +172,36 @@ class OrderPage extends Component {
   };
 
   renderCheckoutContainer = data => {
+    const { addNewAddress, addNewPayment } = this.state;
     const { buyerAddress, billingInfo } = data;
 
-    if (!buyerAddress) {
+    if (!buyerAddress || addNewAddress) {
       return (
         <NewAddressInput
           user={this.props.user}
           createNewAddress={this.createNewAddress}
+          addNewAddress={addNewAddress}
+          goBack={this.goBack}
         />
       );
-    } else if (!billingInfo) {
+    } else if (!billingInfo || addNewPayment) {
       return (
         <NewPaymentInput
           newSetupIntent={this.newSetupIntent}
           addNewPaymentMethod={this.createNewPaymentMethod}
+          addNewPayment={addNewPayment}
+          goBack={this.goBack}
         />
       );
     } else {
-      return <ReviewOrder />;
+      return (
+        <ReviewOrder
+          orderDetails={data}
+          user={this.props.user}
+          onAddNewAddress={this.onAddNewAddress}
+          onAddNewPayment={this.onAddNewPayment}
+        />
+      );
     }
   };
 

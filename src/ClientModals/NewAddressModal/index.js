@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 
-import Style from '../style.module.scss';
+import Style from './style.module.scss';
+
+import ReactModal from 'react-modal';
+
+import { CloseIcon } from 'assets/Icons';
 
 import * as immutable from 'object-path-immutable';
-
-import cx from 'classnames';
 
 import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
 
@@ -12,7 +14,9 @@ import { Button } from 'fields';
 
 import countryRegionData from 'country-region-data';
 
-export default class NewAddressInput extends Component {
+import cx from 'classnames';
+
+export default class NewAddressModal extends Component {
   state = {
     address: {
       postal_code: '',
@@ -27,14 +31,6 @@ export default class NewAddressInput extends Component {
     },
     errorMessage: '',
   };
-
-  // componentDidMount() {
-  //   if (this.props.user) {
-  //     this.setState({
-  //       country_code: this.props.user.country,
-  //     });
-  //   }
-  // }
 
   onChangeFieldValue = (fieldName, fieldValue) => {
     console.log(fieldName, fieldValue);
@@ -58,12 +54,6 @@ export default class NewAddressInput extends Component {
         .set('country', val)
         .set('country_code', countryShortCode)
         .value(),
-    });
-  }
-
-  selectRegion(val) {
-    this.setState({
-      address: immutable.set(this.state.address, 'state_province', val),
     });
   }
 
@@ -94,24 +84,28 @@ export default class NewAddressInput extends Component {
     }
   };
 
+  selectRegion(val) {
+    this.setState({
+      address: immutable.set(this.state.address, 'state_province', val),
+    });
+  }
+
   onSubmitShippingForm = async e => {
     e.preventDefault();
     console.log(this.state);
 
-    const { updated, message } = await this.props.createNewAddress(
+    const { success, message } = await this.props.onCreateNewSellerAddress(
       this.state.address,
     );
 
-    console.log(message);
-
-    if (!updated && message) {
+    if (!success && message) {
       this.setState({
         errorMessage: message,
       });
     }
   };
 
-  render() {
+  renderAddressContainer() {
     const {
       country,
       name,
@@ -225,14 +219,6 @@ export default class NewAddressInput extends Component {
           <br />
           <div className={Style.errorMessage}>{this.state.errorMessage}</div>
           <br />
-          {this.props.addNewAddress && (
-            <Button
-              className={Style.submitButton}
-              onClick={() => this.props.goBack()}
-            >
-              Back
-            </Button>
-          )}
           <Button
             className={Style.submitButton}
             name="submit"
@@ -242,6 +228,26 @@ export default class NewAddressInput extends Component {
           </Button>
         </form>
       </div>
+    );
+  }
+
+  render() {
+    return (
+      <ReactModal
+        isOpen={true}
+        className={Style.Modal}
+        overlayClassName={Style.Overlay}
+        contentLabel="Example Modal"
+      >
+        <button className={Style.close} onClick={() => this.props.onClose()}>
+          <CloseIcon />
+        </button>
+        <div className={Style.body}>
+          <div className={Style.authContainer}>
+            {this.renderAddressContainer()}
+          </div>
+        </div>
+      </ReactModal>
     );
   }
 }

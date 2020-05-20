@@ -21,6 +21,10 @@ const actionTypes = createActionTypes(
     SAVE_STRIPE_CONNECT_AUTH_SUCCESS: 'SAVE_STRIPE_CONNECT_AUTH_SUCCESS',
     SAVE_STRIPE_CONNECT_AUTH_FAILURE: 'SAVE_STRIPE_CONNECT_AUTH_FAILURE',
 
+    CREATE_NEW_SELLER_ADDRESS_REQUEST: 'CREATE_NEW_SELLER_ADDRESS_REQUEST',
+    CREATE_NEW_SELLER_ADDRESS_SUCCESS: 'CREATE_NEW_SELLER_ADDRESS_SUCCESS',
+    CREATE_NEW_SELLER_ADDRESS_FAILURE: 'CREATE_NEW_SELLER_ADDRESS_FAILURE',
+
     FOLLOW_PRODUCT: 'FOLLOW_PRODUCT',
     UNFOLLOW_PRODUCT: 'UNFOLLOW_PRODUCT',
 
@@ -36,17 +40,25 @@ const actionTypes = createActionTypes(
     FETCH_CURRENT_USER_SUCCESS: 'FETCH_CURRENT_USER_SUCCESS',
     FETCH_CURRENT_USER_FAILURE: 'FETCH_CURRENT_USER_FAILURE',
 
+    FETCH_UPDATED_USER_REQUEST: 'FETCH_UPDATED_USER_REQUEST',
+    FETCH_UPDATED_USER_SUCCESS: 'FETCH_UPDATED_USER_SUCCESS',
+    FETCH_UPDATED_USER_FAILURE: 'FETCH_UPDATED_USER_FAILURE',
+
     FETCH_USER_ADDRESSES_REQUEST: 'FETCH_USER_ADDRESSES_REQUEST',
     FETCH_USER_ADDRESSES_SUCCESS: 'FETCH_USER_ADDRESSES_SUCCESS',
     FETCH_USER_ADDRESSES_FAILURE: 'FETCH_USER_ADDRESSES_FAILURE',
 
     LOG_OUT_USER: 'LOG_OUT_USER',
+
+    SHOW_NEW_ADDRESS_MODAL: 'SHOW_NEW_ADDRESS_MODAL',
+    HIDE_NEW_ADDRESS_MODAL: 'HIDE_NEW_ADDRESS_MODAL',
   },
   duckName,
 );
 
 const initialState = {
   user: null,
+  showNewAddressModal: false,
 };
 
 const userSetupWithInput = () => {
@@ -150,6 +162,16 @@ const editProfileWithInput = () => {
             name
             phone
           }
+          paymentMethods {
+            id
+            payment_method_id
+            name
+            payment_type
+            card_brand
+            last_4_digits
+            processor_name
+          }
+          activeSellerAddressID
         }
         success
       }
@@ -179,6 +201,92 @@ const editProfile = profile => dispatch => {
       .catch(e => {
         dispatch(editProfileFailure());
         resolve({ success: false });
+      });
+  });
+};
+
+const createNewSellerAddressWithInput = () => {
+  return `
+    mutation($address: AddressInput!) {
+      createNewSellerAddress(address: $address) {
+        user {
+          id
+          name
+          email
+          authCode
+          username
+          address
+          _geoloc {
+            lat
+            lng
+          }
+          createdAt
+          profilePictureURL
+          resellItems 
+          likedProducts
+          myShopList
+          myLocalList
+          stripe_connect_user_id
+          stripe_connect_access_token
+          stripe_connect_account_status
+          addresses {
+            id
+            postal_code
+            city_locality
+            state_province
+            country_code
+            country
+            address1
+            address2
+            name
+            phone
+          }
+          paymentMethods {
+            id
+            payment_method_id
+            name
+            payment_type
+            card_brand
+            last_4_digits
+            processor_name
+          }
+          activeSellerAddressID
+        }
+        success
+        message
+      }
+    }
+  `;
+};
+
+const createNewSellerAddress = address => dispatch => {
+  dispatch(createNewSellerAddressRequest());
+  return new Promise((resolve, reject) => {
+    fetchGraphQL(createNewSellerAddressWithInput(), undefined, {
+      address,
+    })
+      .then(res => {
+        if (
+          res !== null &&
+          res !== undefined &&
+          res.createNewSellerAddress !== undefined
+        ) {
+          dispatch(createNewSellerAddressSuccess(res.createNewSellerAddress));
+          resolve({
+            success: res.createNewSellerAddress.success,
+            message: res.createNewSellerAddress.message,
+          });
+        } else {
+          dispatch(createNewSellerAddressFailure());
+          resolve({
+            success: false,
+            message: res.createNewSellerAddress.message,
+          });
+        }
+      })
+      .catch(e => {
+        dispatch(createNewSellerAddressFailure());
+        resolve({ success: false, message: 'Failed to add address' });
       });
   });
 };
@@ -249,6 +357,16 @@ const saveStripeConnectAuthCode = code => dispatch => {
             name
             phone
           }
+          paymentMethods {
+            id
+            payment_method_id
+            name
+            payment_type
+            card_brand
+            last_4_digits
+            processor_name
+          }
+          activeSellerAddressID
         }
         success
         message
@@ -519,6 +637,16 @@ const fetchCurrentUser = () => dispatch => {
                   name
                   phone
                 }
+                paymentMethods {
+                  id
+                  payment_method_id
+                  name
+                  payment_type
+                  card_brand
+                  last_4_digits
+                  processor_name
+                }
+                activeSellerAddressID
             }
         }
         `)
@@ -543,6 +671,89 @@ const fetchCurrentUser = () => dispatch => {
         resolve({ success: false, isSetup: false });
       });
   });
+};
+
+const fetchUpdatedUser = () => dispatch => {
+  dispatch(fetchUpdatedUserRequest());
+
+  return new Promise((resolve, reject) => {
+    fetchGraphQL(`
+        query {
+            fetchUser {
+                id
+                name
+                serviceName
+                email
+                authCode
+                username
+                address
+                _geoloc {
+                  lat
+                  lng
+                }
+                createdAt
+                profilePictureURL
+                resellItems 
+                likedProducts
+                myShopList
+                myLocalList
+                stripe_connect_user_id
+                stripe_connect_access_token
+                stripe_connect_account_status
+                addresses {
+                  id
+                  postal_code
+                  city_locality
+                  state_province
+                  country_code
+                  country
+                  address1
+                  address2
+                  name
+                  phone
+                }
+                paymentMethods {
+                  id
+                  payment_method_id
+                  name
+                  payment_type
+                  card_brand
+                  last_4_digits
+                  processor_name
+                }
+                activeSellerAddressID
+            }
+        }
+        `)
+      .then(res => {
+        console.log(res);
+        if (res !== null && res !== undefined && res.fetchUser !== undefined) {
+          dispatch(fetchUpdatedUserSuccess(res.fetchUser));
+          resolve({
+            success: true,
+            isSetup:
+              res.fetchUser.username !== null &&
+              res.fetchUser.username !== undefined,
+            isVerified: res.fetchUser.authCode === 0,
+          });
+        } else {
+          dispatch(fetchUpdatedUserFailure());
+          resolve({ success: false, isSetup: false });
+        }
+      })
+      .catch(e => {
+        dispatch(fetchUpdatedUserFailure());
+        resolve({ success: false, isSetup: false });
+      });
+  });
+};
+
+const showNewAddressModalCreator = () => dispatch => {
+  dispatch(showNewAddressModalAction());
+};
+
+const hideNewAddressModalCreator = () => dispatch => {
+  dispatch(hideNewAddressModalAction());
 };
 
 const fetchIsUsernameValid = username => dispatch => {
@@ -662,6 +873,25 @@ const fetchCurrentUserFailure = () => {
   };
 };
 
+const fetchUpdatedUserRequest = () => {
+  return {
+    type: actionTypes.FETCH_UPDATED_USER_REQUEST,
+  };
+};
+
+const fetchUpdatedUserSuccess = user => {
+  return {
+    type: actionTypes.FETCH_UPDATED_USER_SUCCESS,
+    payload: { user },
+  };
+};
+
+const fetchUpdatedUserFailure = () => {
+  return {
+    type: actionTypes.FETCH_UPDATED_USER_FAILURE,
+  };
+};
+
 const fetchUserAddressesRequest = () => {
   return {
     type: actionTypes.FETCH_USER_ADDRESSES_REQUEST,
@@ -706,6 +936,25 @@ const editProfileFailure = () => {
   };
 };
 
+const createNewSellerAddressRequest = () => {
+  return {
+    type: actionTypes.CREATE_NEW_SELLER_ADDRESS_REQUEST,
+  };
+};
+
+const createNewSellerAddressSuccess = ({ user, success }) => {
+  return {
+    type: actionTypes.CREATE_NEW_SELLER_ADDRESS_SUCCESS,
+    payload: { user },
+  };
+};
+
+const createNewSellerAddressFailure = () => {
+  return {
+    type: actionTypes.CREATE_NEW_SELLER_ADDRESS_FAILURE,
+  };
+};
+
 const saveStripeConnectAuthCodeRequest = () => {
   return {
     type: actionTypes.SAVE_STRIPE_CONNECT_AUTH_REQUEST,
@@ -722,6 +971,18 @@ const saveStripeConnectAuthCodeSuccess = ({ user, success }) => {
 const saveStripeConnectAuthCodeFailure = () => {
   return {
     type: actionTypes.SAVE_STRIPE_CONNECT_AUTH_FAILURE,
+  };
+};
+
+const showNewAddressModalAction = () => {
+  return {
+    type: actionTypes.SHOW_NEW_ADDRESS_MODAL,
+  };
+};
+
+const hideNewAddressModalAction = () => {
+  return {
+    type: actionTypes.HIDE_NEW_ADDRESS_MODAL,
   };
 };
 
@@ -742,6 +1003,15 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         isSaving: false,
       });
+    case actionTypes.FETCH_UPDATED_USER_REQUEST:
+      return state;
+    case actionTypes.FETCH_UPDATED_USER_SUCCESS:
+      return Object.assign({}, state, {
+        user: action.payload.user,
+        isVerified: action.payload.user.authCode === 0,
+      });
+    case actionTypes.FETCH_UPDATED_USER_FAILURE:
+      return state;
     case actionTypes.FETCH_USER_ADDRESSES_REQUEST:
       return state;
     case actionTypes.FETCH_USER_ADDRESSES_SUCCESS:
@@ -769,6 +1039,20 @@ const reducer = (state = initialState, action) => {
         isVerified: action.payload.user.authCode === 0,
       });
     case actionTypes.EDIT_PROFILE_FAILURE:
+      return Object.assign({}, state, {
+        isSaving: false,
+      });
+    case actionTypes.CREATE_NEW_SELLER_REQUEST:
+      return Object.assign({}, state, {
+        isSaving: true,
+      });
+    case actionTypes.CREATE_NEW_SELLER_SUCCESS:
+      return Object.assign({}, state, {
+        isSaving: false,
+        user: action.payload.user,
+        isVerified: action.payload.user.authCode === 0,
+      });
+    case actionTypes.CREATE_NEW_SELLER_FAILURE:
       return Object.assign({}, state, {
         isSaving: false,
       });
@@ -851,6 +1135,16 @@ const reducer = (state = initialState, action) => {
         user: immutable.set(state.user, 'authCode', 0),
       });
     }
+    case actionTypes.SHOW_NEW_ADDRESS_MODAL: {
+      return Object.assign({}, state, {
+        showNewAddressModal: true,
+      });
+    }
+    case actionTypes.HIDE_NEW_ADDRESS_MODAL: {
+      return Object.assign({}, state, {
+        showNewAddressModal: false,
+      });
+    }
     default:
       return state;
   }
@@ -862,6 +1156,7 @@ export default {
   actionCreators: {
     fetchUserAddresses,
     fetchCurrentUser,
+    fetchUpdatedUser,
     logOutUser,
     followProduct,
     unfollowProduct,
@@ -876,5 +1171,8 @@ export default {
     editProfile,
     changePassword,
     saveStripeConnectAuthCode,
+    createNewSellerAddress,
+    showNewAddressModalCreator,
+    hideNewAddressModalCreator,
   },
 };

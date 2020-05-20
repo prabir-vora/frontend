@@ -113,3 +113,94 @@
   color: red;
   font-size: 13px;
 }
+
+.OrderReviewSummaryDetail {
+  display: flex;
+}
+
+.OrderReviewSummaryDetailTitle {
+  color: rgb(11, 11, 11);
+  flex: 1 1 0%;
+  margin: 0px 16px 16px 0px;
+  border-top: none;
+}
+
+.OrderReviewSummaryDetailContent {
+  display: flex;
+  flex: 3 1 0%;
+  padding: 16px 0px 0px;
+  border-top: 1px solid rgb(155, 155, 155);
+  overflow: hidden;
+}
+
+.OrderReviewSummaryDetailContentItem {
+  font-family: Plain, sans-serif;
+  text-overflow: ellipsis;
+  flex: 1 1 0%;
+  margin: 0px 0px 16px;
+  text-overflow: initial;
+  overflow: auto;
+}
+
+.addressLabel {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin: 0px 8px 0px 0px;
+  overflow: hidden;
+}
+
+.cardBrandImage {
+  width: 50px;
+  height: 30px;
+  margin-right: 10px;
+}
+
+.OrderReviewSummaryDetailEditLink {
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font: 10px Plain, sans-serif;
+  text-decoration: underline;
+  color: black;
+}
+
+.priceSummary {
+  display: flex;
+  -webkit-box-pack: justify;
+  justify-content: space-between;
+  margin: 0px 0px 8px;
+}
+
+.shippingList {
+  width: 80%;
+  max-height: 220px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  margin: 24px auto 0px;
+  padding: 0px;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+}
+
+.shippingListItem {
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  border-top: 1px solid black;
+  padding: 20px;
+}
+
+.shippingListItemContent {
+  flex-direction: row;
+  -webkit-box-pack: start;
+  justify-content: flex-start;
+  -webkit-box-align: center;
+  align-items: center;
+  display: flex;
+}
+
+.addNewButton {
+  font-size: 10px;
+  line-height: 15px;
+  letter-spacing: 1.7px;
+  text-transform: uppercase;
+  margin-top: 24px;
+}

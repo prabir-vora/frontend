@@ -1,22 +1,29 @@
 import React, { Component } from 'react';
 
+import UserDuck from 'stores/ducks/User.duck';
+
+import { connect } from 'react-redux';
+
 import Style from '../style.module.scss';
 
 import qs from 'query-string';
 
+import { RadioButton, Button } from 'fields';
+
 const stripeConnectButton = require('assets/Images/blue-on-dark.png');
 
-export default class SellerSettings extends Component {
+class SellerSettings extends Component {
   state = {
     isStripeConnectSetup: false,
     stripeClientID: 'ca_HEFQOOaKgt2E08XtNo3uTO5Nu9WI0dMJ',
     stripeConnectOnboardingUrl: '',
+    activeShippingID: '',
   };
 
   componentDidMount() {
     const { user } = this.props;
 
-    const { email, username } = user;
+    const { email, username, activeSellerAddressID } = user;
 
     const queryParameters = {
       client_id: 'ca_HEFQOOaKgt2E08XtNo3uTO5Nu9WI0dMJ',
@@ -34,8 +41,17 @@ export default class SellerSettings extends Component {
 
     this.setState({
       stripeConnectOnboardingUrl: `https://connect.stripe.com/oauth/authorize?${queryString}`,
+      activeShippingID: activeSellerAddressID,
     });
   }
+
+  onGetSubmitBtnStatus = () => {
+    if (this.state.activeShippingID !== this.props.user.activeSellerAddressID) {
+      return 'active';
+    } else {
+      return 'inactive';
+    }
+  };
 
   renderStripeConnectButton = () => (
     <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -87,7 +103,62 @@ export default class SellerSettings extends Component {
   );
 
   renderSellerAddressComponent = () => {
-    return null;
+    const { user } = this.props;
+    const { addresses } = user;
+
+    return (
+      <div className={Style.ShippingListContainer}>
+        {addresses.map(address => {
+          const {
+            address1,
+            address2,
+            city_locality,
+            country_code,
+            phone,
+            postal_code,
+            state_province,
+          } = address;
+          const addressLabel = `${address1} ${address2}, ${city_locality}, ${state_province}, ${country_code}, ${postal_code}`;
+
+          return (
+            <div className={Style.ShippingListItem} key={address.id}>
+              <div className={Style.ShippingListItemContent}>
+                <RadioButton
+                  checked={address.id === this.state.activeShippingID}
+                  id={address.id}
+                  label={addressLabel}
+                  onClick={() =>
+                    this.setState(
+                      {
+                        activeShippingID: address.id,
+                      },
+                      () => console.log(this.state),
+                    )
+                  }
+                />
+              </div>
+            </div>
+          );
+        })}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Button
+            onClick={() => {
+              const { showNewAddressModalCreator } = UserDuck.actionCreators;
+              this.props.dispatch(showNewAddressModalCreator());
+            }}
+            className={Style.addNewButton}
+          >
+            ADD ADDRESS +
+          </Button>
+        </div>
+      </div>
+    );
   };
 
   render() {
@@ -115,7 +186,26 @@ export default class SellerSettings extends Component {
           <p className={Style.formInputLabel}>Seller Address</p>
           {this.renderSellerAddressComponent()}
         </div>
+        <br />
+        <br />
+        <div className={Style.buttonsRow}>
+          <Button
+            className={Style.saveButton}
+            onClick={() => this.onSaveProfile()}
+            status={this.onGetSubmitBtnStatus()}
+          >
+            SAVE ADDRESS
+          </Button>
+          <button
+            className={Style.cancelButton}
+            onClick={() => this.onCancel()}
+          >
+            CANCEL
+          </button>
+        </div>
       </div>
     );
   }
 }
+
+export default connect()(SellerSettings);

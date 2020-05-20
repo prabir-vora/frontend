@@ -81,7 +81,6 @@ const createOrder = listingID => dispatch => {
                         last_4_digits
                         processor_name
                     }
-                    authenticationRequired
                     status
                     price_cents
                     total_price_cents
@@ -160,7 +159,6 @@ const createShippingAddressWithInput = () => {
             last_4_digits
             processor_name
         }
-        authenticationRequired
         status
         price_cents
         total_price_cents
@@ -180,6 +178,7 @@ const createShippingAddress = (orderNumber, address) => dispatch => {
       address,
     })
       .then(res => {
+        console.log(res);
         if (res !== null && res !== undefined && res.createShippingAddress) {
           const { orderNumber } = res.createShippingAddress.order;
           dispatch(
@@ -192,6 +191,8 @@ const createShippingAddress = (orderNumber, address) => dispatch => {
             updated: true,
             message: 'Added address successfully',
           });
+
+          // Update the user with the new addresses
         } else {
           dispatch(createShippingAddressError(res.createShippingAddress.error));
           resolve({
@@ -201,6 +202,7 @@ const createShippingAddress = (orderNumber, address) => dispatch => {
         }
       })
       .catch(err => {
+        console.log(err);
         dispatch(createShippingAddressError('Failed to add address'));
         resolve({
           updated: false,
@@ -260,7 +262,6 @@ const createPaymentMethodWithInput = () => {
               last_4_digits
               processor_name
           }
-          authenticationRequired
           status
           price_cents
           total_price_cents
@@ -379,7 +380,6 @@ const fetchOrder = orderNumber => dispatch => {
                           last_4_digits
                           processor_name
                       }
-                      authenticationRequired
                       status
                       price_cents
                       total_price_cents

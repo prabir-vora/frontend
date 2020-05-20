@@ -147,6 +147,14 @@ class PaymentInputForm extends Component {
           <CardElement id="card-element" options={cardStyle} />
           <br />
           <br />
+          {this.props.addNewPayment && (
+            <Button
+              className={Style.submitButton}
+              onClick={() => this.props.goBack()}
+            >
+              Back
+            </Button>
+          )}
           <Button
             className={Style.submitButton}
             name="submit"

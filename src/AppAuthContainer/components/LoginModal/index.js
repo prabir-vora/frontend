@@ -23,6 +23,11 @@ export default class LoginModal extends Component {
       password: '',
     },
     loginErrorMessage: '',
+    showForgotPassword: false,
+    forgotPasswordInfo: {
+      email: '',
+    },
+    forgotPasswordSubmitted: false,
   };
 
   onLoginWithEmail = async e => {
@@ -37,6 +42,10 @@ export default class LoginModal extends Component {
   };
 
   onDetermineButtonStatus = () => {
+    if (this.state.showForgotPassword) {
+      const { email } = this.state.forgotPasswordInfo;
+      return isEmailValid(email) ? 'active' : 'inactive';
+    }
     const { email, password } = this.state.loginInfo;
     const buttonStatus =
       isEmailValid(email) && password.length > 0 ? 'active' : 'inactive';
@@ -92,6 +101,35 @@ export default class LoginModal extends Component {
     );
   }
 
+  renderForgotPassword() {
+    return (
+      <div>
+        <button
+          className={ModalStyle.linkButton}
+          onClick={() => this.setState({ showForgotPassword: false })}
+        >
+          Back
+        </button>
+        <form className={ModalStyle.Form} onSubmit={this.onResetPassword}>
+          <TextInput
+            label={'Email'}
+            name={'email'}
+            onChange={value => this.onChangeTextInputValue('email', value)}
+            value={this.state.loginInfo['email']}
+            className={ModalStyle.formInput}
+          />
+          <Button
+            className={ModalStyle.ModalButton}
+            name="Login"
+            status={this.onDetermineButtonStatus()}
+          >
+            Reset Password
+          </Button>
+        </form>
+      </div>
+    );
+  }
+
   renderLoginWithEmail() {
     return (
       <div>
@@ -125,13 +163,37 @@ export default class LoginModal extends Component {
             Login
           </Button>
           <p>{this.state.loginErrorMessage}</p>
+          <br />
         </form>
+        <button
+          className={ModalStyle.linkButton}
+          onClick={() => {
+            this.setState({
+              showForgotPassword: true,
+              loginWithEmail: false,
+            });
+          }}
+        >
+          Forgot Password?
+        </button>
       </div>
     );
   }
 
+  renderLoginForm = () => {
+    if (this.state.showForgotPassword) {
+      return this.renderForgotPassword();
+    }
+
+    if (this.state.loginWithEmail) {
+      return this.renderLoginWithEmail();
+    } else {
+      return this.renderLoginContainer();
+    }
+  };
+
   render() {
-    console.log(this.props);
+    console.log(this.state);
     if (this.props.isLoggingIn) {
       return (
         <ReactModal
@@ -178,9 +240,7 @@ export default class LoginModal extends Component {
         </div>
         <div className={ModalStyle.body}>
           <div className={ModalStyle.authContainer}>
-            {!this.state.loginWithEmail
-              ? this.renderLoginContainer()
-              : this.renderLoginWithEmail()}
+            {this.renderLoginForm()}
           </div>
         </div>
       </ReactModal>

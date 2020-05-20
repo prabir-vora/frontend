@@ -10,6 +10,7 @@ import MessageModal from './MessageModal';
 import ReplyModal from './ReplyModal';
 import HowSellingWorksModal from './HowSellingWorksModal';
 import ConfirmListingModal from './ConfirmListingModal';
+import NewAddressModal from './NewAddressModal';
 
 import { ShowConfirmNotif } from 'functions';
 
@@ -84,6 +85,11 @@ class ClientModals extends Component {
     this.props.dispatch(hideModal('confirmListing'));
   };
 
+  onCloseNewAddressModal = () => {
+    const { hideNewAddressModalCreator } = UserDuck.actionCreators;
+    this.props.dispatch(hideNewAddressModalCreator());
+  };
+
   onCreateListing = async () => {
     const reseller = this.props.user;
     const resellItemInfo = this.props.listingInfo;
@@ -107,6 +113,20 @@ class ClientModals extends Component {
     }
   };
 
+  onCreateNewSellerAddress = async address => {
+    const { createNewSellerAddress } = UserDuck.actionCreators;
+
+    const { success, message } = await this.props.dispatch(
+      createNewSellerAddress(address),
+    );
+
+    if (success) {
+      this.onCloseNewAddressModal();
+    }
+
+    return { success, message };
+  };
+
   render() {
     console.log(this.props);
     const {
@@ -115,6 +135,7 @@ class ClientModals extends Component {
       showHowSellingWorksModal,
       showConfirmListingModal,
       listingInfo,
+      showNewAddressModal,
     } = this.props;
     return (
       <React.Fragment>
@@ -142,6 +163,12 @@ class ClientModals extends Component {
             onSubmitListing={this.onCreateListing}
           />
         )}
+        {showNewAddressModal && (
+          <NewAddressModal
+            onClose={this.onCloseNewAddressModal}
+            onCreateNewSellerAddress={this.onCreateNewSellerAddress}
+          />
+        )}
       </React.Fragment>
     );
   }
@@ -158,6 +185,7 @@ const mapStateToProps = state => {
     showConfirmListingModal: state[SellDuck.duckName].showConfirmListingModal,
     listingInfo: state[SellDuck.duckName].listingInfo,
     user: state[UserDuck.duckName].user,
+    showNewAddressModal: state[UserDuck.duckName].showNewAddressModal,
   };
 };
 
