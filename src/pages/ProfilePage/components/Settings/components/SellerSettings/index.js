@@ -30,8 +30,6 @@ class SellerSettings extends Component {
       scope: 'read_write',
       redirect_uri: 'https://localhost:3000/stripeRedirect',
       response_type: 'code',
-      'stripe_user[email]': email,
-      'stripe_user[url]': `https://localhost:3000/${username}`,
       'stripe_user[country]': 'US',
       'stripe_user[business_type]': 'sole_prop',
       'stripe_user[currency]': 'usd',

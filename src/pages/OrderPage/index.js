@@ -12,13 +12,22 @@ import { withRouter } from 'react-router-dom';
 import Style from './style.module.scss';
 import { Img } from 'fields';
 
-import { NewAddressInput, NewPaymentInput, ReviewOrder } from './components';
+import {
+  NewAddressInput,
+  NewPaymentInput,
+  ReviewOrder,
+  ItemPurchased,
+} from './components';
+
+import { ElementsConsumer } from '@stripe/react-stripe-js';
 
 class OrderPage extends Component {
   state = {
     isUserPresent: false,
     addNewAddress: false,
     addNewPayment: false,
+    ongoingPayment: false,
+    orderPurchased: false,
   };
 
   async componentDidMount() {
@@ -99,6 +108,7 @@ class OrderPage extends Component {
 
     if (response.updated) {
       this.props.dispatch(fetchUpdatedUser());
+      this.setState({ addNewAddress: false });
     }
 
     return response;
@@ -126,6 +136,77 @@ class OrderPage extends Component {
     this.setState({
       addNewAddress: false,
       addNewPayment: false,
+    });
+  };
+
+  updateShippingAddress = async addressID => {
+    const { orderNumber } = this.props.match.params;
+
+    const { updateShippingAddress } = CheckoutDuck.actionCreators;
+
+    const response = await this.props.dispatch(
+      updateShippingAddress(orderNumber, addressID),
+    );
+
+    console.log(response);
+
+    return response;
+  };
+
+  updatePaymentMethod = async paymentID => {
+    const { orderNumber } = this.props.match.params;
+
+    const { updatePaymentMethod } = CheckoutDuck.actionCreators;
+
+    const response = await this.props.dispatch(
+      updatePaymentMethod(orderNumber, paymentID),
+    );
+
+    console.log(response);
+
+    return response;
+  };
+
+  onPurchaseOrder = async () => {
+    this.setState({
+      ongoingPayment: true,
+    });
+
+    const { orderNumber } = this.props.match.params;
+
+    const { purchaseOrder } = CheckoutDuck.actionCreators;
+
+    const paymentIntentClientSecret = await this.props.dispatch(
+      purchaseOrder(orderNumber),
+    );
+
+    if (paymentIntentClientSecret === '') {
+      this.setState({
+        ongoingPayment: true,
+      });
+
+      return;
+    }
+
+    const { stripe } = this.props;
+
+    const result = await stripe.confirmCardPayment(paymentIntentClientSecret);
+
+    console.log(result);
+    const { paymentIntent } = result;
+
+    if (paymentIntent.status === 'succeeded') {
+      console.log('Calling Payment Success');
+      const { onPaymentSuccess } = CheckoutDuck.actionCreators;
+      this.props.dispatch(onPaymentSuccess(orderNumber));
+
+      this.setState({
+        orderPurchased: true,
+      });
+    }
+
+    this.setState({
+      ongoingPayment: false,
     });
   };
 
@@ -172,8 +253,12 @@ class OrderPage extends Component {
   };
 
   renderCheckoutContainer = data => {
-    const { addNewAddress, addNewPayment } = this.state;
-    const { buyerAddress, billingInfo } = data;
+    const { addNewAddress, addNewPayment, orderPurchased } = this.state;
+    const { buyerAddress, billingInfo, purchased_at } = data;
+
+    if (orderPurchased || purchased_at) {
+      return <ItemPurchased purchased_at={purchased_at} />;
+    }
 
     if (!buyerAddress || addNewAddress) {
       return (
@@ -200,12 +285,17 @@ class OrderPage extends Component {
           user={this.props.user}
           onAddNewAddress={this.onAddNewAddress}
           onAddNewPayment={this.onAddNewPayment}
+          updateShippingAddress={this.updateShippingAddress}
+          updatePaymentMethod={this.updatePaymentMethod}
+          onPurchaseOrder={this.onPurchaseOrder}
+          ongoingPayment={this.state.ongoingPayment}
         />
       );
     }
   };
 
   render() {
+    console.log(this.props);
     const { orderNumber } = this.props.match.params;
     const { user, checkout } = this.props;
 
@@ -243,7 +333,17 @@ const mapStateToProps = state => {
   };
 };
 
-const x = withCookies(OrderPage);
+const OrdersContainer = props => {
+  return (
+    <ElementsConsumer>
+      {({ elements, stripe }) => (
+        <OrderPage elements={elements} stripe={stripe} {...props} />
+      )}
+    </ElementsConsumer>
+  );
+};
+
+const x = withCookies(OrdersContainer);
 const y = withRouter(x);
 
 export default connect(mapStateToProps)(y);

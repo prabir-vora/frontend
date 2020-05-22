@@ -16,6 +16,20 @@ const actionTypes = createActionTypes(
     CREATE_PAYMENT_METHOD_SUCCESS: 'CREATE_PAYMENT_METHOD_SUCCESS',
     CREATE_PAYMENT_METHOD_FAILURE: 'CREATE_PAYMENT_METHOD_FAILURE',
 
+    UPDATE_SHIPPING_ADDRESS_REQUEST: 'UPDATE_SHIPPING_ADDRESS_REQUEST',
+    UPDATE_SHIPPING_ADDRESS_SUCCESS: 'UPDATE_SHIPPING_ADDRESS_SUCCESS',
+    UPDATE_SHIPPING_ADDRESS_FAILURE: 'UPDATE_SHIPPING_ADDRESS_FAILURE',
+
+    UPDATE_PAYMENT_METHOD_REQUEST: 'UPDATE_PAYMENT_METHOD_REQUEST',
+    UPDATE_PAYMENT_METHOD_SUCCESS: 'UPDATE_PAYMENT_METHOD_SUCCESS',
+    UPDATE_PAYMENT_METHOD_FAILURE: 'UPDATE_PAYMENT_METHOD_FAILURE',
+
+    PURCHASE_ORDER_REQUEST: 'PURCHASE_ORDER_REQUEST',
+    PURCHASE_ORDER_SUCCESS: 'PURCHASE_ORDER_SUCCESS',
+    PURCHASE_ORDER_FAILURE: 'PURCHASE_ORDER_FAILURE',
+
+    ON_PAYMENT_SUCCESS: 'ON_PAYMENT_SUCCESS',
+
     FETCH_ORDER_REQUEST: 'FETCH_ORDER_REQUEST',
     FETCH_ORDER_SUCCESS: 'FETCH_ORDER_SUCCESS',
     FETCH_ORDER_FAILURE: 'FETCH_ORDER_FAILURE',
@@ -85,6 +99,7 @@ const createOrder = listingID => dispatch => {
                     price_cents
                     total_price_cents
                     shipping_cents
+                    purchased_at
                 }
             }
         `).then(res => {
@@ -163,6 +178,7 @@ const createShippingAddressWithInput = () => {
         price_cents
         total_price_cents
         shipping_cents
+        purchased_at
       }
       error
     }
@@ -266,6 +282,7 @@ const createPaymentMethodWithInput = () => {
           price_cents
           total_price_cents
           shipping_cents
+          purchased_at
         }
         error
       }
@@ -328,6 +345,240 @@ const fetchNewSetupIntent = () => diispatch => {
   });
 };
 
+const updateShippingAddress = (orderNumber, addressID) => dispatch => {
+  dispatch(updateShippingAddressRequest());
+  return new Promise((resolve, reject) => {
+    fetchGraphQL(`mutation {
+      updateShippingAddress(orderNumber: "${orderNumber}", addressID: "${addressID}") {
+        order { 
+          orderNumber
+          resellItem {
+              id
+              product {
+                  id
+                  name
+                  slug 
+                  original_image_url
+              }
+              reseller {
+                  id
+                  name
+                  username
+                  imageURL
+                  isReseller
+                  resellerPageName
+              }
+              askingPrice
+              condition
+              size
+              images
+          }
+          buyer
+          seller
+          buyerAddress {
+              id
+              postal_code
+              city_locality
+              state_province
+              country_code
+              country
+              address1
+              address2
+              name
+              phone
+          }
+          billingInfo {
+              id
+              payment_method_id
+              name
+              payment_type
+              card_brand
+              last_4_digits
+              processor_name
+          }
+          status
+          price_cents
+          total_price_cents
+          shipping_cents
+          purchased_at
+        }
+        error
+      }
+    }
+  `)
+      .then(res => {
+        console.log(res);
+        if (res !== null && res !== undefined && res.updateShippingAddress) {
+          const { orderNumber } = res.updateShippingAddress.order;
+          dispatch(
+            updateShippingAddressSuccess(
+              orderNumber,
+              res.updateShippingAddress.order,
+            ),
+          );
+          resolve({
+            updated: true,
+            message: 'Added address successfully',
+          });
+
+          // Update the user with the new addresses
+        } else {
+          dispatch(updateShippingAddressError(res.updateShippingAddress.error));
+          resolve({
+            updated: false,
+            message: 'Failed to add address',
+          });
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        dispatch(updateShippingAddressError('Failed to add address'));
+        resolve({
+          updated: false,
+          message: 'Failed to add address',
+        });
+      });
+  });
+};
+
+const updatePaymentMethod = (orderNumber, paymentID) => dispatch => {
+  dispatch(updatePaymentMethodRequest());
+  return new Promise((resolve, reject) => {
+    fetchGraphQL(`mutation {
+      updatePaymentMethod(orderNumber: "${orderNumber}", paymentID: "${paymentID}") {
+        order { 
+          orderNumber
+          resellItem {
+              id
+              product {
+                  id
+                  name
+                  slug 
+                  original_image_url
+              }
+              reseller {
+                  id
+                  name
+                  username
+                  imageURL
+                  isReseller
+                  resellerPageName
+              }
+              askingPrice
+              condition
+              size
+              images
+          }
+          buyer
+          seller
+          buyerAddress {
+              id
+              postal_code
+              city_locality
+              state_province
+              country_code
+              country
+              address1
+              address2
+              name
+              phone
+          }
+          billingInfo {
+              id
+              payment_method_id
+              name
+              payment_type
+              card_brand
+              last_4_digits
+              processor_name
+          }
+          status
+          price_cents
+          total_price_cents
+          shipping_cents
+          purchased_at
+        }
+        error
+      }
+    }
+  `)
+      .then(res => {
+        console.log(res);
+        if (res !== null && res !== undefined && res.updatePaymentMethod) {
+          const { orderNumber } = res.updatePaymentMethod.order;
+          dispatch(
+            updatePaymentMethodSuccess(
+              orderNumber,
+              res.updatePaymentMethod.order,
+            ),
+          );
+          resolve({
+            updated: true,
+            message: 'Updated payment methods successfully',
+          });
+
+          // Update the user with the new payment methods
+        } else {
+          dispatch(updatePaymentMethodError(res.updatePaymentMethod.error));
+          resolve({
+            updated: false,
+            message: 'Failed to update payment method',
+          });
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        dispatch(updatePaymentMethodError('Failed to update payment Method'));
+        resolve({
+          updated: false,
+          message: 'Failed to update payment Method',
+        });
+      });
+  });
+};
+
+const purchaseOrder = orderNumber => dispatch => {
+  return new Promise((resolve, reject) => {
+    fetchGraphQL(`
+      mutation {
+        createOrderPaymentIntent(orderNumber: "${orderNumber}") 
+      }
+    `)
+      .then(res => {
+        console.log(res);
+        if (
+          res !== null &&
+          res !== undefined &&
+          res.createOrderPaymentIntent !== null
+        ) {
+          resolve(res.createOrderPaymentIntent);
+        } else {
+          resolve('');
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        resolve('');
+      });
+  });
+};
+
+const onPaymentSuccess = orderNumber => dispatch => {
+  return new Promise((resolve, reject) => {
+    fetchGraphQL(`
+      mutation {
+        orderPaymentSuccess(orderNumber: "${orderNumber}") 
+      }
+   `)
+      .then(res => {
+        resolve(true);
+      })
+      .catch(res => {
+        resolve(false);
+      });
+  });
+};
+
 const fetchOrder = orderNumber => dispatch => {
   dispatch(fetchOrderRequest());
   return new Promise((resolve, reject) => {
@@ -384,6 +635,7 @@ const fetchOrder = orderNumber => dispatch => {
                       price_cents
                       total_price_cents
                       shipping_cents
+                      purchased_at
                     }
                     error
                 }
@@ -481,6 +733,48 @@ const createPaymentMethodError = errorMessage => {
   };
 };
 
+const updateShippingAddressRequest = () => {
+  return {
+    type: actionTypes.UPDATE_SHIPPING_ADDRESS_REQUEST,
+  };
+};
+
+const updateShippingAddressSuccess = (orderNumber, data) => {
+  return {
+    type: actionTypes.UPDATE_SHIPPING_ADDRESS_SUCCESS,
+    payload: { orderNumber, data },
+  };
+};
+
+const updateShippingAddressError = errorMessage => {
+  console.log(errorMessage);
+  return {
+    type: actionTypes.UPDATE_SHIPPING_ADDRESS_FAILURE,
+    payload: { errorMessage },
+  };
+};
+
+const updatePaymentMethodRequest = () => {
+  return {
+    type: actionTypes.UPDATE_PAYMENT_METHOD_REQUEST,
+  };
+};
+
+const updatePaymentMethodSuccess = (orderNumber, data) => {
+  return {
+    type: actionTypes.UPDATE_PAYMENT_METHOD_SUCCESS,
+    payload: { orderNumber, data },
+  };
+};
+
+const updatePaymentMethodError = errorMessage => {
+  console.log(errorMessage);
+  return {
+    type: actionTypes.UPDATE_PAYMENT_METHOD_FAILURE,
+    payload: { errorMessage },
+  };
+};
+
 const fetchOrderRequest = () => {
   return {
     type: actionTypes.FETCH_ORDER_REQUEST,
@@ -549,6 +843,32 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         error: action.payload.errorMessage,
       });
+    case actionTypes.UPDATE_SHIPPING_ADDRESS_REQUEST:
+      return state;
+    case actionTypes.UPDATE_SHIPPING_ADDRESS_SUCCESS:
+      return Object.assign({}, state, {
+        currentOrderNumber: action.payload.orderNumber,
+        ordersMap: Object.assign({}, state.ordersMap, {
+          [action.payload.orderNumber]: action.payload.data,
+        }),
+      });
+    case actionTypes.UPDATE_SHIPPING_ADDRESS_FAILURE:
+      return Object.assign({}, state, {
+        error: action.payload.errorMessage,
+      });
+    case actionTypes.UPDATE_PAYMENT_METHOD_REQUEST:
+      return state;
+    case actionTypes.UPDATE_PAYMENT_METHOD_SUCCESS:
+      return Object.assign({}, state, {
+        currentOrderNumber: action.payload.orderNumber,
+        ordersMap: Object.assign({}, state.ordersMap, {
+          [action.payload.orderNumber]: action.payload.data,
+        }),
+      });
+    case actionTypes.UPDATE_PAYMENT_METHOD_FAILURE:
+      return Object.assign({}, state, {
+        error: action.payload.errorMessage,
+      });
     case actionTypes.FETCH_ORDER_REQUEST:
       return Object.assign({}, state, {
         isSaving: true,
@@ -578,7 +898,11 @@ export default {
     createOrder,
     createShippingAddress,
     createPaymentMethod,
+    updateShippingAddress,
+    updatePaymentMethod,
     fetchOrder,
     fetchNewSetupIntent,
+    purchaseOrder,
+    onPaymentSuccess,
   },
 };

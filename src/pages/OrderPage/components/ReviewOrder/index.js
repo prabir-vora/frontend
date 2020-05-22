@@ -26,6 +26,86 @@ export default class ReviewOrder extends Component {
     });
   }
 
+  determinePaymentBtnStatus = () => {
+    if (this.props.ongoingPayment) {
+      return 'inactive';
+    } else {
+      return 'active';
+    }
+  };
+
+  onChangeShippingAddress = async () => {
+    const { updated, message } = await this.props.updateShippingAddress(
+      this.state.activeShippingID,
+    );
+
+    if (!updated && message) {
+      this.setState({
+        errorMessage: message,
+      });
+    }
+
+    console.log(updated);
+
+    if (updated) {
+      this.setState({
+        changeShipping: false,
+      });
+    }
+  };
+
+  onChangePaymentMethod = async () => {
+    const { updated, message } = await this.props.updatePaymentMethod(
+      this.state.activePaymentID,
+    );
+
+    if (!updated && message) {
+      this.setState({
+        errorMessage: message,
+      });
+    }
+
+    console.log(updated);
+
+    if (updated) {
+      this.setState({
+        changePayment: false,
+      });
+    }
+  };
+
+  onSubmitOrder = e => {
+    e.preventDefault();
+
+    this.props.onPurchaseOrder();
+  };
+
+  goBack = () => {
+    this.setState({
+      changeShipping: false,
+      changePayment: false,
+    });
+  };
+
+  onGetButtonStatus = () => {
+    const { orderDetails } = this.props;
+    const { buyerAddress, billingInfo } = orderDetails;
+
+    if (this.state.changeShipping) {
+      if (this.state.activeShippingID !== buyerAddress.id) {
+        return 'active';
+      } else {
+        return 'inactive';
+      }
+    } else {
+      if (this.state.activePaymentID !== billingInfo.id) {
+        return 'active';
+      } else {
+        return 'inactive';
+      }
+    }
+  };
+
   onClickEdit = id => {
     console.log(id);
     switch (id) {
@@ -61,7 +141,10 @@ export default class ReviewOrder extends Component {
           const { card_brand, last_4_digits } = payment;
           return (
             <div className={Style.PaymentListItem} key={payment.id}>
-              <div className={Style.PaymentListItemContent}>
+              <div
+                style={{ display: 'flex', marginBottom: '20px' }}
+                className={Style.PaymentListItemContent}
+              >
                 <RadioButton
                   checked={payment.id === this.state.activePaymentID}
                   id={payment.id}
@@ -88,13 +171,24 @@ export default class ReviewOrder extends Component {
         >
           <Button
             onClick={() => {
-              this.props.onAddNewAddress();
+              this.props.onAddNewPayment();
             }}
             className={Style.addNewButton}
           >
-            ADD ADDRESS +
+            ADD CARD +
           </Button>
         </div>
+        <Button className={Style.submitButton} onClick={() => this.goBack()}>
+          Back
+        </Button>
+        <Button
+          className={Style.submitButton}
+          name="submit"
+          onClick={() => this.onChangePaymentMethod()}
+          status={this.onGetButtonStatus()}
+        >
+          Confirm
+        </Button>
       </div>
     );
   };
@@ -152,6 +246,17 @@ export default class ReviewOrder extends Component {
             ADD ADDRESS +
           </Button>
         </div>
+        <Button className={Style.submitButton} onClick={() => this.goBack()}>
+          Back
+        </Button>
+        <Button
+          className={Style.submitButton}
+          name="submit"
+          onClick={() => this.onChangeShippingAddress()}
+          status={this.onGetButtonStatus()}
+        >
+          Confirm
+        </Button>
       </div>
     );
   };
@@ -221,15 +326,15 @@ export default class ReviewOrder extends Component {
               <div>
                 <div className={Style.priceSummary}>
                   <div>Subtotal</div>
-                  <div>{price_cents / 100}</div>
+                  <div>${price_cents / 100}</div>
                 </div>
                 <div className={Style.priceSummary}>
                   <div>Shipping</div>
-                  <div>{shipping_cents / 100}</div>
+                  <div>${shipping_cents / 100}</div>
                 </div>
                 <div className={Style.priceSummary}>
                   <div>Total</div>
-                  <div>{total_price_cents / 100}</div>
+                  <div>${total_price_cents / 100}</div>
                 </div>
               </div>
             </div>
@@ -248,14 +353,11 @@ export default class ReviewOrder extends Component {
       return (
         <div className={Style.formContainer}>
           <h1 className={Style.title}>CHANGE SHIPPING</h1>
-          <form
-            className={Style.form}
-            onSubmit={e => this.onChangeShippingAddress(e)}
-          >
+          <div className={Style.form}>
             <br />
             {this.renderChangeShipping()}
             <br />
-          </form>
+          </div>
         </div>
       );
     }
@@ -264,14 +366,11 @@ export default class ReviewOrder extends Component {
       return (
         <div className={Style.formContainer}>
           <h1 className={Style.title}>CHANGE PAYMENT</h1>
-          <form
-            className={Style.form}
-            onSubmit={e => this.onChangePaymentMethod(e)}
-          >
+          <div className={Style.form}>
             <br />
             {this.renderChangePayment()}
             <br />
-          </form>
+          </div>
         </div>
       );
     }
@@ -283,7 +382,11 @@ export default class ReviewOrder extends Component {
           <br />
           {this.renderOrderDetails()}
           <br />
-          <Button className={Style.submitButton} name="submit">
+          <Button
+            className={Style.submitButton}
+            status={this.determinePaymentBtnStatus()}
+            name="submit"
+          >
             CONFIRM ORDER
           </Button>
         </form>
