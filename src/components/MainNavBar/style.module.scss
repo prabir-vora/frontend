@@ -2,7 +2,6 @@
   position: sticky;
   top: 0px;
   z-index: 100;
-  background-color: #000000;
   height: 60px;
   border-bottom: 1px solid #141413;
 }
@@ -13,14 +12,13 @@
   align-items: center;
   height: 100%;
   padding: 0px 24px;
-  box-pack: justify;
-  box-align: center;
 }
 
 .menuIcon {
   display: flex;
   // flex-direction: column;
   // justify-content: space-between;
+  color: white;
   fill: white;
   width: 20px;
   height: 18px;
@@ -42,6 +40,7 @@
   pointer-events: auto;
   transition: opacity 0.3s ease 0s;
   background: rgba(0, 0, 0, 0.6);
+  overflow-y: hidden;
 
   &.hidden {
     opacity: 0 !important;
@@ -64,7 +63,7 @@
   top: 0px;
   left: 0px;
   bottom: 0px;
-  width: 375px;
+  width: 450px;
   max-width: 70%;
   transform: none;
   z-index: 1;
@@ -72,11 +71,13 @@
   overflow-x: hidden;
   background: black;
   transition: transform 0.3s ease-in-out 0s;
+  background-image: url('../../../src/assets/Images/MainNavBarBg.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
 }
 
 .slidingNavBarHidden {
-  display: flex;
-  flex-direction: column;
   position: fixed;
   top: 0px;
   left: 0px;
@@ -90,6 +91,105 @@
   background: black;
   transition: opacity 0s linear 0.4s, transform 0.3s ease-in-out 0s;
 }
+
+// New Styling
+
+.slidingNavBarOverlay {
+  background: #212121;
+  opacity: 0.9;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-y: hidden;
+}
+
+.closeSideBarButton {
+  width: 100%;
+  text-align: right;
+  cursor: pointer;
+  & > svg {
+    height: 28px;
+    width: 28px;
+    fill: white;
+    stroke-width: 3;
+    padding: 10px;
+  }
+}
+
+.authButtonsContainer {
+  width: 100%;
+  margin: 10px 0px;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+  align-items: center;
+}
+
+.authButton {
+  width: 140px;
+  height: 40px;
+  border: 2px solid white;
+  border-radius: 10px;
+  font-size: 20px;
+  color: white;
+  margin-bottom: 15px;
+}
+
+.logoutButtonContainer {
+  margin-top: auto;
+  width: 100%;
+  margin: auto 0 40px 0px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.userLink {
+  width: 140px;
+  border: 3px solid white;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 20px;
+  color: white;
+  padding: 10px;
+}
+
+.navLinkTable {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 50px;
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  width: 70%;
+  margin-bottom: 20px;
+
+  & > svg {
+    width: 20px;
+    height: 20px;
+    fill: white;
+    stroke-width: 3;
+    margin-right: 10px;
+  }
+}
+
+.navLinkActive {
+  text-decoration: underline;
+}
+
+.navLinkImg {
+  width: 35px;
+  height: 35px;
+  margin-right: 20px;
+}
+
+.navLinkContent {
+  font-size: 20px;
+}
+
+// End Of New Styling
 
 .sideBarNavLink {
   display: flex;
@@ -172,6 +272,7 @@
   line-height: 1;
   display: flex;
   align-items: center;
+  font-weight: 600;
   padding-top: 10px;
   padding-bottom: 10px;
   margin: 0px;
@@ -182,11 +283,8 @@
   -webkit-box-flex: 0;
   -ms-flex: 0 1 364px;
   flex: 0 1 364px;
-  order: 2;
   pointer-events: auto;
   -webkit-app-region: no-drag;
-  margin-right: auto;
-  margin-left: 30px;
 }
 
 .searchInputContainer {
@@ -248,11 +346,6 @@
 }
 
 @media (min-width: 40em) {
-  .sideBarContainer {
-    order: 4;
-    margin: 0px 0px 0px 24px;
-  }
-
   .mainNavBar {
     height: 90px;
     border-bottom: none;
@@ -267,22 +360,20 @@
   }
 
   .slidingNavBar {
-    right: 0px;
-    left: initial;
+    left: 0px;
+    right: initial;
     transform: none;
   }
 
   .slidingNavBarHidden {
-    right: 0px;
-    left: initial;
-    transform: translate(100vw, 0px);
+    left: 0px;
+    right: initial;
+    transform: translate(-100vw, 0px);
   }
 
   .logo {
-    font-size: 1.5em !important;
+    font-size: 2em !important;
     color: white !important;
-
-    order: 1;
     flex: 0 0 auto;
   }
 
@@ -297,8 +388,51 @@
   }
 
   .mainHeaderNavLink {
-    display: block;
-    order: 2;
     transition: color 600ms ease 0s;
+  }
+
+  // New Styling
+  .authButtonsContainer {
+    margin: 40px 0px;
+  }
+
+  .navLinkTable {
+    padding-top: 60px;
+    margin-left: 20px;
+  }
+
+  .navLink {
+    margin-bottom: 30px;
+
+    & > svg {
+      margin-right: 10px;
+      width: 30px;
+      height: 30px;
+    }
+  }
+
+  .navLinkContent {
+    font-size: 25px;
+  }
+
+  .authButtonsContainer {
+    width: 100%;
+    margin: 20px 0px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  .authButton {
+    width: 140px;
+    height: 55px;
+    border: 3px solid white;
+    border-radius: 10px;
+    font-size: 25px;
+    color: white;
+  }
+
+  .userLink {
+    font-size: 25px;
   }
 }

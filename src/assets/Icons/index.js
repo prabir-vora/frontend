@@ -30,10 +30,18 @@ import { ReactComponent as CreateListingIcon } from './CreateListingIcon.svg';
 import { ReactComponent as EngageMessagesIcon } from './EngageMessagesIcon.svg';
 import { ReactComponent as PackageIcon } from './PackageIcon.svg';
 import { ReactComponent as CashOutIcon } from './CashOutIcon.svg';
+import { ReactComponent as LocationNavIcon } from './LocationNavIcon.svg';
+import { ReactComponent as ShopNavIcon } from './ShopNavIcon.svg';
+import { ReactComponent as BrandsNavIcon } from './BrandsNavIcon.svg';
+import { ReactComponent as SellNavIcon } from './SellNavIcon.svg';
+import { ReactComponent as MyListNavIcon } from './MyListNavIcon.svg';
+import { ReactComponent as NavigateNextIcon } from './navigateNextIcon.svg';
+import { ReactComponent as NavigatePreviousIcon } from './navigatePreviousIcon.svg';
 
 export {
   AddPhotoIcon,
   ArrowIcon,
+  BrandsNavIcon,
   BuyIcon,
   CashOutIcon,
   CreateListingIcon,
@@ -49,15 +57,21 @@ export {
   ListingIcon,
   ListingsCountIcon,
   ListViewIcon,
+  LocationNavIcon,
   MenuIcon,
+  MyListNavIcon,
+  NavigateNextIcon,
+  NavigatePreviousIcon,
   NetworkIcon,
   PencilIcon,
+  SellNavIcon,
   ShoppingCartIcon,
   PackageIcon,
   PlusIcon,
   SearchIcon,
   SneakerIcon,
   ShareIcon,
+  ShopNavIcon,
   TickIcon,
   FacebookIcon,
   FireIcon,

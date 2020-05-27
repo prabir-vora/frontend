@@ -308,7 +308,7 @@ class OrderPage extends Component {
     }
 
     return (
-      <div>
+      <div style={{ backgroundColor: 'black' }}>
         <MainNavBar />
         <div className={Style.pageLayout}>
           <div style={{ display: 'flex', width: '100%' }}>

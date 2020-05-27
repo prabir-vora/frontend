@@ -1,3 +1,178 @@
+// New Styling
+
+.productBackground {
+  width: 100vw;
+  min-height: 100vh;
+  background: linear-gradient(
+    100deg,
+    rgb(17, 16, 16) 0%,
+    rgba(75, 75, 75, 1) 99%
+  );
+}
+
+.productLayout {
+  display: flex;
+  flex-direction: column-reverse;
+  padding: 40px 24px;
+}
+
+.productContainer {
+  margin-top: 30px;
+  position: relative;
+  width: 100%;
+}
+
+.mediaContainer {
+  position: relative;
+  width: 100%;
+}
+
+.brandImage {
+  width: 75px;
+  height: 45px;
+}
+
+.productCategory {
+  font-size: 20px;
+  font-weight: 500;
+  color: #939393;
+  text-transform: capitalize;
+  margin: 0px;
+  margin-top: 10px;
+}
+
+.productName {
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 1.2;
+  margin: 0px;
+  margin-bottom: 40px;
+}
+
+.productDetailsContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.productDetail {
+  font-size: 20px;
+  font-weight: 400;
+  margin-bottom: 5px;
+  & > .bold {
+    font-weight: 600;
+    margin-right: 10px;
+    font-size: 16px;
+  }
+}
+
+.conditionContainer {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 40px;
+}
+
+.conditionButtonsContainer {
+  display: flex;
+  margin-left: 20px;
+}
+
+.conditionButton {
+  background-color: white;
+
+  color: black;
+  border-radius: 5px;
+  padding: 5px;
+  margin-right: 10px;
+  cursor: pointer;
+  font-size: 20px;
+
+  &.active {
+    background-color: grey;
+  }
+}
+
+.sizeContainer {
+  display: flex;
+  flex-direction: column;
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+.sizeButtonsContainer {
+  display: flex;
+  margin-top: 15px;
+  margin-bottom: 30px;
+}
+
+.sizeButton {
+  border-radius: 5px;
+  padding: 5px;
+  margin-right: 10px;
+  font-size: 20px;
+  cursor: pointer;
+
+  &.active {
+    border: 1px solid white;
+  }
+}
+
+.sizeMessage {
+  font-size: 20px;
+  font-weight: 400;
+  margin-top: 20px;
+}
+
+.priceContainer {
+  display: none;
+}
+
+.price {
+  font-weight: 400;
+  margin-left: 10px;
+  font-size: 24px;
+}
+
+.buttonsContainer {
+  display: none;
+}
+
+.buyButton {
+  background: white;
+  color: black;
+  width: 150px;
+  height: 40px;
+  font-size: 20px;
+}
+
+.errorMessage {
+  font-size: 20px;
+  font-weight: 400;
+  margin-top: 20px;
+  color: red;
+}
+
+.mobileBuyButton {
+  position: fixed;
+  display: flex;
+  bottom: 0px;
+  left: 0px;
+  width: 100%;
+  z-index: 0;
+  background: white;
+  height: 60px;
+  font-size: 24px;
+  text-align: center;
+  justify-content: center;
+  border-radius: 0px;
+}
+
+// Old Styling
+
 .pageLayout {
   display: flex;
   position: relative;
@@ -9,17 +184,6 @@
   flex: 1 1;
   background: black;
   color: white;
-}
-
-.mediaContainer {
-  position: relative;
-  width: 50%;
-  border-right: 1px solid white;
-}
-
-.productContainer {
-  position: relative;
-  width: 50%;
 }
 
 .contentContainer {
@@ -34,16 +198,6 @@
   position: relative;
   color: white;
   text-align: center;
-}
-
-.productName {
-  font-family: Druk Wide Web, futura-pt, HelveticaNeue-Light,
-    Helvetica Neue Light, Helvetica Neue, Helvetica, Arial, Lucida Grande,
-    sans-serif;
-  font-size: 35px;
-  font-weight: 700;
-  line-height: 1.2;
-  margin-bottom: 30px;
 }
 
 .detailsContainer {
@@ -301,4 +455,71 @@
   line-height: 15px;
   letter-spacing: 1.7px;
   text-transform: uppercase;
+}
+
+// Mobile Responsive
+
+@media (min-width: 40em) {
+  .productLayout {
+    flex-direction: row;
+    padding: 2% 10%;
+  }
+
+  .mediaContainer {
+    position: relative;
+    width: 60%;
+  }
+
+  .productContainer {
+    margin-top: 0px;
+    position: relative;
+    width: 40%;
+  }
+
+  .brandImage {
+    width: 75px;
+    height: 50px;
+  }
+
+  .productCategory {
+    margin-top: 30px;
+  }
+
+  .productName {
+    font-size: 35px;
+  }
+
+  .productDetail {
+    font-size: 20px;
+
+    & > .bold {
+      font-size: 20px;
+    }
+  }
+
+  .conditionContainer {
+    font-size: 20px;
+  }
+
+  .sizeContainer {
+    font-size: 20px;
+    margin-bottom: 0px;
+  }
+
+  .priceContainer {
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: 40px;
+  }
+
+  .buttonsContainer {
+    margin-top: 50px;
+    display: flex;
+  }
+
+  .mobileBuyButton {
+    display: none;
+  }
 }

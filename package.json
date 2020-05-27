@@ -43,13 +43,16 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.0",
     "react-select": "^3.0.8",
+    "react-slick": "^0.26.1",
     "react-spinners": "^0.8.1",
     "react-toastify": "^5.5.0",
     "react-tooltip": "^4.2.5",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "rheostat": "^4.1.1",
-    "slugify": "^1.4.0"
+    "slick-carousel": "^1.8.1",
+    "slugify": "^1.4.0",
+    "styled-components": "^5.1.0"
   },
   "scripts": {
     "start": "HTTPS=true react-scripts start",

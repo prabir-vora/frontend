@@ -2,7 +2,16 @@ import React, { Component } from 'react';
 import { NavLink, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { MenuIcon, SearchIcon, CloseIcon } from 'assets/Icons';
+import {
+  MenuIcon,
+  SearchIcon,
+  CloseIcon,
+  ShopNavIcon,
+  LocationNavIcon,
+  BrandsNavIcon,
+  SellNavIcon,
+  MyListNavIcon,
+} from 'assets/Icons';
 
 import AppAuthDuck from 'stores/ducks/AppAuth.duck';
 import UserDuck from 'stores/ducks/User.duck';
@@ -90,102 +99,222 @@ class MainNavBar extends Component {
             : Style.slidingNavBarHidden
         }
       >
-        <ul style={{ padding: '0' }}>
-          <li>
-            <NavLink
-              exact
-              to="/"
-              className={Style.sideBarNavLink}
-              activeClassName={Style.sideBarNavLinkActive}
-            >
-              <span className={Style.navLinkText}>Discover</span>
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              exact
-              to="/shop"
-              className={Style.sideBarNavLink}
-              activeClassName={Style.sideBarNavLinkActive}
-            >
-              <span className={Style.navLinkText}>Shop</span>
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              exact
-              to="/localMarketplace"
-              className={Style.sideBarNavLink}
-              activeClassName={Style.sideBarNavLinkActive}
-            >
-              <span className={Style.navLinkText}>Local</span>
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/resellers"
-              className={Style.sideBarNavLink}
-              activeClassName={Style.sideBarNavLinkActive}
-            >
-              <span className={Style.navLinkText}>Resellers</span>
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/brands"
-              className={Style.sideBarNavLink}
-              activeClassName={Style.sideBarNavLinkActive}
-            >
-              <span className={Style.navLinkText}>Brands</span>
-            </NavLink>
-            <label
-              className={Style.sideBarNavLink}
-              activeClassName={Style.sideBarNavLinkActive}
-              onClick={() => this.protectedRouteClick('sell')}
-            >
-              <span className={Style.navLinkText}>Sell</span>
-            </label>
-            <label
-              className={Style.sideBarNavLink}
-              activeClassName={Style.sideBarNavLinkActive}
-              onClick={() => this.protectedRouteClick('myList')}
-            >
-              <span className={Style.navLinkText}>My List</span>
-            </label>
-            <React.Fragment>
-              {!this.props.user ? (
-                <div className={Style.sideBarAuthLink}>
-                  <button style={{ color: 'white' }} onClick={this.onLogin}>
-                    Login
-                  </button>
-                  <button style={{ color: 'white' }} onClick={this.onSignUp}>
-                    Sign Up
-                  </button>
-                </div>
-              ) : (
-                <React.Fragment>
-                  <div className={Style.sideBarNavLink}>
-                    <button
-                      className={Style.navLinkText}
-                      onClick={this.onLogOut}
-                    >
-                      Logout
+        <div className={Style.slidingNavBarOverlay}>
+          <ul style={{ padding: '0' }}>
+            <li>
+              <NavLink
+                exact
+                to="/"
+                className={Style.sideBarNavLink}
+                activeClassName={Style.sideBarNavLinkActive}
+              >
+                <span className={Style.navLinkText}>Discover</span>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                exact
+                to="/shop"
+                className={Style.sideBarNavLink}
+                activeClassName={Style.sideBarNavLinkActive}
+              >
+                <span className={Style.navLinkText}>Shop</span>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                exact
+                to="/localMarketplace"
+                className={Style.sideBarNavLink}
+                activeClassName={Style.sideBarNavLinkActive}
+              >
+                <span className={Style.navLinkText}>Local</span>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/resellers"
+                className={Style.sideBarNavLink}
+                activeClassName={Style.sideBarNavLinkActive}
+              >
+                <span className={Style.navLinkText}>Resellers</span>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/brands"
+                className={Style.sideBarNavLink}
+                activeClassName={Style.sideBarNavLinkActive}
+              >
+                <span className={Style.navLinkText}>Brands</span>
+              </NavLink>
+              <label
+                className={Style.sideBarNavLink}
+                activeClassName={Style.sideBarNavLinkActive}
+                onClick={() => this.protectedRouteClick('sell')}
+              >
+                <span className={Style.navLinkText}>Sell</span>
+              </label>
+              <label
+                className={Style.sideBarNavLink}
+                activeClassName={Style.sideBarNavLinkActive}
+                onClick={() => this.protectedRouteClick('myList')}
+              >
+                <span className={Style.navLinkText}>My List</span>
+              </label>
+              <React.Fragment>
+                {!this.props.user ? (
+                  <div className={Style.sideBarAuthLink}>
+                    <button style={{ color: 'white' }} onClick={this.onLogin}>
+                      Login
+                    </button>
+                    <button style={{ color: 'white' }} onClick={this.onSignUp}>
+                      Sign Up
                     </button>
                   </div>
-                  <p
-                    style={{
-                      color: '#888888',
-                      margin: '10px 0px',
-                      padding: '10px 20px',
-                    }}
-                  >
-                    {this.props.user.email}
-                  </p>
-                </React.Fragment>
-              )}
-            </React.Fragment>
-          </li>
-        </ul>
+                ) : (
+                  <React.Fragment>
+                    <div className={Style.sideBarNavLink}>
+                      <button
+                        className={Style.navLinkText}
+                        onClick={this.onLogOut}
+                      >
+                        Logout
+                      </button>
+                    </div>
+                    <p
+                      style={{
+                        color: '#888888',
+                        margin: '10px 0px',
+                        padding: '10px 20px',
+                      }}
+                    >
+                      {this.props.user.email}
+                    </p>
+                  </React.Fragment>
+                )}
+              </React.Fragment>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+  );
+
+  renderSideNavMenu = () => (
+    <div className={Style.sideBarContainer}>
+      <button className={Style.menuIcon} onClick={this.onClickMenu}>
+        <MenuIcon />
+      </button>
+      <label
+        className={
+          this.state.showNavbar
+            ? Style.navOverlay
+            : cx(Style.navOverlay, Style.hidden)
+        }
+      >
+        <div
+          className={Style.overlayCover}
+          onClick={() => this.setState({ showNavbar: false })}
+        />
+      </label>
+      <nav
+        className={
+          this.state.showNavbar
+            ? Style.slidingNavBar
+            : Style.slidingNavBarHidden
+        }
+      >
+        <div className={Style.slidingNavBarOverlay}>
+          <div
+            onClick={() => this.setState({ showNavbar: false })}
+            className={Style.closeSideBarButton}
+          >
+            <CloseIcon />
+          </div>
+          <div className={Style.authButtonsContainer}>
+            {!this.props.user ? (
+              <React.Fragment>
+                <button className={Style.authButton} onClick={this.onSignUp}>
+                  Sign Up
+                </button>
+                <button className={Style.authButton} onClick={this.onLogin}>
+                  Login
+                </button>
+              </React.Fragment>
+            ) : (
+              <React.Fragment>
+                <NavLink exact to="/user" className={Style.userLink}>
+                  {this.props.user.name}
+                </NavLink>
+              </React.Fragment>
+            )}
+          </div>
+          <ul className={Style.navLinkTable}>
+            <li>
+              <NavLink
+                exact
+                to="/shop"
+                className={Style.navLink}
+                activeClassName={Style.navLinkActive}
+              >
+                <ShopNavIcon />
+                <div className={Style.navLinkContent}>Shop</div>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                exact
+                to="/localMarketplace"
+                className={Style.navLink}
+                activeClassName={Style.navLinkActive}
+              >
+                <LocationNavIcon />
+                <div className={Style.navLinkContent}>Local</div>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                exact
+                to="/brands"
+                className={Style.navLink}
+                activeClassName={Style.navLinkActive}
+              >
+                <BrandsNavIcon />
+                <div className={Style.navLinkContent}>Brands</div>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                exact
+                to="/sell"
+                className={Style.navLink}
+                activeClassName={Style.navLinkActive}
+              >
+                <SellNavIcon />
+                <div className={Style.navLinkContent}>Sell</div>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                exact
+                to="/myList"
+                className={Style.navLink}
+                activeClassName={Style.navLinkActive}
+              >
+                <MyListNavIcon />
+                <div className={Style.navLinkContent}>My List</div>
+              </NavLink>
+            </li>
+          </ul>
+          <div className={Style.logoutButtonContainer}>
+            {this.props.user && (
+              <button className={Style.authButton} onClick={this.onLogOut}>
+                Log out
+              </button>
+            )}
+          </div>
+        </div>
       </nav>
     </div>
   );
@@ -202,15 +331,16 @@ class MainNavBar extends Component {
     return (
       <nav className={Style.mainNavBar}>
         <div className={Style.navBarContent}>
-          {this.sideNavigationMenu()}
+          {this.renderSideNavMenu()}
 
           <NavLink
             exact
             to="/"
             className={cx(Style.mainHeaderNavLink, Style.logo)}
           >
-            Dripverse
+            DRIPVERSE
           </NavLink>
+
           {url === '/search' ? (
             <div className={Style.searchContainer}>
               <label className={Style.searchInputContainer}>
@@ -239,69 +369,8 @@ class MainNavBar extends Component {
               </div>
             </div>
           ) : (
-            <NavLink
-              exact
-              to="/search"
-              className={cx(Style.mainHeaderNavLink, Style.searchIcon)}
-            >
+            <NavLink exact to="/search">
               <SearchIcon />
-            </NavLink>
-          )}
-
-          <NavLink
-            exact
-            to="/"
-            className={Style.mainHeaderNavLink}
-            activeClassName={Style.mainHeaderNavLinkActive}
-          >
-            Discover
-          </NavLink>
-
-          <NavLink
-            exact
-            to="/shop"
-            className={Style.mainHeaderNavLink}
-            activeClassName={Style.mainHeaderNavLinkActive}
-          >
-            Shop
-          </NavLink>
-
-          <NavLink
-            exact
-            to="/localMarketplace"
-            className={Style.mainHeaderNavLink}
-            activeClassName={Style.mainHeaderNavLinkActive}
-          >
-            Local
-          </NavLink>
-          <NavLink
-            to="/resellers"
-            className={Style.mainHeaderNavLink}
-            activeClassName={Style.mainHeaderNavLinkActive}
-          >
-            Resellers
-          </NavLink>
-          {this.props.user && (
-            <NavLink
-              to="/myList"
-              className={Style.mainHeaderNavLink}
-              activeClassName={Style.mainHeaderNavLinkActive}
-            >
-              My List
-            </NavLink>
-          )}
-          {this.props.user && (
-            <NavLink to="/user/listings" className={Style.mainHeaderNavLink}>
-              <div style={{}}>
-                <Img
-                  src={
-                    this.props.user.profilePictureURL ||
-                    'https://i.ya-webdesign.com/images/placeholder-image-png-4.png'
-                  }
-                  alt={`${this.props.user.name} image`}
-                  style={{ width: '30px', height: '30px' }}
-                />
-              </div>
             </NavLink>
           )}
         </div>

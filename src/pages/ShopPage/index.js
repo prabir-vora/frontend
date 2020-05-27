@@ -396,7 +396,7 @@ class ShopPage extends Component {
       : `productCategory:${this.state.productCategory}`;
 
     return (
-      <div>
+      <div style={{ backgroundColor: 'black' }}>
         <ReactTooltip
           html={true}
           id="like"
