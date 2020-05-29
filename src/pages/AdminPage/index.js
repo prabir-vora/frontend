@@ -20,8 +20,9 @@ const mapNavBarIDs = {
   apparel: <AdminView.Apparel />,
   sneakers: <AdminView.Sneakers />,
   sizing: <AdminView.Sizing />,
-  resellers: <AdminView.Resellers />,
+  users: <AdminView.Users />,
   resellItems: <AdminView.ResellItems />,
+  orders: <AdminView.Orders />,
 };
 
 class Admin extends Component {
@@ -37,6 +38,7 @@ class Admin extends Component {
       this.fetchAllResellers(),
       this.fetchAllResellItems(),
       this.fetchAllSizing(),
+      this.fetchAllOrders(),
     ]);
   }
 
@@ -110,8 +112,8 @@ class Admin extends Component {
 
   fetchAllResellers = async () => {
     const { actionCreators } = TestObjectsDuck;
-    const { getAllResellers } = actionCreators;
-    const { success, message } = await this.props.dispatch(getAllResellers());
+    const { getAllUsers } = actionCreators;
+    const { success, message } = await this.props.dispatch(getAllUsers());
     if (success) {
       //   this.confirmNotif = ShowConfirmNotif({
       //     message,
@@ -142,10 +144,47 @@ class Admin extends Component {
     }
   };
 
+  fetchAllOrders = async () => {
+    const { getPurchasedOrders } = TestObjectsDuck.actionCreators;
+    const { success, message } = await this.props.dispatch(
+      getPurchasedOrders(),
+    );
+    if (success) {
+      //   this.confirmNotif = ShowConfirmNotif({
+      //     message,
+      //     type: 'success',
+      //   });
+    } else {
+      this.confirmNotif = ShowConfirmNotif({
+        message,
+        type: 'error',
+      });
+    }
+  };
+
   fetchAllSizing = async () => {
     const { actionCreators } = AdminDuck;
     const { getSizing } = actionCreators;
     const { success, message } = await this.props.dispatch(getSizing());
+    if (success) {
+      // this.confirmNotif = ShowConfirmNotif({
+      //   message,
+      //   type: "success"
+      // })
+    } else {
+      this.confirmNotif = ShowConfirmNotif({
+        message,
+        type: 'error',
+      });
+    }
+  };
+
+  fetchAllOrders = async () => {
+    const { actionCreators } = TestObjectsDuck;
+    const { getPurchasedOrders } = actionCreators;
+    const { success, message } = await this.props.dispatch(
+      getPurchasedOrders(),
+    );
     if (success) {
       // this.confirmNotif = ShowConfirmNotif({
       //   message,

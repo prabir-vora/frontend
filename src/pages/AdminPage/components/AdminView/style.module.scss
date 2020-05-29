@@ -2,27 +2,129 @@ $btn-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14)
   0 1px 18px 0 rgba(0, 0, 0, 0.12);
 
 .floatingButton {
-    position: fixed;
-    bottom: 10vh;
-    right: 8vw;
-  
-    & > button {
-      background: #00cc99;
-      border-radius: 100%;
-      color: #fff;
-      font-size: 2.5rem;
-      height: 70px;
-      width: 70px;
-      box-shadow: 0 0 30px 3px #e6e6e6;
-      text-align: center;
-    }
-  }
+  position: fixed;
+  bottom: 10vh;
+  right: 8vw;
 
-  @media only screen and (max-width: 900px) {
-    .floatingButton > button {
-      height: 60px;
-      width: 60px;
-      font-size: 2.4rem;
-    }
+  & > button {
+    background: #00cc99;
+    border-radius: 100%;
+    color: #fff;
+    font-size: 2.5rem;
+    height: 70px;
+    width: 70px;
+    box-shadow: 0 0 30px 3px #e6e6e6;
+    text-align: center;
   }
-  
+}
+
+// Search
+.filterControlContainer {
+  display: flex;
+}
+
+.searchInputAndButton {
+  display: flex;
+}
+.searchContainer {
+  position: relative;
+  -webkit-box-flex: 0;
+  -ms-flex: 0 1 364px;
+  flex: 0 1 364px;
+  width: 500px;
+  border: 1px solid black;
+  pointer-events: auto;
+  -webkit-app-region: no-drag;
+}
+
+.searchInputContainer {
+  display: block;
+  margin: 0;
+}
+
+.searchInput {
+  color: #000;
+  padding: 6px 48px;
+  height: 40px;
+  width: 100%;
+  border: 0;
+  border-radius: 500px;
+  text-overflow: ellipsis;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.015em;
+}
+
+.searchInputOverlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 12px;
+  right: 12px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  pointer-events: none;
+}
+
+.searchLogo {
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  color: #121212;
+
+  & > svg {
+    height: 24;
+    width: 24;
+  }
+}
+
+.cancelSearchButton {
+  pointer-events: auto;
+  color: #121212;
+  background-color: transparent;
+  border: 0;
+  padding: 0;
+
+  & > svg {
+    height: 24;
+    width: 24;
+  }
+}
+
+.searchButton {
+  width: 150px;
+  height: 40px;
+  background: #00cc99;
+  font-size: 22px;
+  margin-left: 20px;
+}
+
+.uploadDateInput {
+  display: flex;
+}
+
+.dateInputButton {
+  background-color: orange;
+  color: black;
+  padding: 10px;
+  font-size: 20px;
+  margin-right: 20px;
+}
+
+.active {
+  background-color: black !important;
+  color: white !important;
+}
+// Date Input
+
+@media only screen and (max-width: 900px) {
+  .floatingButton > button {
+    height: 60px;
+    width: 60px;
+    font-size: 2.4rem;
+  }
+}

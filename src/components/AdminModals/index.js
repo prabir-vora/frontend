@@ -7,6 +7,7 @@ import ApparelModal from './ApparelModal';
 import ResellersModal from './ResellersModal';
 import ResellItemsModal from './ResellItemsModal';
 import ResellItemsPhotosModal from './ResellItemsPhotosModal';
+import OrdersModal from './OrdersModal';
 
 export default {
   BrandsModal,
@@ -18,4 +19,5 @@ export default {
   ResellersModal,
   ResellItemsModal,
   ResellItemsPhotosModal,
+  OrdersModal,
 };

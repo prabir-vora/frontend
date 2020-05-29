@@ -1,10 +1,10 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
-import NavBarContainer from "./NavBarContainer";
+import NavBarContainer from './NavBarContainer';
 
-import AdminUIDuck from "stores/ducks/Admin/UI.duck";
+import AdminUIDuck from 'stores/ducks/Admin/UI.duck';
 
 // fetch action creators
 
@@ -17,51 +17,55 @@ const { changeActiveNavbarItem } = actionCreators;
 
 const ADMIN_NAVBAR_ITEMS = [
   {
-    id: "brands",
-    label: "Brands",
+    id: 'brands',
+    label: 'Brands',
   },
   {
-    id: "designers",
-    label: "Designers",
+    id: 'designers',
+    label: 'Designers',
   },
   {
-    id: "sneakers",
-    label: "Sneakers",
+    id: 'sneakers',
+    label: 'Sneakers',
   },
   {
-    id: "apparel",
-    label: "Apparel",
+    id: 'apparel',
+    label: 'Apparel',
   },
   {
-    id: "sizing",
-    label: "Sizing",
+    id: 'sizing',
+    label: 'Sizing',
   },
   {
-    id: "resellers",
-    label: "Resellers"
+    id: 'users',
+    label: 'Users',
   },
   {
     id: 'resellItems',
-    label: 'Resell Items'
-  }
+    label: 'Resell Items',
+  },
+  {
+    id: 'orders',
+    label: 'Orders',
+  },
 ];
 
-
 class AdminNavBar extends Component {
-
   getAdminNavItems = () => ADMIN_NAVBAR_ITEMS;
 
   // Call Action Creator to trigger Custom Event
-  onChangeNavItem = (id) => { 
+  onChangeNavItem = id => {
     this.props.dispatch(changeActiveNavbarItem(id));
   };
 
   render() {
-    return <NavBarContainer
-      activeNavbarItemId={this.props.activeNavbarItemId}
-      navItems={this.getAdminNavItems()}
-      onChangeNavItem={this.onChangeNavItem}
-    />
+    return (
+      <NavBarContainer
+        activeNavbarItemId={this.props.activeNavbarItemId}
+        navItems={this.getAdminNavItems()}
+        onChangeNavItem={this.onChangeNavItem}
+      />
+    );
   }
 }
 
@@ -73,12 +77,12 @@ class AdminNavBar extends Component {
 const mapStateToProps = state => {
   const { duckName } = AdminUIDuck;
   return {
-    activeNavbarItemId: state[duckName].activeNavbarItemId
+    activeNavbarItemId: state[duckName].activeNavbarItemId,
   };
 };
 
 export default connect(mapStateToProps)(AdminNavBar);
 
 AdminNavBar.propTypes = {
-  activeNavbarItemId: PropTypes.string.isRequired
-}
+  activeNavbarItemId: PropTypes.string.isRequired,
+};

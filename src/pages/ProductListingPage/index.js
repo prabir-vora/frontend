@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 import MainNavBar from 'components/MainNavBar';
-import algoliasearch from 'algoliasearch';
-import { ImageGallery } from 'fields';
-import { LeftArrowIcon, TickIcon, FireIcon, ShareIcon } from 'assets/Icons';
 
-import AlgoliaListingTemplate from './components/AlgoliaListingTemplate';
 import ProductImageGallery from './components/ProductImageGallery';
 
 import moment from 'moment';
@@ -17,15 +13,6 @@ import CheckoutDuck from 'stores/ducks/Checkout.duck';
 
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
-import {
-  InstantSearch,
-  connectRefinementList,
-  connectHits,
-  connectStats,
-  Configure,
-  SortBy,
-} from 'react-instantsearch-dom';
-
 // Style
 import Style from './style.module.scss';
 import cx from 'classnames';
@@ -34,7 +21,6 @@ import { Button, Img } from 'fields';
 import MainFooter from 'components/MainFooter';
 
 import ReactTooltip from 'react-tooltip';
-import { ShowConfirmNotif } from 'functions';
 import LoadingScreen from 'components/LoadingScreen';
 
 class ProductListingPage extends Component {
@@ -95,6 +81,14 @@ class ProductListingPage extends Component {
   };
 
   onClickBuy = async () => {
+    const { user } = this.props;
+
+    if (!user) {
+      const { actionCreators } = AppAuthDuck;
+      const { showModal } = actionCreators;
+      return this.props.dispatch(showModal('login'));
+    }
+
     const { selectedResellItem } = this.state;
 
     if (!selectedResellItem) {

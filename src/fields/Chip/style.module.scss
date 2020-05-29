@@ -7,15 +7,15 @@ $chip-border-radius: 4px;
   border-radius: $chip-border-radius;
   display: flex;
   align-items: center;
-  height: 54px;
+  height: 75px;
   & > * {
     transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
   }
 }
 
 .avatar {
-  height: 54px;
-  width: 54px;
+  height: 75px;
+  width: 75px;
   & > * {
     border-top-left-radius: $chip-border-radius;
     border-bottom-left-radius: $chip-border-radius;

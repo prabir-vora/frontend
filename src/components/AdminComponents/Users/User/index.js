@@ -21,7 +21,7 @@ import { ShowConfirmNotif } from 'functions';
 // import Style from "../style.module.scss";
 import Style from './style.module.scss';
 
-class ResellItem extends Component {
+class ResellerItem extends Component {
   confirmNotif = null;
 
   state = {};
@@ -30,7 +30,7 @@ class ResellItem extends Component {
 
   onShowEditItemModal = () => this.setState({ showEditItemModal: true });
 
-  onUpdateAfterResellItemSaved = ({ updated, message }) => {
+  onUpdateAfterResellerSaved = ({ updated, message }) => {
     if (updated) {
       this.confirmNotif = ShowConfirmNotif({
         message,
@@ -48,7 +48,7 @@ class ResellItem extends Component {
     }
   };
 
-  onUpdateAfterResellItemArchived = ({ deleted, message }) => {
+  onUpdateAfterResellerArchived = ({ deleted, message }) => {
     if (deleted) {
       this.confirmNotif = ShowConfirmNotif({
         message,
@@ -70,11 +70,11 @@ class ResellItem extends Component {
 
   onHideChangePhotoModal = () => this.setState({ showChangePhotoModal: false });
 
-  onSaveResellItemImages = async images => {
+  onSaveResellerImage = async imageURL => {
     const { actionCreators } = TestObjectsDuck;
-    const { updateResellItemImages } = actionCreators;
+    const { updateResellerImage } = actionCreators;
     const { updated, message } = await this.props.dispatch(
-      updateResellItemImages(images, this.props.resellItemInfo),
+      updateResellerImage(imageURL, this.props.user),
     );
 
     if (updated) {
@@ -95,7 +95,7 @@ class ResellItem extends Component {
   };
 
   renderChipAvatar = () => {
-    const imageURL = this.props.resellItemInfo.imageURL || '';
+    const imageURL = this.props.user.imageURL || '';
     return imageURL ? (
       <Img
         alt=""
@@ -112,70 +112,34 @@ class ResellItem extends Component {
 
   renderChangePhotoModal = () => {
     return (
-      <AdminModals.ResellItemsPhotosModal
-        type="resellItems"
-        name={this.props.resellItemInfo.product.label}
-        images={this.props.resellItemInfo.images}
+      <AdminModals.ChangePhotoModal
+        type="resellers"
+        name={this.props.user.name}
+        imageURL={this.props.user.imageURL}
         onCloseModal={this.onHideChangePhotoModal}
-        onSaveImages={this.onSaveResellItemImages}
+        onSaveImage={this.onSaveResellerImage}
       />
     );
   };
 
   renderChipLabel = () => {
-    const { resellItemInfo } = this.props;
-    console.log(resellItemInfo);
-    const { product, reseller, askingPrice, condition } = resellItemInfo;
+    const { user } = this.props;
+    const { name, email } = user;
     return (
       <React.Fragment>
-        <h4 className={Style.chipName}>
-          <span style={{ fontWeight: '800' }}>{product.label} by </span>
-          <span style={{ color: '#1f2fd1' }}>{reseller.label}</span>
-        </h4>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            margin: '0px',
-            maxWidth: 'inherit',
-          }}
-        >
-          <h4
-            style={{
-              margin: '5px',
-              color: 'green',
-              maxWidth: 'inherit',
-              overflow: 'hidden',
-              fontSize: '14px',
-              fontFamily: 'Helvetica',
-            }}
-          >
-            ${askingPrice}{' '}
-          </h4>
-          <h4
-            style={{
-              margin: '5px',
-              color: 'red',
-              maxWidth: 'inherit',
-              overflow: 'hidden',
-              fontSize: '14px',
-              fontFamily: 'Helvetica',
-            }}
-          >
-            Condition: {condition}{' '}
-          </h4>
-        </div>
+        <div className={Style.chipName}>{name}</div>
+        <h3>{email}</h3>
       </React.Fragment>
     );
   };
 
   renderEditModal = () => (
-    <AdminModals.ResellItemsModal
+    <AdminModals.ResellersModal
       isInEditMode={true}
-      resellItemInfo={this.props.resellItemInfo}
+      user={this.props.user}
       onCloseModal={this.onHideEditItemModal}
-      onUpdateAfterResellItemArchived={this.onUpdateAfterResellItemArchived}
-      onUpdateAfterResellItemSaved={this.onUpdateAfterResellItemSaved}
+      onUpdateAfterResellerArchived={this.onUpdateAfterResellerArchived}
+      onUpdateAfterResellerSaved={this.onUpdateAfterResellerSaved}
     />
   );
 
@@ -204,30 +168,25 @@ class ResellItem extends Component {
       <React.Fragment>
         {this.state.showChangePhotoModal && this.renderChangePhotoModal()}
         {this.state.showEditItemModal && this.renderEditModal()}
-        {this.props.resellItemInfo && this.renderItem()}
+        {this.props.user && this.renderItem()}
       </React.Fragment>
     );
   }
 }
 
-ResellItem.propTypes = {
+ResellerItem.propTypes = {
   isInEditMode: PropTypes.bool,
   itemHelperButton: PropTypes.func,
   resellerID: PropTypes.string,
-  resellItemInfo: PropTypes.shape({
-    product: PropTypes.object,
-    reseller: PropTypes.object,
-    askingPrice: PropTypes.string,
-    condition: PropTypes.string,
-  }).isRequired,
+  user: PropTypes.shape({ name: PropTypes.string }).isRequired,
   onRefreshAfterChanges: PropTypes.func,
 };
 
-ResellItem.defaultProps = {
+ResellerItem.defaultProps = {
   isInEditMode: true,
-  resellItemInfo: {
+  user: {
     name: '',
   },
 };
 
-export default connect()(ResellItem);
+export default connect()(ResellerItem);

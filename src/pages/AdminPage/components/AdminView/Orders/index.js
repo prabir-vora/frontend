@@ -7,7 +7,7 @@ import TestObjectsDuck from 'stores/ducks/Admin/TestObjects.duck';
 
 // Components
 import AdminModals from 'components/AdminModals';
-import { ListOfResellItems } from 'components/AdminComponents/ResellItems';
+import { ListOfOrders } from 'components/AdminComponents/Orders';
 
 // Style
 import Style from '../style.module.scss';
@@ -37,7 +37,7 @@ const dateInput = [
   },
 ];
 
-class ResellItems extends Component {
+class Orders extends Component {
   confirmNotif = null;
 
   state = {
@@ -61,36 +61,12 @@ class ResellItems extends Component {
     }
   }
 
-  // On Change Actions
-
-  onHideCreateItemModal = () => this.setState({ showCreateItemModal: false });
-
-  onShowCreateItemModal = () => this.setState({ showCreateItemModal: true });
-
-  onUpdateAfterResellItemCreated = ({ created, message }) => {
-    if (created) {
-      this.confirmNotif = ShowConfirmNotif({
-        message,
-        type: 'success',
-      });
-      this.setState({ showCreateItemModal: false }, () =>
-        this.onRefreshAfterChanges(),
-      );
-    } else {
-      this.confirmNotif = ShowConfirmNotif({
-        message,
-        type: 'error',
-      });
-      this.setState({ showCreateItemModal: false });
-    }
-  };
-
   onRefreshAfterChanges = async () => {
     const { query, dateInput } = this.props;
     const { actionCreators } = TestObjectsDuck;
-    const { getAllResellItems } = actionCreators;
+    const { getPurchasedOrders } = actionCreators;
     const { success, message } = await this.props.dispatch(
-      getAllResellItems(query, dateInput),
+      getPurchasedOrders(query, dateInput),
     );
     if (success) {
       // this.confirmNotif = ShowConfirmNotif({
@@ -116,28 +92,26 @@ class ResellItems extends Component {
     if (query === '') {
       return;
     }
-    const { changeResellItemsQuery } = TestObjectsDuck.actionCreators;
-    this.props.dispatch(changeResellItemsQuery(query));
+    const { changeOrdersQuery } = TestObjectsDuck.actionCreators;
+    this.props.dispatch(changeOrdersQuery(query));
   };
 
   selectDateInput = id => {
     if (this.state.activeDateInputID === id) {
       return;
     }
-    const { changeResellItemsDateInput } = TestObjectsDuck.actionCreators;
-    this.props.dispatch(changeResellItemsDateInput(id));
+    const { changeOrdersDateInput } = TestObjectsDuck.actionCreators;
+    this.props.dispatch(changeOrdersDateInput(id));
   };
 
   onRemoveSearch = async () => {
-    const { query } = this.state;
-
-    const { changeResellItemsQuery } = TestObjectsDuck.actionCreators;
-    this.props.dispatch(changeResellItemsQuery(''));
+    const { changeOrdersQuery } = TestObjectsDuck.actionCreators;
+    this.props.dispatch(changeOrdersQuery(''));
   };
 
   //  Render Methods
   renderCreateModal = () => (
-    <AdminModals.ResellItemsModal
+    <AdminModals.OrdersModal
       onCloseModal={this.onHideCreateItemModal}
       onUpdateAfterResellItemCreated={this.onUpdateAfterResellItemCreated}
     />
@@ -179,7 +153,7 @@ class ResellItems extends Component {
                 autoCorrect="off"
                 autoCapitalize="off"
                 spellCheck={false}
-                placeholder="Search Product, Brand, Designer, SKU ..."
+                placeholder="Search Product, Buyer, Seller ..."
                 onChange={e => this.onChangeSearchQuery(e.target.value)}
                 value={query}
                 autoFocus
@@ -209,16 +183,16 @@ class ResellItems extends Component {
     );
   };
 
-  renderAllResellItems = () => (
-    <ListOfResellItems
-      resellItems={this.props.resellItems}
+  renderAllOrders = () => (
+    <ListOfOrders
+      orders={this.props.orders}
       onRefreshAfterChanges={this.onRefreshAfterChanges}
     />
   );
 
   render() {
-    const { isFetchingResellItems } = this.props;
-    if (isFetchingResellItems) {
+    const { isFetchingOrders } = this.props;
+    if (isFetchingOrders) {
       return (
         <div style={{ textAlign: 'center' }}>
           <ClipLoader color={'#000000'} loading={true} />
@@ -229,7 +203,7 @@ class ResellItems extends Component {
       <div>
         {this.state.showCreateItemModal && this.renderCreateModal()}
         {this.renderFilterControls()}
-        {this.renderAllResellItems()}
+        {this.renderAllOrders()}
         <div className={Style.floatingButton}>
           <button onClick={this.onShowCreateItemModal}>+</button>
         </div>
@@ -241,16 +215,16 @@ class ResellItems extends Component {
 const mapStateToProps = state => {
   const { duckName } = TestObjectsDuck;
   return {
-    isFetchingResellItems: state[duckName].resellItems.isFetching,
-    resellItems: state[duckName].resellItems.data,
-    query: state[duckName].resellItems.query,
-    dateInput: state[duckName].resellItems.dateInput,
+    isFetchingOrders: state[duckName].orders.isFetching,
+    orders: state[duckName].orders.data,
+    query: state[duckName].orders.query,
+    dateInput: state[duckName].orders.dateInput,
   };
 };
 
-export default connect(mapStateToProps)(ResellItems);
+export default connect(mapStateToProps)(Orders);
 
-ResellItems.propTypes = {
-  isFetchingResellItems: PropTypes.bool,
-  resellItems: PropTypes.array,
+Orders.propTypes = {
+  isFetchingOrders: PropTypes.bool,
+  orders: PropTypes.array,
 };

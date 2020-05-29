@@ -8,19 +8,16 @@ const duckName = 'ADMIN_TEST';
 
 const actionTypes = createActionTypes(
   {
-    // -----> Resellers
-    CREATE_NEW_RESELLER_REQUEST: 'CREATE_NEW_RESELLER_REQUEST',
-    CREATE_NEW_RESELLER_SUCCESS: 'CREATE_NEW_RESELLER_SUCCESS',
-    CREATE_NEW_RESELLER_FAILURE: 'CREATE_NEW_RESELLER_FAILURE',
-    UPDATE_EXISTING_RESELLER_REQUEST: 'UPDATE_EXISTING_RESELLER_REQUEST',
-    UPDATE_EXISTING_RESELLER_SUCCESS: 'UPDATE_EXISTING_RESELLER_SUCCESS',
-    UPDATE_EXISTING_RESELLER_ERROR: 'UPDATE_EXISTING_RESELLER_ERROR',
-    REMOVE_EXISTING_RESELLER_REQUEST: 'REMOVE_EXISTING_RESELLER_REQUEST',
-    REMOVE_EXISTING_RESELLER_SUCCESS: 'REMOVE_EXISTING_RESELLER_SUCCESS',
-    REMOVE_EXISTING_RESELLER_ERROR: 'REMOVE_EXISTING_RESELLER_ERROR',
-    UPDATE_RESELLER_IMAGE_REQUEST: 'UPDATE_RESELLER_IMAGE_REQUEST',
-    UPDATE_RESELLER_IMAGE_SUCCESS: 'UPDATE_RESELLER_IMAGE_SUCCESS',
-    UPDATE_RESELLER_IMAGE_ERROR: 'UPDATE_RESELLER_IMAGE_ERROR',
+    // -----> Users
+    UPDATE_EXISTING_USER_REQUEST: 'UPDATE_EXISTING_USER_REQUEST',
+    UPDATE_EXISTING_USER_SUCCESS: 'UPDATE_EXISTING_USER_SUCCESS',
+    UPDATE_EXISTING_USER_ERROR: 'UPDATE_EXISTING_USER_ERROR',
+    REMOVE_EXISTING_USER_REQUEST: 'REMOVE_EXISTING_USER_REQUEST',
+    REMOVE_EXISTING_USER_SUCCESS: 'REMOVE_EXISTING_USER_SUCCESS',
+    REMOVE_EXISTING_USER_ERROR: 'REMOVE_EXISTING_USER_ERROR',
+    UPDATE_USER_IMAGE_REQUEST: 'UPDATE_USER_IMAGE_REQUEST',
+    UPDATE_USER_IMAGE_SUCCESS: 'UPDATE_USER_IMAGE_SUCCESS',
+    UPDATE_USER_IMAGE_ERROR: 'UPDATE_USER_IMAGE_ERROR',
 
     // -------> Resell Items
     CREATE_NEW_RESELL_ITEM_REQUEST: 'CREATE_NEW_RESELL_ITEM_REQUEST',
@@ -39,21 +36,32 @@ const actionTypes = createActionTypes(
     UPDATE_RESELL_ITEM_IMAGE_SUCCESS: 'UPDATE_RESELL_ITEM_IMAGE_SUCCESS',
     UPDATE_RESELL_ITEM_IMAGE_ERROR: 'UPDATE_RESELL_ITEM_IMAGE_ERROR',
 
-    // -------> Resellers
-    GET_RESELLERS_REQUEST: 'GET_RESELLERS_REQUEST',
-    GET_RESELLERS_SUCCESS: 'GET_RESELLERS_SUCCESS',
-    GET_RESELLERS_ERROR: 'GET_RESELLERS_ERROR',
+    // -------> Users
+    GET_USERS_REQUEST: 'GET_USERS_REQUEST',
+    GET_USERS_SUCCESS: 'GET_USERS_SUCCESS',
+    GET_USERS_ERROR: 'GET_USERS_ERROR',
 
     // -------> Resell Items
     GET_RESELL_ITEMS_REQUEST: 'GET_RESELL_ITEMS_REQUEST',
     GET_RESELL_ITEMS_SUCCESS: 'GET_RESELL_ITEMS_SUCCESS',
     GET_RESELL_ITEMS_ERROR: 'GET_RESELL_ITEMS_ERROR',
+
+    // -----> Filtering And Searching
+    CHANGE_RESELL_ITEMS_QUERY: 'CHANGE_RESELL_ITEMS_QUERY',
+    CHANGE_RESELL_ITEMS_DATE_INPUT: 'CHANGE_RESELL_ITEMS_DATE_INPUT',
+    CHANGE_ORDERS_QUERY: 'CHANGE_ORDERS_QUERY',
+    CHANGE_ORDERS_DATE_INPUT: 'CHANGE_ORDERS_DATE_INPUT',
+
+    // ------> Orders
+    GET_ORDERS_REQUEST: 'GET_ORDERS_REQUEST',
+    GET_ORDERS_SUCCESS: 'GET_ORDERS_SUCCESS',
+    GET_ORDERS_ERROR: 'GET_ORDERS_ERROR',
   },
   duckName,
 );
 
 const initialState = {
-  resellers: {
+  users: {
     data: [],
     errorMessage: {},
     isFetching: false,
@@ -61,81 +69,34 @@ const initialState = {
   },
   resellItems: {
     data: [],
+    query: '',
+    dateInput: 'allTime',
+    errorMessage: {},
+    isFetching: false,
+    isMutating: false,
+  },
+  orders: {
+    data: [],
+    query: '',
+    dateInput: 'allTime',
     errorMessage: {},
     isFetching: false,
     isMutating: false,
   },
 };
 
-// <------------ Resellers ----------------->
+// <------------ Users ----------------->
 
-const createResellerWithInputType = () => {
+const updateUserWithInputType = () => {
   return `
-        mutation($reseller: ResellerInput!, ) {
-                createNewReseller(reseller: $reseller) {
-                    name
-                    id
-                }
+        mutation($reseller: UserInput!, $id: ID!) {
+                updateExistingUser(reseller: $reseller, id: $id) 
             }
         `;
 };
 
-const createNewReseller = resellerInfo => dispatch => {
-  dispatch(createNewResellerRequest());
-
-  const { name, lat, lng } = resellerInfo;
-  const resellerSlug = slugify(name, {
-    replacement: '-',
-    lower: true, // convert to lower case, defaults to `false`
-  });
-  const _geoloc = {
-    lat,
-    lng,
-  };
-
-  const reseller = immutable
-    .wrap(resellerInfo)
-    .set('_geoloc', _geoloc)
-    .set('slug', resellerSlug)
-    .del('lat')
-    .del('lng')
-    .value();
-
-  return new Promise((resolve, reject) => {
-    fetchGraphQL(createResellerWithInputType(), undefined, {
-      reseller,
-    })
-      .then(res => {
-        if (
-          res !== null &&
-          res !== undefined &&
-          res.createNewReseller !== null &&
-          res.createNewReseller !== undefined
-        ) {
-          dispatch(createNewResellerSuccess());
-          resolve({ created: true, message: 'Created Reseller Successfully' });
-        } else {
-          dispatch(createNewResellerError());
-          resolve({ created: false, message: 'Failed to Create brand' });
-        }
-      })
-      .catch(err => {
-        dispatch(createNewResellerError(err.response));
-        resolve({ created: false, message: 'Failed to Create brand' });
-      });
-  });
-};
-
-const updateResellerWithInputType = () => {
-  return `
-        mutation($reseller: ResellerInput!, $id: ID!) {
-                updateExistingReseller(reseller: $reseller, id: $id) 
-            }
-        `;
-};
-
-const updateExistingReseller = resellerInfo => dispatch => {
-  dispatch(updateExistingResellerRequest());
+const updateExistingUser = resellerInfo => dispatch => {
+  dispatch(updateExistingUserRequest());
   const { name, id, lat, lng } = resellerInfo;
   const resellerSlug = slugify(name, {
     replacement: '-',
@@ -157,81 +118,76 @@ const updateExistingReseller = resellerInfo => dispatch => {
     .value();
 
   return new Promise((resolve, reject) => {
-    fetchGraphQL(updateResellerWithInputType(), undefined, {
+    fetchGraphQL(updateUserWithInputType(), undefined, {
       reseller,
       id,
     })
       .then(res => {
-        if (
-          (res !== null) & (res !== undefined) &&
-          res.updateExistingReseller
-        ) {
-          dispatch(updateExistingResellerSuccess());
-          resolve({ updated: true, message: 'Updated Reseller Successfully' });
+        if ((res !== null) & (res !== undefined) && res.updateExistingUser) {
+          dispatch(updateExistingUserSuccess());
+          resolve({ updated: true, message: 'Updated User Successfully' });
         } else {
-          dispatch(updateExistingResellerError('Could Not Update Reseller'));
-          resolve({ updated: false, message: 'Failed to update Reseller' });
+          dispatch(updateExistingUserError('Could Not Update User'));
+          resolve({ updated: false, message: 'Failed to update User' });
         }
       })
       .catch(err => {
-        dispatch(updateExistingResellerError(err.response));
-        resolve({ updated: false, message: 'Failed to update Reseller' });
+        dispatch(updateExistingUserError(err.response));
+        resolve({ updated: false, message: 'Failed to update User' });
       });
   });
 };
 
-const removeExistingReseller = resellerInfo => dispatch => {
-  dispatch(removeExistingResellerRequest());
+const removeExistingUser = resellerInfo => dispatch => {
+  dispatch(removeExistingUserRequest());
   return new Promise((resolve, reject) => {
     fetchGraphQL(`
             mutation {
-                removeExistingReseller(id: "${resellerInfo.id}")
+                removeExistingUser(id: "${resellerInfo.id}")
             }
         `)
       .then(res => {
-        if (res !== null && res !== undefined && res.removeExistingReseller) {
-          dispatch(removeExistingResellerSuccess());
-          resolve({ deleted: true, message: 'Deleted Reseller Successfully' });
+        if (res !== null && res !== undefined && res.removeExistingUser) {
+          dispatch(removeExistingUserSuccess());
+          resolve({ deleted: true, message: 'Deleted User Successfully' });
         } else {
-          dispatch(removeExistingResellerError('Could Not Remove Reseller'));
-          resolve({ deleted: false, message: 'Failed to delete Reseller' });
+          dispatch(removeExistingUserError('Could Not Remove User'));
+          resolve({ deleted: false, message: 'Failed to delete User' });
         }
       })
       .catch(err => {
-        dispatch(removeExistingResellerError(err.response));
-        resolve({ deleted: false, message: 'Failed to delete Reseller' });
+        dispatch(removeExistingUserError(err.response));
+        resolve({ deleted: false, message: 'Failed to delete User' });
       });
   });
 };
 
-const updateResellerImage = (imageURL, resellerInfo) => dispatch => {
-  dispatch(updateResellerImageRequest());
+const updateUserImage = (imageURL, resellerInfo) => dispatch => {
+  dispatch(updateUserImageRequest());
   return new Promise((resolve, reject) => {
     fetchGraphQL(`
             mutation {
-                updateResellerImage(id: "${resellerInfo.id}", imageURL: "${imageURL}")
+                updateUserImage(id: "${resellerInfo.id}", imageURL: "${imageURL}")
             }    
         `)
       .then(res => {
-        if (res !== null && res !== undefined && res.updateResellerImage) {
-          dispatch(updateResellerImageSuccess());
+        if (res !== null && res !== undefined && res.updateUserImage) {
+          dispatch(updateUserImageSuccess());
           resolve({
             updated: true,
-            message: 'Updated Reseller Image Successfully',
+            message: 'Updated User Image Successfully',
           });
         } else {
-          dispatch(
-            updateResellerImageFailure('Could Not Update Reseller Image'),
-          );
+          dispatch(updateUserImageFailure('Could Not Update User Image'));
           resolve({
             updated: false,
-            message: 'Failed to update Reseller Image',
+            message: 'Failed to update User Image',
           });
         }
       })
       .catch(err => {
-        dispatch(updateResellerImageFailure(err.response));
-        resolve({ updated: false, message: 'Failed to update Reseller Image' });
+        dispatch(updateUserImageFailure(err.response));
+        resolve({ updated: false, message: 'Failed to update User Image' });
       });
   });
 };
@@ -420,56 +376,52 @@ const removeExistingResellItem = resellItemInfo => dispatch => {
   });
 };
 
-const getAllResellers = () => dispatch => {
-  dispatch(getAllResellersRequest());
+const getAllUsers = () => dispatch => {
+  dispatch(getAllUsersRequest());
   return new Promise((resolve, reject) => {
     fetchGraphQL(`
         query {
-            getAllResellers {
-                id
-                name
-                address
-                _geoloc {
-                    lat
-                    lng
-                }
-                shipping
-                verified
-                imageURL
+            getAllUsers {
+              name
+              username
+              email
+              authCode
+              
             }
         }`)
       .then(res => {
         if (
           res !== null &&
           res !== undefined &&
-          res.getAllResellers !== null &&
-          res.getAllResellers !== undefined
+          res.getAllUsers !== null &&
+          res.getAllUsers !== undefined
         ) {
-          dispatch(getAllResellersSuccess(res.getAllResellers));
-          resolve({ success: true, message: 'Fetched Resellers successfully' });
+          dispatch(getAllUsersSuccess(res.getAllUsers));
+          resolve({ success: true, message: 'Fetched Users successfully' });
         } else {
-          dispatch(getAllResellersError('Could not fetch Resellers'));
-          resolve({ success: false, message: 'Failed to fetch resellers' });
+          dispatch(getAllUsersError('Could not fetch Users'));
+          resolve({ success: false, message: 'Failed to fetch users' });
         }
       })
       .catch(err => {
-        dispatch(getAllResellersError(err.response));
-        resolve({ success: false, message: 'Failed to fetch resellers' });
+        dispatch(getAllUsersError(err.response));
+        resolve({ success: false, message: 'Failed to fetch users' });
       });
   });
 };
 
-const getAllResellItems = () => dispatch => {
+const getAllResellItems = (query = '', dateInput = 'allTime') => dispatch => {
   dispatch(getAllResellItemsRequest());
   return new Promise((resolve, reject) => {
     fetchGraphQL(`
           query {
-              getAllResellItems {
+              getAllResellItems(query: "${query}", dateInput: "${dateInput}") {
                   id
                   product {
                       id
                       name
                       productCategory
+                      original_image_url
                   }
                   reseller {
                       id 
@@ -499,6 +451,7 @@ const getAllResellItems = () => dispatch => {
               .set('reseller', { value: reseller.id, label: reseller.name })
               .set('size', { value: size, label: size })
               .set('askingPrice', `${askingPrice}`)
+              .set('imageURL', product.original_image_url)
               .value();
           });
           dispatch(getAllResellItemsSuccess(resellItems));
@@ -518,79 +471,196 @@ const getAllResellItems = () => dispatch => {
   });
 };
 
+const getPurchasedOrders = (query = '', dateInput = 'allTime') => dispatch => {
+  dispatch(getPurchasedOrdersRequest());
+  return new Promise((resolve, reject) => {
+    fetchGraphQL(`
+          query {
+            getPurchasedOrders(query: "${query}", dateInput: "${dateInput}") {
+              id
+              orderNumber
+              resellItem {
+                  id
+                  product {
+                      id
+                      name
+                      slug 
+                      original_image_url
+                  }
+                  askingPrice
+                  condition
+                  size
+                  images
+              }
+              buyer {
+                id
+                name
+                email
+              }
+              seller {
+                id
+                name
+                email
+              }
+              buyerAddress {
+                  id
+                  postal_code
+                  city_locality
+                  state_province
+                  country_code
+                  country
+                  address1
+                  address2
+                  name
+                  phone
+              }
+              billingInfo {
+                  id
+                  payment_method_id
+                  name
+                  payment_type
+                  card_brand
+                  last_4_digits
+                  processor_name
+              }
+              status
+              price_cents
+              platform_fees_buyer_cents
+              total_price_cents
+              shipping_cents
+              seller_amount_made
+              platform_fees_seller_cents
+              seller_shipping_cents
+              international_checkout_note
+              seller_amount_made_cents
+              applicationFeeRateCharged
+              sellerScoreDuringPurchase
+              purchased_at
+              buyerShipment {
+                id
+                status
+                eta
+                tracking_number
+                tracking_status
+                tracking_url_provider
+                label_url
+                createdAt
+                updatedAt
+              }
+              sellerShipment {
+                id
+                status
+                eta
+                tracking_number
+                tracking_status
+                tracking_url_provider
+                label_url
+                createdAt
+                updatedAt
+              }
+            }
+          }`)
+      .then(res => {
+        if (
+          res !== null &&
+          res !== undefined &&
+          res.getPurchasedOrders !== null &&
+          res.getPurchasedOrders !== undefined
+        ) {
+          dispatch(getPurchasedOrdersSuccess(res.getPurchasedOrders));
+          resolve({
+            success: true,
+            message: 'Fetched Purchased Orders successfully',
+          });
+        } else {
+          dispatch(getPurchasedOrdersError('Could not fetch Purchased Orders'));
+          resolve({
+            success: false,
+            message: 'Failed to fetch Purchased Orders',
+          });
+        }
+      })
+      .catch(err => {
+        dispatch(getPurchasedOrdersError(err.response));
+        resolve({
+          success: false,
+          message: 'Failed to fetch Purchased Orders',
+        });
+      });
+  });
+};
+
+const changeResellItemsQuery = query => dispatch => {
+  dispatch(changeResellItemsSearchQuery(query));
+};
+
+const changeResellItemsDateInput = dateInput => dispatch => {
+  dispatch(changeResellItemsFilterDate(dateInput));
+};
+
+const changeOrdersQuery = query => dispatch => {
+  dispatch(changeOrdersSearchQuery(query));
+};
+
+const changeOrdersDateInput = dateInput => dispatch => {
+  dispatch(changeOrdersFilterDate(dateInput));
+};
+
 //  Actions
-const createNewResellerRequest = () => {
+
+const updateExistingUserRequest = () => {
   return {
-    type: actionTypes.CREATE_NEW_RESELLER_REQUEST,
+    type: actionTypes.UPDATE_EXISTING_USER_REQUEST,
   };
 };
 
-const createNewResellerSuccess = () => {
+const updateExistingUserSuccess = () => {
   return {
-    type: actionTypes.CREATE_NEW_RESELLER_SUCCESS,
+    type: actionTypes.UPDATE_EXISTING_USER_SUCCESS,
   };
 };
 
-const createNewResellerError = errorMessage => {
+const updateExistingUserError = errorMessage => {
   return {
-    type: actionTypes.CREATE_NEW_RESELLER_ERROR,
+    type: actionTypes.UPDATE_EXISTING_USER_ERROR,
     payload: { errorMessage },
   };
 };
 
-const updateExistingResellerRequest = () => {
+const removeExistingUserRequest = () => {
   return {
-    type: actionTypes.UPDATE_EXISTING_RESELLER_REQUEST,
+    type: actionTypes.REMOVE_EXISTING_USER_REQUEST,
   };
 };
 
-const updateExistingResellerSuccess = () => {
+const removeExistingUserSuccess = () => {
   return {
-    type: actionTypes.UPDATE_EXISTING_RESELLER_SUCCESS,
+    type: actionTypes.REMOVE_EXISTING_USER_SUCCESS,
   };
 };
 
-const updateExistingResellerError = errorMessage => {
+const removeExistingUserError = errorMessage => {
   return {
-    type: actionTypes.UPDATE_EXISTING_RESELLER_ERROR,
+    type: actionTypes.REMOVE_EXISTING_USER_ERROR,
     payload: { errorMessage },
   };
 };
 
-const removeExistingResellerRequest = () => {
+const updateUserImageRequest = () => {
   return {
-    type: actionTypes.REMOVE_EXISTING_RESELLER_REQUEST,
+    type: actionTypes.UPDATE_USER_IMAGE_REQUEST,
   };
 };
 
-const removeExistingResellerSuccess = () => {
+const updateUserImageSuccess = () => {
   return {
-    type: actionTypes.REMOVE_EXISTING_RESELLER_SUCCESS,
+    type: actionTypes.UPDATE_USER_IMAGE_SUCCESS,
   };
 };
 
-const removeExistingResellerError = errorMessage => {
+const updateUserImageFailure = errorMessage => {
   return {
-    type: actionTypes.REMOVE_EXISTING_RESELLER_ERROR,
-    payload: { errorMessage },
-  };
-};
-
-const updateResellerImageRequest = () => {
-  return {
-    type: actionTypes.UPDATE_RESELLER_IMAGE_REQUEST,
-  };
-};
-
-const updateResellerImageSuccess = () => {
-  return {
-    type: actionTypes.UPDATE_RESELLER_IMAGE_SUCCESS,
-  };
-};
-
-const updateResellerImageFailure = errorMessage => {
-  return {
-    type: actionTypes.UPDATE_RESELLER_IMAGE_ERROR,
+    type: actionTypes.UPDATE_USER_IMAGE_ERROR,
     payload: { errorMessage },
   };
 };
@@ -672,24 +742,24 @@ const removeExistingResellItemError = errorMessage => {
   };
 };
 
-// resellers
-const getAllResellersRequest = () => {
+// users
+const getAllUsersRequest = () => {
   return {
-    type: actionTypes.GET_RESELLERS_REQUEST,
+    type: actionTypes.GET_USERS_REQUEST,
   };
 };
 
-const getAllResellersSuccess = data => {
+const getAllUsersSuccess = data => {
   return {
-    type: actionTypes.GET_RESELLERS_SUCCESS,
+    type: actionTypes.GET_USERS_SUCCESS,
     payload: { data },
   };
 };
 
-const getAllResellersError = errorMessage => {
+const getAllUsersError = errorMessage => {
   console.log(errorMessage);
   return {
-    type: actionTypes.GET_RESELLERS_ERROR,
+    type: actionTypes.GET_USERS_ERROR,
     payload: { errorMessage },
   };
 };
@@ -716,53 +786,102 @@ const getAllResellItemsError = errorMessage => {
   };
 };
 
+const getPurchasedOrdersRequest = () => {
+  return {
+    type: actionTypes.GET_ORDERS_REQUEST,
+  };
+};
+
+const getPurchasedOrdersSuccess = data => {
+  return {
+    type: actionTypes.GET_ORDERS_SUCCESS,
+    payload: { data },
+  };
+};
+
+const getPurchasedOrdersError = errorMessage => {
+  console.log(errorMessage);
+  return {
+    type: actionTypes.GET_ORDERS_ERROR,
+    payload: { errorMessage },
+  };
+};
+
+const changeResellItemsSearchQuery = query => {
+  return {
+    type: actionTypes.CHANGE_RESELL_ITEMS_QUERY,
+    payload: { query },
+  };
+};
+
+const changeResellItemsFilterDate = dateInput => {
+  return {
+    type: actionTypes.CHANGE_RESELL_ITEMS_DATE_INPUT,
+    payload: { dateInput },
+  };
+};
+
+const changeOrdersSearchQuery = query => {
+  return {
+    type: actionTypes.CHANGE_ORDERS_QUERY,
+    payload: { query },
+  };
+};
+
+const changeOrdersFilterDate = dateInput => {
+  return {
+    type: actionTypes.CHANGE_ORDERS_DATE_INPUT,
+    payload: { dateInput },
+  };
+};
+
 // Reducers
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     // -------> Mutations
 
-    // Resellers
-    case actionTypes.CREATE_NEW_RESELLER_REQUEST:
+    // Users
+    case actionTypes.CREATE_NEW_USER_REQUEST:
       return Object.assign({}, state, {
-        resellers: Object.assign({}, state.resellers, { isMutating: true }),
+        users: Object.assign({}, state.users, { isMutating: true }),
       });
-    case actionTypes.CREATE_NEW_RESELLER_SUCCESS:
+    case actionTypes.CREATE_NEW_USER_SUCCESS:
       return Object.assign({}, state, {
-        resellers: Object.assign({}, state.resellers, { isMutating: false }),
+        users: Object.assign({}, state.users, { isMutating: false }),
       });
-    case actionTypes.CREATE_NEW_RESELLER_ERROR:
+    case actionTypes.CREATE_NEW_USER_ERROR:
       return Object.assign({}, state, {
-        resellers: Object.assign({}, state.resellers, {
+        users: Object.assign({}, state.users, {
           isMutating: false,
           errorMessage: action.payload.errorMessage,
         }),
       });
-    case actionTypes.UPDATE_EXISTING_RESELLER_REQUEST:
+    case actionTypes.UPDATE_EXISTING_USER_REQUEST:
       return Object.assign({}, state, {
-        resellers: Object.assign({}, state.resellers, { isMutating: true }),
+        users: Object.assign({}, state.users, { isMutating: true }),
       });
-    case actionTypes.UPDATE_EXISTING_RESELLER_SUCCESS:
+    case actionTypes.UPDATE_EXISTING_USER_SUCCESS:
       return Object.assign({}, state, {
-        resellers: Object.assign({}, state.resellers, { isMutating: false }),
+        users: Object.assign({}, state.users, { isMutating: false }),
       });
-    case actionTypes.UPDATE_EXISTING_RESELLER_ERROR:
+    case actionTypes.UPDATE_EXISTING_USER_ERROR:
       return Object.assign({}, state, {
-        resellers: Object.assign({}, state.resellers, {
+        users: Object.assign({}, state.users, {
           isMutating: false,
           errorMessage: action.payload.errorMessage,
         }),
       });
-    case actionTypes.REMOVE_EXISTING_RESELLER_REQUEST:
+    case actionTypes.REMOVE_EXISTING_USER_REQUEST:
       return Object.assign({}, state, {
-        resellers: Object.assign({}, state.resellers, { isMutating: true }),
+        users: Object.assign({}, state.users, { isMutating: true }),
       });
-    case actionTypes.REMOVE_EXISTING_RESELLER_SUCCESS:
+    case actionTypes.REMOVE_EXISTING_USER_SUCCESS:
       return Object.assign({}, state, {
-        resellers: Object.assign({}, state.resellers, { isMutating: false }),
+        users: Object.assign({}, state.users, { isMutating: false }),
       });
-    case actionTypes.REMOVE_EXISTING_RESELLER_ERROR:
+    case actionTypes.REMOVE_EXISTING_USER_ERROR:
       return Object.assign({}, state, {
-        resellers: Object.assign({}, state.resellers, {
+        users: Object.assign({}, state.users, {
           isMutating: false,
           errorMessage: action.payload.errorMessage,
         }),
@@ -821,23 +940,23 @@ const reducer = (state = initialState, action) => {
         }),
       });
 
-    // Resellers
-    case actionTypes.GET_RESELLERS_REQUEST: {
+    // Users
+    case actionTypes.GET_USERS_REQUEST: {
       return Object.assign({}, state, {
-        resellers: Object.assign({}, state.resellers, { isFetching: true }),
+        users: Object.assign({}, state.users, { isFetching: true }),
       });
     }
-    case actionTypes.GET_RESELLERS_SUCCESS: {
+    case actionTypes.GET_USERS_SUCCESS: {
       return Object.assign({}, state, {
-        resellers: Object.assign({}, state.resellers, {
+        users: Object.assign({}, state.users, {
           data: action.payload.data || [],
           isFetching: false,
         }),
       });
     }
-    case actionTypes.GET_RESELLERS_ERROR: {
+    case actionTypes.GET_USERS_ERROR: {
       return Object.assign({}, state, {
-        resellers: Object.assign({}, state.resellers, {
+        users: Object.assign({}, state.users, {
           data: [],
           isFetching: false,
           errorMessage: action.payload.errorMessage,
@@ -867,6 +986,57 @@ const reducer = (state = initialState, action) => {
         }),
       });
     }
+    // Orders
+    case actionTypes.GET_ORDERS_REQUEST: {
+      return Object.assign({}, state, {
+        orders: Object.assign({}, state.orders, { isFetching: true }),
+      });
+    }
+    case actionTypes.GET_ORDERS_SUCCESS: {
+      return Object.assign({}, state, {
+        orders: Object.assign({}, state.orders, {
+          data: action.payload.data || [],
+          isFetching: false,
+        }),
+      });
+    }
+    case actionTypes.GET_ORDERS_ERROR: {
+      return Object.assign({}, state, {
+        orders: Object.assign({}, state.orders, {
+          data: [],
+          isFetching: false,
+          errorMessage: action.payload.errorMessage,
+        }),
+      });
+    }
+    case actionTypes.CHANGE_RESELL_ITEMS_QUERY: {
+      return Object.assign({}, state, {
+        resellItems: Object.assign({}, state.resellItems, {
+          query: action.payload.query,
+        }),
+      });
+    }
+    case actionTypes.CHANGE_RESELL_ITEMS_DATE_INPUT: {
+      return Object.assign({}, state, {
+        resellItems: Object.assign({}, state.resellItems, {
+          dateInput: action.payload.dateInput,
+        }),
+      });
+    }
+    case actionTypes.CHANGE_ORDERS_QUERY: {
+      return Object.assign({}, state, {
+        orders: Object.assign({}, state.orders, {
+          query: action.payload.query,
+        }),
+      });
+    }
+    case actionTypes.CHANGE_ORDERS_DATE_INPUT: {
+      return Object.assign({}, state, {
+        orders: Object.assign({}, state.orders, {
+          dateInput: action.payload.dateInput,
+        }),
+      });
+    }
     default:
       return state;
   }
@@ -876,14 +1046,13 @@ export default {
   duckName,
   reducer,
   actionCreators: {
-    // Resellers
+    // Users
     // ----> Mutations
-    createNewReseller,
-    updateExistingReseller,
-    removeExistingReseller,
-    updateResellerImage,
+    updateExistingUser,
+    removeExistingUser,
+    updateUserImage,
     // ----> Query
-    getAllResellers,
+    getAllUsers,
     // Resell Item
     // -----> Mutation
     createNewResellItem,
@@ -892,5 +1061,11 @@ export default {
     updateResellItemImages,
     // -----> Query
     getAllResellItems,
+    getPurchasedOrders,
+    // --> Filtering
+    changeResellItemsQuery,
+    changeResellItemsDateInput,
+    changeOrdersQuery,
+    changeOrdersDateInput,
   },
 };

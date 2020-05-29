@@ -51,11 +51,6 @@ const RESELL_ITEM_FIELDS = [
     label: 'Select size',
   },
   {
-    fieldKind: 'dropdown',
-    id: 'resellers',
-    label: 'Select Reseller',
-  },
-  {
     fieldKind: 'checkboxes',
     id: 'availability',
     label: 'Selling Availability',
@@ -73,7 +68,6 @@ export default class ResellItemsFormFields extends Component {
       product: '',
       condition: 'new',
       askingPrice: '',
-      reseller: '',
       size: '',
       availability: [],
     },
@@ -111,7 +105,6 @@ export default class ResellItemsFormFields extends Component {
       askingPrice,
       product,
       condition,
-      reseller,
       size,
     } = this.state.resellItemInfo;
 
@@ -119,7 +112,6 @@ export default class ResellItemsFormFields extends Component {
     askingPrice !== '' &&
     product !== '' &&
     condition !== '' &&
-    reseller !== '' &&
     size !== ''
       ? this.setState({ submitBtnStatus: 'active' })
       : this.setState({ submitBtnStatus: 'inactive' });
@@ -146,19 +138,6 @@ export default class ResellItemsFormFields extends Component {
         selectedOption,
       ),
     });
-  };
-
-  onSelectReseller = selectedOption => {
-    this.setState(
-      {
-        resellItemInfo: immutable.set(
-          this.state.resellItemInfo,
-          'reseller',
-          selectedOption,
-        ),
-      },
-      this.onGetButtonStatus,
-    );
   };
 
   onSelectAvailability = id => {
@@ -236,8 +215,6 @@ export default class ResellItemsFormFields extends Component {
     switch (id) {
       case 'selectProduct':
         return this.renderSelectProductDropDown();
-      case 'resellers':
-        return this.renderResellersDropDown();
       case 'size':
         return this.renderSizeDropDown();
       default:
@@ -292,20 +269,6 @@ export default class ResellItemsFormFields extends Component {
         options={sizeDropDownValues}
         value={size}
         onChange={this.onSelectSize}
-      />
-    );
-  };
-
-  renderResellersDropDown = () => {
-    const { reseller } = this.state.resellItemInfo;
-    const resellersList = this.props.resellers.map(reseller => {
-      return { value: reseller.id, label: reseller.name };
-    });
-    return (
-      <Select
-        options={resellersList}
-        value={reseller}
-        onChange={this.onSelectReseller}
       />
     );
   };

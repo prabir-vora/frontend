@@ -107,6 +107,11 @@ const actionTypes = createActionTypes({
     GET_APPAREL_SUCCESS: 'GET_APPAREL_SUCCESS',
     GET_APPAREL_ERROR: 'GET_APPAREL_ERROR',
     
+     //  -----> Apparel
+     GET_PURCHASED_ORDERS_REQUEST: 'GET_PURCHASED_ORDERS_REQUEST',
+     GET_PURCHASED_ORDERS_SUCCESS: 'GET_PURCHASED_ORDERS_SUCCESS',
+     GET_PURCHASED_ORDERS_ERROR: 'GET_PURCHASED_ORDERS_ERROR',
+
 }, duckName);
 
 // Initial State
@@ -140,6 +145,11 @@ const initialState = {
         errorMessage: {},
         isFetching: false,
         isMutating: true,
+    },
+    orders: {
+        data: [],
+        errorMessage: {},
+        isFetching: false
     }
 }
 
@@ -811,7 +821,7 @@ const getAllDesigners = () => dispatch => {
     })
 }
 
-
+// <---------------- Sizing ------------------>
 const getSizing = () => dispatch => {
     dispatch(getSizingRequest());
     return new Promise((resolve, reject) => {
@@ -831,6 +841,32 @@ const getSizing = () => dispatch => {
             console.log(err)
             dispatch(getSizingError(err.response));
             resolve({ success: false, message: "Failed to fetch Sizing"});
+        });
+    })
+}
+
+// <---------------- Orders ------------------>
+const getPurchasedOrders = () => dispatch => {
+    dispatch(getPurchasedOrdersRequest());
+    return new Promise((resolve, reject) => {
+        fetchGraphQL(`
+        query {
+            getPurchasedOrders {
+                
+            }
+        }`)
+        .then((res) => {
+            if (res !== null && res !== undefined && res.getPurchasedOrders !== null && res.getPurchasedOrders !== undefined) {
+                dispatch(getPurchasedOrdersSuccess(res.getPurchasedOrders));
+                resolve({ success: true, message: "Fetched Orders successfully"});
+            } else {
+                dispatch(getPurchasedOrdersError("Could not fetch Orders"));
+                resolve({ success: false, message: "Failed to fetch Orders"});
+            }
+          })
+        .catch(err => {
+            dispatch(getPurchasedOrdersError(err.response));
+            resolve({ success: false, message: "Failed to fetch Orders"});
         });
     })
 }
@@ -1501,6 +1537,28 @@ const getAllApparelError = (errorMessage) => {
     }
 }
 
+// orders
+const getPurchasedOrdersRequest = () => {
+    return {
+        type: actionTypes.GET_PURCHASED_ORDERS_REQUEST
+    }
+}
+
+const getPurchasedOrdersSuccess = (data) => {
+    return {
+        type: actionTypes.GET_PURCHASED_ORDERS_SUCCESS,
+        payload: { data }
+    }
+}
+
+const getPurchasedOrdersError = (errorMessage) => {
+    console.log(errorMessage)
+    return {
+        type: actionTypes.GET_PURCHASED_ORDERS_ERROR,
+        payload: { errorMessage }
+    }
+}
+
 // Reducers
 const reducer = (state = initialState, action) => {
     switch(action.type) {
@@ -1758,6 +1816,22 @@ const reducer = (state = initialState, action) => {
                 apparel: Object.assign({}, state.apparel, { data: [], isFetching: false, errorMessage: action.payload.errorMessage })
               })
         }
+             // Orders
+             case actionTypes.GET_PURCHASED_ORDERS_REQUEST: {
+                return Object.assign({}, state, {
+                    orders: Object.assign({}, state.orders, { isFetching: true })
+                  })
+            }
+            case actionTypes.GET_PURCHASED_ORDERS_SUCCESS: {
+                return Object.assign({}, state, {
+                    orders: Object.assign({}, state.orders, { data: action.payload.data || [], isFetching: false })
+                  })
+            }
+            case actionTypes.GET_PURCHASED_ORDERS_ERROR: {
+                return Object.assign({}, state, {
+                    orders: Object.assign({}, state.orders, { data: [], isFetching: false, errorMessage: action.payload.errorMessage })
+                  })
+            }
         default: 
             return state;
     }
@@ -1808,6 +1882,11 @@ export default {
             updateApparelAdditionalImages,
             // -----> Query
             getAllApparel,
+        // Orders
+            // ----> Mutation
+
+            // -----> Query
+            getPurchasedOrders,
         // Other
             uploadImage,
             uploadImages

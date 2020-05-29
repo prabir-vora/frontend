@@ -16,15 +16,7 @@ const NEW_RESELLER_FIELDS = [
     placeholder: 'John Doe',
     required: true,
   },
-  {
-    fieldKind: 'radio',
-    id: 'shipping',
-    label: 'Do you ship?',
-    options: {
-      yes: { label: 'Yes' },
-      no: { label: 'No' },
-    },
-  },
+
   // {
   //     fieldKind: "text",
   //     id: "lat",
@@ -39,11 +31,7 @@ const NEW_RESELLER_FIELDS = [
   //     placeholder: "",
   //     required: true
   // },
-  {
-    fieldKind: 'locationSearchInput',
-    id: 'address',
-    label: 'Select Address',
-  },
+
   {
     fieldKind: 'radio',
     id: 'verified',
@@ -57,73 +45,23 @@ const NEW_RESELLER_FIELDS = [
 
 export default class ResellerFormFields extends Component {
   state = {
-    resellerInfo: {
-      name: '',
-      address: '',
-      lat: '',
-      lng: '',
-      shipping: 'no',
-      verified: 'no',
-    },
+    user: {},
     submitBtnStatus: 'inactive',
   };
 
   componentDidMount() {
-    if (this.props.isInEditMode) {
-      const { _geoloc } = this.props.resellerInfo;
-      const { lat, lng } = _geoloc;
-      const resellerInfo = immutable
-        .wrap(this.props.resellerInfo)
-        .set('lat', `${lat}`)
-        .set('lng', `${lng}`)
-        .del('_geoloc')
-        .value();
-      this.setState({ resellerInfo }, this.onGetButtonStatus);
-    }
+    this.setState({ user: this.props.user }, this.onGetButtonStatus);
   }
 
   // On action methods
   onChangeTextInputValue = (fieldID, value) => {
     this.setState(
-      { resellerInfo: immutable.set(this.state.resellerInfo, fieldID, value) },
+      { user: immutable.set(this.state.user, fieldID, value) },
       this.onGetButtonStatus,
     );
   };
 
-  onSelectLocation = (address, lat, lng) => {
-    this.setState(
-      {
-        resellerInfo: immutable
-          .wrap(this.state.resellerInfo)
-          .set('address', address)
-          .set('lat', lat)
-          .set('lng', lng)
-          .value(),
-      },
-      this.onGetButtonStatus,
-    );
-  };
-
-  onGetButtonStatus = () => {
-    console.log(this.state);
-    const {
-      address,
-      name,
-      lat,
-      lng,
-      shipping,
-      verified,
-    } = this.state.resellerInfo;
-
-    name !== '' &&
-    address !== '' &&
-    lat !== '' &&
-    lng !== '' &&
-    shipping !== '' &&
-    verified !== ''
-      ? this.setState({ submitBtnStatus: 'active' })
-      : this.setState({ submitBtnStatus: 'inactive' });
-  };
+  onGetButtonStatus = () => {};
 
   //  render methods
   renderRadioButtons = (id, options) => {
@@ -138,17 +76,13 @@ export default class ResellerFormFields extends Component {
       return (
         <div key={optionID} style={{ marginBottom: '10px' }}>
           <RadioButton
-            checked={optionID === this.state.resellerInfo[id]}
+            checked={optionID === this.state.user[id]}
             id={optionID}
             label={options[optionID].label}
             onClick={() =>
               this.setState(
                 {
-                  resellerInfo: immutable.set(
-                    this.state.resellerInfo,
-                    id,
-                    optionID,
-                  ),
+                  user: immutable.set(this.state.user, id, optionID),
                 },
                 this.onGetButtonStatus,
               )
@@ -164,7 +98,7 @@ export default class ResellerFormFields extends Component {
       <Button
         className={Style.saveButton}
         name="Save"
-        onClick={() => this.props.onSubmit(this.state.resellerInfo)}
+        onClick={() => this.props.onSubmit(this.state.user)}
         status={this.state.submitBtnStatus}
       >
         {this.props.isInEditMode ? 'Save' : 'Create'}
@@ -193,7 +127,7 @@ export default class ResellerFormFields extends Component {
               hasMultipleLines={fieldKind === 'textarea' ? true : false}
               name={id}
               onChange={value => this.onChangeTextInputValue(id, value)}
-              value={this.state.resellerInfo[id] || ''}
+              value={this.state.user[id] || ''}
             />
           </div>
         );
@@ -203,9 +137,9 @@ export default class ResellerFormFields extends Component {
           <div key={id}>
             <h2>Address</h2>
             <LocationSearchInput
-              address={this.state.resellerInfo.address}
-              latitude={this.state.resellerInfo.lat}
-              longitude={this.state.resellerInfo.lng}
+              address={this.state.user.address}
+              latitude={this.state.user.lat}
+              longitude={this.state.user.lng}
               onSelectLocation={this.onSelectLocation}
             />
           </div>
@@ -227,13 +161,13 @@ export default class ResellerFormFields extends Component {
 
 ResellerFormFields.propTypes = {
   isInEditMode: PropTypes.bool,
-  resellerInfo: PropTypes.object,
+  user: PropTypes.object,
   onSubmit: PropTypes.func.isRequired,
 };
 
 ResellerFormFields.defaultProps = {
   isInEditMode: false,
-  resellerInfo: {
+  user: {
     name: '',
     address: '',
     lat: '',

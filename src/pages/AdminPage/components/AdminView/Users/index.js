@@ -6,8 +6,7 @@ import { connect } from 'react-redux';
 import TestObjectsDuck from 'stores/ducks/Admin/TestObjects.duck';
 
 // Components
-import AdminModals from 'components/AdminModals';
-import { ListOfResellers } from 'components/AdminComponents/Resellers';
+import { ListOfUsers } from 'components/AdminComponents/Users';
 
 // Style
 import Style from '../style.module.scss';
@@ -16,7 +15,7 @@ import Style from '../style.module.scss';
 import { ClipLoader } from 'react-spinners';
 import { ShowConfirmNotif } from 'functions';
 
-class Resellers extends Component {
+class Users extends Component {
   confirmNotif = null;
 
   state = {
@@ -49,8 +48,8 @@ class Resellers extends Component {
 
   onRefreshAfterChanges = async () => {
     const { actionCreators } = TestObjectsDuck;
-    const { getAllResellers } = actionCreators;
-    const { success, message } = await this.props.dispatch(getAllResellers());
+    const { getAllUsers } = actionCreators;
+    const { success, message } = await this.props.dispatch(getAllUsers());
     if (success) {
       this.confirmNotif = ShowConfirmNotif({
         message,
@@ -64,24 +63,16 @@ class Resellers extends Component {
     }
   };
 
-  //  Render Methods
-  renderCreateModal = () => (
-    <AdminModals.ResellersModal
-      onCloseModal={this.onHideCreateItemModal}
-      onUpdateAfterResellerCreated={this.onUpdateAfterResellerCreated}
-    />
-  );
-
-  renderAllResellers = () => (
-    <ListOfResellers
-      resellers={this.props.resellers}
+  renderAllUsers = () => (
+    <ListOfUsers
+      users={this.props.users}
       onRefreshAfterChanges={this.onRefreshAfterChanges}
     />
   );
 
   render() {
-    const { isFetchingResellers } = this.props;
-    if (isFetchingResellers) {
+    const { isFetchingUsers } = this.props;
+    if (isFetchingUsers) {
       return (
         <div style={{ textAlign: 'center' }}>
           <ClipLoader color={'#000000'} loading={true} />
@@ -90,8 +81,7 @@ class Resellers extends Component {
     }
     return (
       <div>
-        {this.state.showCreateItemModal && this.renderCreateModal()}
-        {this.renderAllResellers()}
+        {this.renderAllUsers()}
         <div className={Style.floatingButton}>
           <button onClick={this.onShowCreateItemModal}>+</button>
         </div>
@@ -103,14 +93,14 @@ class Resellers extends Component {
 const mapStateToProps = state => {
   const { duckName } = TestObjectsDuck;
   return {
-    isFetchingResellers: state[duckName].resellers.isFetching,
-    resellers: state[duckName].resellers.data,
+    isFetchingUsers: state[duckName].users.isFetching,
+    users: state[duckName].users.data,
   };
 };
 
-export default connect(mapStateToProps)(Resellers);
+export default connect(mapStateToProps)(Users);
 
-Resellers.propTypes = {
-  isFetchingResellers: PropTypes.bool,
-  resellers: PropTypes.array,
+Users.propTypes = {
+  isFetchingUsers: PropTypes.bool,
+  users: PropTypes.array,
 };
