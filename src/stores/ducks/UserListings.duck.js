@@ -70,7 +70,7 @@ const fetchUserListingsRequest = () => {
 };
 
 const fetchUserListingsSuccess = ({ data }) => {
-  const hasMoreListings = data.length === 3 ? true : false;
+  const hasMoreListings = data.length === 6 ? true : false;
   return {
     type: actionTypes.FETCH_USER_LISTINGS_SUCCESS,
     payload: { data, hasMoreListings },

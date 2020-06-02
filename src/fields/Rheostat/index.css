@@ -3,7 +3,7 @@
   height: 100%;
 }
 .DefaultProgressBar_progressBar {
-  background-color: #abc4e8;
+  background-color: black;
   position: absolute;
 }
 .DefaultProgressBar_progressBar__vertical {
@@ -76,17 +76,14 @@
   border-color: #dbdbdb;
 }
 .DefaultBackground {
-  background-color: #fcfcfc;
+  background-color: #9c9c9c;
   height: 5px;
   width: 100%;
-  border: 1px solid #d8d8d8;
   position: relative;
 }
 .DefaultBackground_background__horizontal {
   height: 5px;
-  top: -2px;
-  left: -2px;
-  bottom: 4px;
+
   width: 100%;
 }
 .DefaultBackground_background__vertical {

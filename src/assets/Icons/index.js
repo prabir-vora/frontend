@@ -37,6 +37,12 @@ import { ReactComponent as SellNavIcon } from './SellNavIcon.svg';
 import { ReactComponent as MyListNavIcon } from './MyListNavIcon.svg';
 import { ReactComponent as NavigateNextIcon } from './navigateNextIcon.svg';
 import { ReactComponent as NavigatePreviousIcon } from './navigatePreviousIcon.svg';
+import { ReactComponent as SortAndFilterIcon } from './SortAndFilterIcon.svg';
+import { ReactComponent as ExpandMoreIcon } from './ExpandMoreIcon.svg';
+import { ReactComponent as ExpandLessIcon } from './ExpandLessIcon.svg';
+import { ReactComponent as RadioButtonCheckedIcon } from './RadioButtonCheckedIcon.svg';
+import { ReactComponent as RadioButtonUncheckedIcon } from './RadioButtonUncheckedIcon.svg';
+import { ReactComponent as SortIcon } from './SortIcon.svg';
 
 export {
   AddPhotoIcon,
@@ -51,6 +57,8 @@ export {
   CrossIcon,
   DollarIcon,
   EngageMessagesIcon,
+  ExpandMoreIcon,
+  ExpandLessIcon,
   FollowersCountIcon,
   GridViewIcon,
   LeftArrowIcon,
@@ -64,8 +72,12 @@ export {
   NavigatePreviousIcon,
   NetworkIcon,
   PencilIcon,
+  RadioButtonCheckedIcon,
+  RadioButtonUncheckedIcon,
   SellNavIcon,
   ShoppingCartIcon,
+  SortAndFilterIcon,
+  SortIcon,
   PackageIcon,
   PlusIcon,
   SearchIcon,

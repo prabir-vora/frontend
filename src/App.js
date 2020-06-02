@@ -9,6 +9,7 @@ import AppAuthContainer from 'AppAuthContainer';
 import ClientModals from 'ClientModals';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
+import MusicPlayer from 'components/MusicPlayer';
 
 import { withCookies } from 'react-cookie';
 
@@ -30,18 +31,19 @@ class App extends React.Component {
             <div style={{ height: 'auto' }}>
               <AppAuthContainer />
               <ClientModals />
+              {/* <MusicPlayer /> */}
               <Switch>
                 <Route exact path="/" component={ROUTES('homePage')} />
                 <Route exact path="/about" component={ROUTES('aboutPage')} />
                 <Route exact path="/brands" component={ROUTES('brandsPage')} />
-                <Route
+                {/* <Route
                   path="/resellers"
                   component={ROUTES('resellerListPage')}
-                />
-                <Route
+                /> */}
+                {/* <Route
                   path="/resellers/:resellerID"
                   component={ROUTES('resellerTemplatePage')}
-                />
+                /> */}
                 <Route path="/search/" component={ROUTES('searchPage')} />
                 <Route exact path="/shop" component={ROUTES('shopPage')} />
                 <Route
@@ -49,22 +51,22 @@ class App extends React.Component {
                   path="/shop/:productListingID"
                   component={ROUTES('productListingPage')}
                 />
-                <Route
+                {/* <Route
                   exact
                   path="/shop/listing/:listingID"
                   component={ROUTES('shopListingPage')}
-                />
+                /> */}
                 <Route exact path="/sell" component={ROUTES('sellPage')} />
                 <Route
                   exact
                   path="/sell/createListing"
                   component={ROUTES('createListing')}
                 />
-                <Route
+                {/* <Route
                   exact
                   path="/resellerSetup"
                   component={ROUTES('resellerSetupPage')}
-                />
+                /> */}
                 <Route
                   exact
                   path="/localMarketplace"
@@ -97,6 +99,7 @@ class App extends React.Component {
                   component={ROUTES('stripeRedirectPage')}
                 />
                 <Route exact path="/:username" component={ROUTES('userPage')} />
+                <Route exact path="/" component={ROUTES('notFound')} />
               </Switch>
               <ToastContainer transition={Flip} />
             </div>

@@ -1,9 +1,7 @@
 .mainNavBar {
-  position: sticky;
   top: 0px;
   z-index: 100;
   height: 60px;
-  border-bottom: 1px solid #141413;
 }
 
 .navBarContent {
@@ -41,6 +39,7 @@
   transition: opacity 0.3s ease 0s;
   background: rgba(0, 0, 0, 0.6);
   overflow-y: hidden;
+  z-index: 3;
 
   &.hidden {
     opacity: 0 !important;
@@ -66,7 +65,7 @@
   width: 450px;
   max-width: 70%;
   transform: none;
-  z-index: 1;
+  z-index: 4;
   opacity: 1;
   overflow-x: hidden;
   background: black;
@@ -388,6 +387,7 @@
   }
 
   .mainHeaderNavLink {
+    display: block;
     transition: color 600ms ease 0s;
   }
 

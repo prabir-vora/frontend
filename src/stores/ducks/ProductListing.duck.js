@@ -40,6 +40,7 @@ const getProductListing = productSlug => dispatch => {
                 name
                 id
                 imageURL
+                slug
               }
               designer {
                   name

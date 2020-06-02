@@ -8,7 +8,12 @@ export default class index extends Component {
   render() {
     return (
       <div
-        style={{ marginTop: '30px', display: 'flex', flexDirection: 'column' }}
+        style={{
+          marginTop: '30px',
+          display: 'flex',
+          flexDirection: 'column',
+          minWidth: '200px',
+        }}
       >
         <Rheostat
           onChange={this.props.onChange}
@@ -23,8 +28,8 @@ export default class index extends Component {
             marginTop: '20px',
           }}
         >
-          <p style={{ fontSize: '12px' }}>${this.props.values[0]}</p>
-          <p style={{ fontSize: '12px' }}>${this.props.values[1]}</p>
+          <p style={{ fontSize: '18px' }}>${this.props.values[0]}</p>
+          <p style={{ fontSize: '18px' }}>${this.props.values[1]}</p>
         </div>
       </div>
     );

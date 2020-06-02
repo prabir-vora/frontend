@@ -4,17 +4,27 @@
 }
 
 .gridCellContent {
-  background: #222320;
-  position: absolute;
+  position: relative;
   top: 0px;
   left: 0px;
   height: 100%;
   width: 100%;
+  border: 1px solid #2b2a2a;
+  display: flex;
+  flex-direction: column;
+  box-shadow: none;
+  background: rgba(118, 114, 111, 0.5);
+  border-right: none !important;
 }
 
 .gridCell {
-  position: absolute;
-  height: 100%;
+  // position: absolute;
+  // left: -20px;
+  // top: -30px;
+  height: 260px;
+  // background: linear-gradient(180deg, #6b6563 0%, #5c5755 99%);
+  // box-shadow: 6px 8px 5px 1px rgba(0, 0, 0, 0.1);
+
   width: 100%;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -29,7 +39,31 @@
   justify-content: space-around;
   display: flex;
   flex-direction: column;
-  padding: 15px 22px 20px;
+  padding: 15px 22px 5px;
+}
+
+.gridCellBackground {
+  margin-top: auto;
+}
+
+.brandAndPrice {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+}
+
+.gridCellProductName {
+  text-align: center;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 16px;
+  letter-spacing: 0px;
+  text-transform: capitalize;
+  min-height: 32px;
+  max-height: 32px;
+  box-sizing: border-box;
+  padding: 0px 10px;
+  margin-bottom: 10px;
 }
 
 .gridCellImage {
@@ -38,11 +72,11 @@
   justify-content: center;
   width: 100%;
   position: relative;
-  margin-top: 40px;
+  margin-top: 20px;
 }
 
 .gridImage {
-  height: 100px;
+  height: 150px;
   width: 150px;
   background-color: none;
 }
@@ -55,19 +89,82 @@
   position: absolute;
   top: 7%;
   right: 7%;
-  font-size: 12px;
-  color: #888;
+  font-size: 13px;
+  color: #fff;
 
   & > svg {
     height: 15px;
     width: 15px;
-    fill: #888;
+    fill: #fff;
     margin-right: 5px;
   }
 
   &.active {
     & > svg {
-      fill: #cc360f;
+      fill: #f98f74;
+    }
+  }
+}
+
+@media (min-width: 40em) {
+  .gridCellProductName {
+    font-size: 16px;
+  }
+
+  .brandAndPrice {
+    font-size: 16px;
+  }
+
+  .likeButton {
+    font-size: 16px;
+
+    & > svg {
+      height: 20px;
+      width: 20px;
+      margin-right: 5px;
+    }
+  }
+}
+
+@media (min-width: 50em) {
+  .brandAndPrice {
+    font-size: 20px;
+  }
+
+  .gridCellContent {
+    border: 1px solid #2b2a2a !important;
+    box-shadow: 6px 8px 5px 1px rgba(0, 0, 0, 0.1);
+  }
+
+  .gridImage {
+    height: 150px;
+    width: 200px;
+    background-color: none;
+  }
+
+  .gridCellProductName {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 400;
+    margin-bottom: 10px;
+    padding: 0px 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    line-height: 25px;
+    font-size: 20px;
+    max-height: none;
+    min-height: none;
+    height: 50px;
+  }
+
+  .likeButton {
+    font-size: 16px;
+
+    & > svg {
+      height: 25px;
+      width: 25px;
+      margin-right: 5px;
     }
   }
 }

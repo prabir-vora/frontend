@@ -20,6 +20,7 @@ import BrowseUserDuck from './ducks/BrowseUser.duck';
 import MyListDuck from './ducks/MyList.duck';
 import UserListingsDuck from './ducks/UserListings.duck';
 import CheckoutDuck from './ducks/Checkout.duck';
+import OrdersDuck from './ducks/Orders.duck';
 
 const initialState = {};
 const middleware = [thunk];
@@ -55,6 +56,7 @@ const rootReducer = combineDucks(
   BrowseUserDuck,
   MyListDuck,
   UserListingsDuck,
+  OrdersDuck,
 );
 
 const store = createStore(

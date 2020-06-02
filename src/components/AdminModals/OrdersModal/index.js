@@ -253,7 +253,6 @@ OrdersModal.defaultProps = {
 const mapStateToProps = state => {
   return {
     isMutating: state[TestObjectsDuck.duckName].orders.isMutating,
-    resellers: state[TestObjectsDuck.duckName].resellers.data,
     sneakers: state[AdminDuck.duckName].sneakers.data,
     apparel: state[AdminDuck.duckName].apparel.data,
     sizing: state[AdminDuck.duckName].sizing.data,

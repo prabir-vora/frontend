@@ -11,6 +11,7 @@ import { Img, Button } from 'fields';
 
 import UserListings from './components/UserListings';
 import Messages from './components/Messages';
+import Orders from './components/Orders';
 import Settings from './components/Settings';
 
 import MainFooter from 'components/MainFooter';
@@ -56,6 +57,8 @@ class ProfilePage extends Component {
         return <UserListings user={this.props.user} />;
       case 'messages':
         return <Messages user={this.props.user} />;
+      case 'orders':
+        return <Orders user={this.props.user} />;
       case 'settings':
         return <Settings user={this.props.user} />;
       default:
@@ -72,7 +75,7 @@ class ProfilePage extends Component {
     }
 
     return (
-      <div>
+      <div style={{ background: 'black' }}>
         <MainNavBar />
 
         {this.props.user && (
@@ -108,16 +111,6 @@ class ProfilePage extends Component {
                   >
                     <h4>Listings</h4>
                     <p>{user.resellItems ? user.resellItems.length : 0}</p>
-                  </div>
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      marginRight: '100px',
-                    }}
-                  >
-                    <h4>Reviews</h4>
-                    <p>20</p>
                   </div>
                   <div
                     style={{

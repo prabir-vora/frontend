@@ -85,7 +85,7 @@
 
   color: black;
   border-radius: 5px;
-  padding: 5px;
+  padding: 7px 15px;
   margin-right: 10px;
   cursor: pointer;
   font-size: 20px;
@@ -116,9 +116,13 @@
   margin-right: 10px;
   font-size: 20px;
   cursor: pointer;
+  background: white;
+  color: black;
+  width: 80px;
+  text-align: center;
 
   &.active {
-    border: 1px solid white;
+    background: #808080;
   }
 }
 
@@ -133,9 +137,9 @@
 }
 
 .price {
-  font-weight: 400;
+  font-weight: 600;
   margin-left: 10px;
-  font-size: 24px;
+  font-size: 35px;
 }
 
 .buttonsContainer {
@@ -458,9 +462,37 @@
   text-transform: uppercase;
 }
 
+@media (min-width: 40em) {
+  .productLayout {
+    flex-direction: row;
+    padding: 2% 5%;
+  }
+
+  .mediaContainer {
+    position: relative;
+    width: 50%;
+    padding-top: 50px;
+  }
+
+  .productContainer {
+    margin-top: 0px;
+    position: relative;
+    width: 50%;
+  }
+
+  .buttonsContainer {
+    margin-top: 50px;
+    display: flex;
+  }
+
+  .mobileBuyButton {
+    display: none;
+  }
+}
+
 // Mobile Responsive
 
-@media (min-width: 40em) {
+@media (min-width: 60em) {
   .productLayout {
     flex-direction: row;
     padding: 2% 10%;

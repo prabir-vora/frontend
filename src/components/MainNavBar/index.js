@@ -332,7 +332,6 @@ class MainNavBar extends Component {
       <nav className={Style.mainNavBar}>
         <div className={Style.navBarContent}>
           {this.renderSideNavMenu()}
-
           <NavLink
             exact
             to="/"
@@ -340,6 +339,49 @@ class MainNavBar extends Component {
           >
             DRIPVERSE
           </NavLink>
+          {/* <div style={{ display: 'flex', alignItems: 'center' }}>
+            
+            <NavLink
+              exact
+              to="/"
+              className={Style.mainHeaderNavLink}
+              activeClassName={Style.mainHeaderNavLinkActive}
+            >
+              Discover
+            </NavLink>
+            <NavLink
+              exact
+              to="/shop"
+              className={Style.mainHeaderNavLink}
+              activeClassName={Style.mainHeaderNavLinkActive}
+            >
+              Shop
+            </NavLink>
+            <NavLink
+              exact
+              to="/localMarketplace"
+              className={Style.mainHeaderNavLink}
+              activeClassName={Style.mainHeaderNavLinkActive}
+            >
+              Local
+            </NavLink>
+            <NavLink
+              to="/resellers"
+              className={Style.mainHeaderNavLink}
+              activeClassName={Style.mainHeaderNavLinkActive}
+            >
+              Brands
+            </NavLink>
+            {this.props.user && (
+              <NavLink
+                to="/myList"
+                className={Style.mainHeaderNavLink}
+                activeClassName={Style.mainHeaderNavLinkActive}
+              >
+                My List
+              </NavLink>
+            )}
+          </div> */}
 
           {url === '/search' ? (
             <div className={Style.searchContainer}>

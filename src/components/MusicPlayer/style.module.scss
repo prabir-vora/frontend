@@ -1,0 +1,41 @@
+.dragHeader {
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  padding: 5px;
+  height: 21px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.closeIcon {
+  border: 1px solid #000;
+  position: relative;
+  width: 11px;
+  color: black;
+
+  text-align: center;
+}
+
+.spacer {
+  margin-left: 5px;
+  cursor: pointer;
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+
+  & > i {
+    display: block;
+    width: 100%;
+    height: 1px;
+    background: #000;
+    margin-top: 1px;
+  }
+}
+
+.fmTitle {
+  margin-left: 5px;
+  font-size: 12px;
+  image-rendering: pixelated;
+  color: #000;
+}

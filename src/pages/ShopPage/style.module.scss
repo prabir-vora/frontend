@@ -7,20 +7,130 @@
   box-pack: start;
   justify-content: flex-start;
   flex: 1 1 0%;
-  background: black;
   color: white;
+}
+
+.filterContainerOverlay {
+  position: fixed;
+  top: 0;
+  left: 100%;
+  bottom: 0;
+  right: 0;
+  transition-property: background-color;
+  transition-delay: 1ms;
+  transition-duration: 0.4s;
+  transition-timing-function: linear;
+  z-index: 3;
+}
+
+.overlayCover {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+}
+
+.filterContainerOverlayActive {
+  left: 0 !important;
+  background-color: rgba(2, 17, 53, 0.6) !important;
+}
+
+.filterContainerActive {
+  transform: translateX(0) !important;
+  transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  transition-delay: 1ms !important;
+  transition-duration: 0.4s !important;
+}
+
+.filterContainer {
+  position: fixed;
+  top: 0;
+  width: 450px;
+  max-width: 70%;
+  bottom: 0;
+  right: 0;
+  transition-property: transform;
+  transform: translateX(100%);
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: #f8f8f8;
+  display: flex;
+  flex-direction: column;
+  z-index: 4;
+}
+
+.filterContainerHeader {
+  position: relative;
+  background-color: #ffffff;
+  padding: 0 15px;
+  height: 52px;
+  line-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.filterCloseButton {
+  flex-grow: 0;
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: black;
+}
+
+.filterContainerTitle {
+  font-weight: 700;
+  font-size: 18px;
+  margin: 0;
+  line-height: 1;
+  text-align: center;
+  overflow: hidden;
+  color: black;
+}
+
+.resetFiltersButtonMobile {
+  font-size: 16px;
+  cursor: pointer;
+  text-align: end;
 }
 
 .pageContent {
   min-height: calc(100vh - 90px);
   position: relative;
-  width: calc(100% - 180px);
+  width: 100%;
   align-items: center;
+}
+
+.reactTooltip {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
 }
 
 .pageTitle {
   padding: 2em 20px;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  margin-bottom: 30px;
+}
+
+.titleLarge {
+  font-size: 45px;
+  text-transform: uppercase;
+  font-weight: 400;
+  margin: 20px 0px 0px 0px;
+  text-align: center;
+}
+
+.subtitle {
+  font-size: 25px;
+  font-weight: 400;
+  margin: 20px 0px 0px 0px;
 }
 
 .shopAll {
@@ -36,46 +146,157 @@
   margin-top: -20px;
 }
 
+.productToggleAndStatsMobile {
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5em 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+  margin-top: 10px;
+}
+
 .productCategoryToggle {
   display: flex;
-  max-width: 200px;
+  max-width: 250px;
   height: 60px;
   box-pack: justify;
   justify-content: space-between;
   box-align: center;
   align-items: center;
   border-top: none;
+  margin-left: auto;
 }
 
-.productCategoryButton {
+.productCategoryToggleMobile {
+  display: flex;
+  height: 60px;
+  box-pack: justify;
+  justify-content: center;
+  box-align: center;
+  align-items: center;
+  border-top: none;
+  flex: 0 1 50%;
+  margin-bottom: 10px;
+}
+
+.productCategoryLabel {
   display: flex;
   justify-content: left;
   box-align: center;
   align-items: center;
-  font-size: 16px;
   line-height: 1.5;
   letter-spacing: 0px;
   height: 60px;
   width: 50%;
-  color: #808080;
-  border-width: 0px;
-  cursor: pointer;
-  margin-right: 40px;
-}
-
-.activeProductCategory {
   color: white;
   font-size: 22px;
+  border-width: 0px;
+  cursor: pointer;
+  margin: 0px 10px;
+}
+
+.productCategoryLabelMobile {
+  display: flex;
+  justify-content: left;
+  box-align: center;
+  align-items: center;
+  line-height: 1.5;
+  letter-spacing: 0px;
+  height: 60px;
+  width: 50%;
+  color: white;
+  font-size: 16px;
+  border-width: 0px;
+  cursor: pointer;
+  margin: 0px 10px;
+}
+
+.mobileSortAndFilter {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.mobileSortAndFilterButtonsContainer {
+  display: flex;
+  justify-content: center;
+  border: 2px solid #dedede;
+  border-right: none;
+  border-left: none;
+  background: #e6dfdf;
+}
+
+.sortByInput {
+  flex: 1 0 0;
+}
+
+.sortByLabelMobile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #021135;
+
+  & > svg {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+  }
+}
+
+.sortByDesktop {
+  display: none;
+}
+
+.sortByMobile {
+  padding: 15px;
+  position: relative;
+
+  & > select {
+    border: none;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    opacity: 0;
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 1.4;
+    color: #021135;
+  }
+}
+
+.sortAndFilterSeperator {
+  flex: 0 0 2px;
+  width: 2px;
+  background: #5d5656;
+  margin: 15px 0;
+}
+
+.filterButtonMobile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #021135;
+  flex: 1 0;
+
+  & > svg {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+  }
 }
 
 .filterSummary {
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5em 0;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: row;
-  z-index: 1;
+  display: none;
 }
 
 .filterSummaryRowItem {
@@ -98,23 +319,29 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+
+  & > svg {
+    height: 30px;
+    width: 30px;
+    fill: white;
+    margin-right: 10px;
+  }
 }
 
 .toggleName {
   display: inline-block;
   vertical-align: middle;
-  font-size: 10px;
-  text-transform: uppercase;
+  font-size: 20px;
   letter-spacing: 1px;
 }
 
 .stats {
-  color: rgb(136, 136, 136);
+  color: white;
   text-align: center;
-  font-size: 10px;
+  font-size: 16px;
   line-height: 15px;
   letter-spacing: 1.7px;
-  text-transform: uppercase;
+  margin-bottom: 20px;
 }
 
 .filterContentArea {
@@ -122,6 +349,7 @@
   flex-direction: row;
   z-index: 1;
   align-items: flex-start;
+  margin-top: 0px;
 }
 
 .filterControls {
@@ -132,9 +360,9 @@
 
   &.open {
     opacity: 1;
-    width: 253px;
-    flex-basis: 253px;
-    margin-right: 60px;
+    width: 283px;
+    flex-basis: 283px;
+    margin-right: 30px;
     padding-bottom: 40px;
     transition: all 0.15s ease-in-out;
   }
@@ -146,26 +374,283 @@
   align-self: stretch;
 }
 
+.IndividualFilterDesktop {
+  display: none;
+}
+
+.IndividualFilterMobile {
+  border-bottom: 2px solid #f8f8f8;
+}
+
+.resetFiltersButtonDesktop {
+  display: none;
+}
+
+.filterHeadingContainerMobile {
+  font-size: 18px;
+  padding: 15px 20px;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #6d7288;
+}
+
+.filterHeadingContainer {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  cursor: pointer;
+}
+
+.activeFilterLabel {
+  color: rgb(181, 176, 174);
+  font-weight: 400;
+  font-size: 18px;
+  text-transform: none;
+}
+
+.hideFilterLabel {
+  display: none;
+}
+
+.expandButton {
+  margin-left: auto;
+  cursor: pointer;
+  & > svg {
+    height: 25px;
+    width: 25px;
+    fill: white;
+  }
+}
+
+.filterHeading {
+  font-size: 20px;
+  font-weight: bold;
+
+  text-transform: capitalize;
+}
+
+.filterHeadingMobile {
+  font-size: 20px;
+  font-weight: bold;
+  text-transform: capitalize;
+  color: black;
+}
+
+.filterList {
+  display: block;
+}
+
+.hideFilterList {
+  display: none;
+}
+
+.filterItemContainer {
+  display: flex;
+  align-items: center;
+  margin-bottom: 7px;
+  cursor: pointer;
+}
+
+.filterItemContainerMobile {
+  display: flex;
+  align-items: center;
+  margin-bottom: 7px;
+  cursor: pointer;
+  padding: 0px 20px;
+}
+
+.filterItemRadioButton {
+  cursor: pointer;
+
+  & > svg {
+    width: 20px;
+    height: 20px;
+    fill: white;
+    margin-right: 7px;
+  }
+}
+
+.filterItemRadioButtonMobile {
+  cursor: pointer;
+
+  & > svg {
+    width: 20px;
+    height: 20px;
+    fill: black;
+    margin-right: 7px;
+  }
+}
+
+.filterListItemDefault {
+  cursor: pointer;
+  font-size: 18px;
+  text-transform: capitalize;
+}
+
+.filterListItemDefaultMobile {
+  cursor: pointer;
+  font-size: 18px;
+  color: black;
+  text-transform: capitalize;
+}
+
+.sizeFilterListContainer {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(3, 60px);
+  grid-column-gap: 8px;
+  grid-auto-rows: 35px;
+  grid-row-gap: 8px;
+  box-sizing: border-box;
+}
+
+.sizeFilterListContainerMobile {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(3, 31%);
+  padding: 10px;
+  grid-column-gap: 8px;
+  grid-auto-rows: 35px;
+  grid-row-gap: 8px;
+  box-sizing: border-box;
+}
+
+.priceSliderContainerMobile {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  color: black;
+}
+
+.sizeFilterListItem {
+  cursor: pointer;
+  text-align: center;
+  border: 1px solid #000;
+  letter-spacing: 1px;
+
+  border-radius: 5px;
+  font-size: 20px;
+  cursor: pointer;
+  background: white;
+  color: black;
+  text-align: center;
+
+  text-transform: uppercase;
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  line-height: 11px !important;
+  outline: none;
+}
+
+.sizeFilterItemActive {
+  border: 1px solid black;
+  background: #b9b2b2 !important;
+}
+
+.brandsSearchContainer {
+  position: relative;
+  -webkit-box-flex: 0;
+  -ms-flex: 0 1 364px;
+  flex: 0 1 364px;
+  pointer-events: auto;
+  -webkit-app-region: no-drag;
+}
+
+.brandsSearchContainerMobile {
+  position: relative;
+  -webkit-box-flex: 0;
+  -ms-flex: 0 1 364px;
+  flex: 0 1 364px;
+  pointer-events: auto;
+  -webkit-app-region: no-drag;
+  margin: 0px 30px;
+}
+
+.brandsSearchInputContainer {
+  display: block;
+  margin: 0;
+  margin-bottom: 20px;
+}
+
+.brandsSearchInput {
+  color: #000;
+  padding: 6px 48px;
+  height: 32px;
+  width: 100%;
+  border: 0;
+  border-radius: 10px;
+  text-overflow: ellipsis;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.015em;
+}
+
+.brandsSearchInputOverlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 12px;
+  right: 12px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  pointer-events: none;
+}
+
+.brandsSearchLogo {
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  color: #121212;
+
+  & > svg {
+    height: 20px;
+    width: 20px;
+  }
+}
+
+.cancelSearchButton {
+  pointer-events: auto;
+  color: #121212;
+  background-color: transparent;
+  border: 0;
+  padding: 0;
+
+  & > svg {
+    height: 20px;
+    width: 20px;
+  }
+}
+
 .resultsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, 45%);
-  grid-auto-rows: minmax(300px, auto);
-  grid-gap: 40px;
+  grid-template-columns: repeat(auto-fill, 50%);
+  grid-auto-rows: minmax(310px, auto);
 }
 
 .pagination {
   justify-content: center;
   align-items: center;
   padding: 1em 0;
+  margin-top: 20px;
   box-sizing: border-box;
   display: flex;
   flex-direction: row;
   z-index: 1;
 }
 
-@media (min-width: 40em) {
+@media (min-width: 60em) {
   .pageTitle {
-    padding: 4em 20px;
+    padding: 1em 20px;
+    margin-bottom: 0px;
   }
 
   .shopAll {
@@ -177,10 +662,91 @@
 
   .algoliaContentWrapper {
     margin-top: 0px;
+    margin-bottom: 100px;
   }
 
   .resultsGrid {
-    grid-template-columns: repeat(auto-fill, 23%);
-    grid-gap: 2vw;
+    // grid-template-columns: repeat(auto-fill, 20%);
+    grid-template-columns: repeat(auto-fill, 30%);
+    grid-gap: 3vw;
+  }
+
+  .pageContent {
+    min-height: calc(100vh - 90px);
+    width: calc(100% - 180px);
+  }
+
+  .titleLarge {
+    font-size: 75px;
+    margin: 20px 0px 0px 0px;
+  }
+
+  .subtitle {
+    font-size: 30px;
+    font-weight: 400;
+    margin: 20px 0px 0px 0px;
+  }
+
+  .mobileSortAndFilterButtonsContainer {
+    display: none;
+  }
+
+  .filterContentArea {
+    margin-top: 40px;
+  }
+
+  .filterSummary {
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5em 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    z-index: 1;
+    margin-top: 50px;
+  }
+
+  .sortByDesktop {
+    display: block;
+    margin-bottom: 40px;
+  }
+
+  .sortByMobile {
+    display: none;
+  }
+
+  .stats {
+    font-size: 20px;
+    margin-bottom: 0px;
+  }
+
+  .resetFiltersButtonDesktop {
+    color: white;
+    font-size: 14px;
+    border-bottom: 1px solid white;
+    border-radius: 0px;
+    margin-bottom: 25px;
+
+    &:disabled {
+      color: rgb(181, 176, 174);
+      border-bottom: 1px solid rgb(181, 176, 174);
+    }
+  }
+
+  .resetFiltersButtonMobile {
+    display: none;
+  }
+
+  .IndividualFilterDesktop {
+    display: block;
+    margin-bottom: 40px;
+  }
+
+  .IndividualFilterMobile {
+    display: none;
+  }
+
+  .productToggleAndStatsMobile {
+    display: none;
   }
 }

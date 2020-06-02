@@ -245,7 +245,7 @@ class ProductListingPage extends Component {
                 })
               }
             >
-              {size}
+              {data.productCategory === 'sneakers' ? 'US' : ''} {size}
             </div>
           );
         })}
@@ -266,6 +266,48 @@ class ProductListingPage extends Component {
     return `$${listing.askingPrice}`;
   };
 
+  renderNavigationLinks = (brand, name) => (
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: '10px',
+      }}
+    >
+      <a
+        style={{
+          color: 'grey',
+          textTransform: 'uppercase',
+          fontSize: '16px',
+          marginRight: '10px',
+        }}
+        href={`/brands/${brand.slug}`}
+      >
+        {brand.name}
+      </a>
+      <h5
+        style={{
+          color: 'grey',
+          fontSize: '16px',
+          margin: '0px 10px 0px 0px',
+          textTransform: 'uppercase',
+        }}
+      >
+        {' '}
+        /{' '}
+      </h5>
+      <a
+        style={{
+          color: 'grey',
+          textTransform: 'uppercase',
+          fontSize: '16px',
+        }}
+      >
+        {name}
+      </a>
+    </div>
+  );
   render() {
     console.log(this.props);
     const { currentSlug, listingsMap } = this.props.productListing;
@@ -350,7 +392,6 @@ class ProductListingPage extends Component {
 
             {selectedResellItem && (
               <div className={Style.priceContainer}>
-                <div>Price</div>
                 <div className={Style.price}>{this.renderPrice(data)}</div>
               </div>
             )}
@@ -379,6 +420,7 @@ class ProductListingPage extends Component {
             <div className={Style.errorMessage}>{this.state.error}</div>
           </div>
           <div className={Style.mediaContainer}>
+            {this.renderNavigationLinks(brand, name)}
             {this.renderProductImageGallery(data)}
           </div>
         </div>

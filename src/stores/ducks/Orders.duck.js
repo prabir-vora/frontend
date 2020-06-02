@@ -17,61 +17,55 @@ const actionTypes = createActionTypes(
     FETCH_SELL_ORDERS_FAILURE: 'FETCH_SELL_ORDERS_FAILURE',
 
     CHANGE_ORDERS_SELECTION: 'CHANGE_ORDERS_SELECTION',
+    ON_CLICK_BUY_ORDER: 'ON_CLICK_BUY_ORDER',
+    ON_CLICK_SELL_ORDER: 'ON_CLICK_SELL_ORDER',
   },
   duckName,
 );
 
 const initialState = {
-  messageSelection: 'buying',
+  orderSelection: 'buying',
   buying: {
     orders: [],
-    nextPage: 1,
     loadingOrders: false,
+    openOrders: [],
     unread_count: 0,
-    hasMoreOrders: true,
   },
   selling: {
     orders: [],
-    nextPage: 1,
     loadingOrders: false,
+    openOrders: [],
     unread_count: 0,
-    hasMoreOrders: true,
   },
 };
 
-// Fetch Buy Conversations
+// Fetch Buy Orders
 
 const fetchBuyOrders = page => dispatch => {
-  dispatch(fetchBuyConversationsRequest());
+  dispatch(fetchBuyOrdersRequest());
   return new Promise((resolve, reject) => {
     fetchGraphQL(`
       query {
-        fetchBuyConversations(page: ${page}) {
+        fetchBuyOrders {
           data {
+            id
             orderNumber
             resellItem {
                 id
                 product {
-                    id
-                    name
-                    slug 
-                    original_image_url
+                  id
+                  name
+                  slug 
+                  original_image_url
                 }
-                reseller {
-                    id
-                    name
-                    username
-                    imageURL
-                    isReseller
-                    resellerPageName
-                }
-                askingPrice
-                condition
-                size
-                images
             }
             status
+            price_cents
+            shipping_cents
+            platform_fees_buyer_cents
             total_price_cents
+            purchased_at
+            buyerRead
             purchased_at
           }
           metadata {
@@ -80,60 +74,47 @@ const fetchBuyOrders = page => dispatch => {
         }
       }`)
       .then(res => {
-        if (
-          res !== undefined &&
-          res !== null &&
-          res.fetchBuyConversations !== null
-        ) {
-          dispatch(fetchBuyConversationsSuccess(res.fetchBuyConversations));
+        if (res !== undefined && res !== null && res.fetchBuyOrders !== null) {
+          dispatch(fetchBuyOrdersSuccess(res.fetchBuyOrders));
           resolve({ success: true });
         } else {
-          dispatch(fetchBuyConversationsFailure());
+          dispatch(fetchBuyOrdersFailure());
           resolve({ success: false });
         }
       })
       .catch(err => {
-        dispatch(fetchBuyConversationsFailure());
+        dispatch(fetchBuyOrdersFailure());
         resolve({ success: false });
       });
   });
 };
 
 const fetchSellOrders = page => dispatch => {
-  dispatch(fetchSellConversationsRequest());
+  dispatch(fetchSellOrdersRequest());
   return new Promise((resolve, reject) => {
     fetchGraphQL(`
       query {
-        fetchSellConversations(page: ${page}) {
+        fetchSellOrders {
           data {
             id
-            listing {
-              id
-              product {
-                id 
-                name
-              }
-              askingPrice
-              slug
-              images
+            orderNumber
+            resellItem {
+                id
+                product {
+                  id
+                  name
+                  slug 
+                  original_image_url
+                }
             }
-            activityLog {
-              id
-              logType
-              message
-              senderID
-              isSuspicious
-              createdAt
-            }
-            buyerRead
+            status
+            price_cents
+            seller_shipping_cents
+            platform_fees_seller_cents
+            seller_amount_made_cents
+            purchased_at
             sellerRead
-            buyer {
-              id 
-              username
-              name
-            }
-            seller
-            listingContext
+            purchased_at
           }
           metadata {
             unread_count
@@ -141,21 +122,186 @@ const fetchSellOrders = page => dispatch => {
         }
       }`)
       .then(res => {
-        if (
-          res !== undefined &&
-          res !== null &&
-          res.fetchSellConversations !== null
-        ) {
-          dispatch(fetchSellConversationsSuccess(res.fetchSellConversations));
+        if (res !== undefined && res !== null && res.fetchSellOrders !== null) {
+          dispatch(fetchSellOrdersSuccess(res.fetchSellOrders));
           resolve({ success: true });
         } else {
-          dispatch(fetchSellConversationsFailure());
+          dispatch(fetchSellOrdersFailure());
           resolve({ success: false });
         }
       })
       .catch(err => {
-        dispatch(fetchSellConversationsFailure());
+        dispatch(fetchSellOrdersFailure());
         resolve({ success: false });
       });
   });
+};
+
+const toggleOrdersView = selection => dispatch => {
+  dispatch(changeOrdersSelection(selection));
+};
+
+const onClickOrder = (orderID, orderSelection) => dispatch => {
+  console.log(orderID);
+  if (orderSelection === 'buying') {
+    dispatch(toggleBuyOrder(orderID));
+  } else {
+    dispatch(toggleSellOrder(orderID));
+  }
+};
+
+const changeOrdersSelection = selection => {
+  return {
+    type: actionTypes.CHANGE_ORDERS_SELECTION,
+    payload: selection,
+  };
+};
+
+const fetchBuyOrdersRequest = () => {
+  return {
+    type: actionTypes.FETCH_BUY_ORDERS_REQUEST,
+  };
+};
+
+const fetchBuyOrdersSuccess = ({ data, metadata }) => {
+  return {
+    type: actionTypes.FETCH_BUY_ORDERS_SUCCESS,
+    payload: { data, metadata },
+  };
+};
+
+const fetchBuyOrdersFailure = () => {
+  return {
+    type: actionTypes.FETCH_BUY_ORDERS_FAILURE,
+  };
+};
+
+const fetchSellOrdersRequest = () => {
+  return {
+    type: actionTypes.FETCH_SELL_ORDERS_REQUEST,
+  };
+};
+
+const fetchSellOrdersSuccess = ({ data, metadata }) => {
+  return {
+    type: actionTypes.FETCH_SELL_ORDERS_SUCCESS,
+    payload: { data, metadata },
+  };
+};
+
+const fetchSellOrdersFailure = () => {
+  return {
+    type: actionTypes.FETCH_SELL_ORDERS_FAILURE,
+  };
+};
+
+const toggleBuyOrder = orderID => {
+  return {
+    type: actionTypes.ON_CLICK_BUY_ORDER,
+    payload: { orderID },
+  };
+};
+
+const toggleSellOrder = orderID => {
+  return {
+    type: actionTypes.ON_CLICK_SELL_ORDER,
+    payload: { orderID },
+  };
+};
+
+const reducer = (state = initialState, action) => {
+  switch (action.type) {
+    case actionTypes.FETCH_BUY_ORDERS_REQUEST:
+      return Object.assign({}, state, {
+        buying: immutable.set(state.buying, 'loadingOrders', true),
+      });
+    case actionTypes.FETCH_BUY_ORDERS_SUCCESS:
+      return Object.assign({}, state, {
+        buying: immutable
+          .wrap(state.buying)
+          .set('orders', action.payload.data)
+          .set('unread_count', action.payload.metadata.unread_count)
+          .set('loadingOrders', false)
+          .value(),
+      });
+    case actionTypes.FETCH_BUY_ORDERS_FAILURE:
+      return Object.assign({}, state, {
+        buying: immutable.set(state.buying, 'loadingOrders', false),
+      });
+    case actionTypes.FETCH_SELL_ORDERS_REQUEST:
+      return Object.assign({}, state, {
+        selling: immutable.set(state.selling, 'loadingOrders', true),
+      });
+    case actionTypes.FETCH_SELL_ORDERS_SUCCESS:
+      return Object.assign({}, state, {
+        selling: immutable
+          .wrap(state.selling)
+          .set('orders', action.payload.data)
+          .set('unread_count', action.payload.metadata.unread_count)
+          .set('loadingOrders', false)
+          .value(),
+      });
+    case actionTypes.FETCH_SELL_ORDERS_FAILURE:
+      return Object.assign({}, state, {
+        selling: immutable.set(state.selling, 'loadingOrders', false),
+      });
+    case actionTypes.CHANGE_ORDERS_SELECTION:
+      return Object.assign({}, state, {
+        orderSelection: action.payload,
+      });
+    case actionTypes.ON_CLICK_BUY_ORDER:
+      const { buying } = state;
+      const { openOrders } = buying;
+      if (openOrders.includes(action.payload.orderID)) {
+        const filteredOpenOrders = openOrders.filter(
+          id => id !== action.payload.orderID,
+        );
+        return Object.assign({}, state, {
+          buying: immutable.set(state.buying, 'openOrders', filteredOpenOrders),
+        });
+      } else {
+        openOrders.push(action.payload.orderID);
+        return Object.assign({}, state, {
+          buying: immutable.set(state.buying, 'openOrders', openOrders),
+        });
+      }
+    case actionTypes.ON_CLICK_SELL_ORDER:
+      const { selling } = state;
+
+      const { orderID } = action.payload;
+      if (selling.openOrders.includes(orderID)) {
+        const filteredOpenOrders = selling.openOrders.filter(
+          id => id !== orderID,
+        );
+        return Object.assign({}, state, {
+          selling: immutable.set(
+            state.selling,
+            'openOrders',
+            filteredOpenOrders,
+          ),
+        });
+      } else {
+        selling.openOrders.push(orderID);
+        return Object.assign({}, state, {
+          selling: immutable.set(
+            state.selling,
+            'openOrders',
+            selling.openOrders,
+          ),
+        });
+      }
+    default:
+      return state;
+  }
+};
+
+export default {
+  duckName,
+  reducer,
+  actionCreators: {
+    fetchBuyOrders,
+    fetchSellOrders,
+    toggleOrdersView,
+    onClickOrder,
+  },
 };
