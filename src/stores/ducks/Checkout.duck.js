@@ -660,7 +660,7 @@ const fetchOrder = orderNumber => dispatch => {
           });
         } else {
           dispatch(fetchOrderError(res.fetchOrder.error));
-          resolve({ success: false, message: 'Failed to fetch order' });
+          resolve({ success: false, message: res.fetchOrder.error });
         }
       })
       .catch(err => {

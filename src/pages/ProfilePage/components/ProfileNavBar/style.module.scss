@@ -11,10 +11,27 @@
   color: #aaaaaa;
   padding-bottom: 5px;
   text-transform: capitalize;
+  position: relative;
 
   &.active {
     border-radius: 0;
     border-bottom: 1px solid #938cfc;
     color: white;
   }
+}
+
+.notifCount {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  color: white;
+  background-color: #c00;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  line-height: 18px;
+  font-size: 10px;
+  text-align: center;
+  cursor: pointer;
+  font-family: Roboto, Arial, sans-serif;
 }

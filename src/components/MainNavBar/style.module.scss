@@ -344,6 +344,36 @@
   }
 }
 
+.userIcon {
+  position: relative;
+  & > svg {
+    fill: white;
+    height: 30px;
+    width: 30px;
+  }
+}
+
+.notifCount {
+  position: absolute;
+  top: -5px;
+  right: -8px;
+  color: white;
+  background-color: #c00;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  line-height: 18px;
+  font-size: 10px;
+  text-align: center;
+  cursor: pointer;
+  font-family: Roboto, Arial, sans-serif;
+}
+
+.userAccountContainer {
+  position: relative;
+  margin-right: 40px;
+}
+
 @media (min-width: 40em) {
   .mainNavBar {
     height: 90px;

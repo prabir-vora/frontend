@@ -52,6 +52,10 @@ const actionTypes = createActionTypes(
     CHANGE_ORDERS_QUERY: 'CHANGE_ORDERS_QUERY',
     CHANGE_ORDERS_DATE_INPUT: 'CHANGE_ORDERS_DATE_INPUT',
 
+    ORDER_STATUS_UPDATE_REQUEST: 'ORDER_STATUS_UPDATE_REQUEST',
+    ORDER_STATUS_UPDATE_SUCCESS: 'ORDER_STATUS_UPDATE_SUCCESS',
+    ORDER_STATUS_UPDATE_ERROR: 'ORDER_STATUS_UPDATE_ERROR',
+
     // ------> Orders
     GET_ORDERS_REQUEST: 'GET_ORDERS_REQUEST',
     GET_ORDERS_SUCCESS: 'GET_ORDERS_SUCCESS',
@@ -471,6 +475,30 @@ const getAllResellItems = (query = '', dateInput = 'allTime') => dispatch => {
   });
 };
 
+const updateOrderStatus = (orderNumber, status) => dispatch => {
+  dispatch(updateOrderStatusRequest());
+  return new Promise((resolve, reject) => {
+    fetchGraphQL(`
+      mutation {
+        orderStatusUpdate(orderNumber: "${orderNumber}", status: "${status}") 
+      }
+    `)
+      .then(res => {
+        if (res.orderStatusUpdate) {
+          dispatch(updateOrderStatusSuccess());
+          resolve({ success: true });
+        } else {
+          dispatch(updateOrderStatusError());
+          resolve({ success: false });
+        }
+      })
+      .catch(err => {
+        dispatch(updateOrderStatusError());
+        resolve({ success: false });
+      });
+  });
+};
+
 const getPurchasedOrders = (query = '', dateInput = 'allTime') => dispatch => {
   dispatch(getPurchasedOrdersRequest());
   return new Promise((resolve, reject) => {
@@ -786,6 +814,24 @@ const getAllResellItemsError = errorMessage => {
   };
 };
 
+const updateOrderStatusRequest = () => {
+  return {
+    type: actionTypes.ORDER_STATUS_UPDATE_REQUEST,
+  };
+};
+
+const updateOrderStatusSuccess = () => {
+  return {
+    type: actionTypes.ORDER_STATUS_UPDATE_SUCCESS,
+  };
+};
+
+const updateOrderStatusError = () => {
+  return {
+    type: actionTypes.ORDER_STATUS_UPDATE_ERROR,
+  };
+};
+
 const getPurchasedOrdersRequest = () => {
   return {
     type: actionTypes.GET_ORDERS_REQUEST,
@@ -987,6 +1033,15 @@ const reducer = (state = initialState, action) => {
       });
     }
     // Orders
+    case actionTypes.ORDER_STATUS_UPDATE_REQUEST: {
+      return state;
+    }
+    case actionTypes.ORDER_STATUS_UPDATE_SUCCESS: {
+      return state;
+    }
+    case actionTypes.ORDER_STATUS_UPDATE_ERROR: {
+      return state;
+    }
     case actionTypes.GET_ORDERS_REQUEST: {
       return Object.assign({}, state, {
         orders: Object.assign({}, state.orders, { isFetching: true }),
@@ -1067,5 +1122,6 @@ export default {
     changeResellItemsDateInput,
     changeOrdersQuery,
     changeOrdersDateInput,
+    updateOrderStatus,
   },
 };

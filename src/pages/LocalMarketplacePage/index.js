@@ -65,7 +65,7 @@ class LocalMarketplace extends Component {
     }
 
     return (
-      <div>
+      <div style={{ background: 'black' }}>
         <MainNavBar />
         <div className={Style.pageLayout}>
           {!this.state.address || !this.state.lat || !this.state.lng ? (

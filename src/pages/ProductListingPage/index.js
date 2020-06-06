@@ -424,6 +424,7 @@ class ProductListingPage extends Component {
             {this.renderProductImageGallery(data)}
           </div>
         </div>
+        <MainFooter />
       </div>
     );
   }

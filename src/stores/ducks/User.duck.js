@@ -48,6 +48,10 @@ const actionTypes = createActionTypes(
     FETCH_USER_ADDRESSES_SUCCESS: 'FETCH_USER_ADDRESSES_SUCCESS',
     FETCH_USER_ADDRESSES_FAILURE: 'FETCH_USER_ADDRESSES_FAILURE',
 
+    FETCH_NOTIF_COUNT_REQUEST: 'FETCH_NOTIF_COUNT_REQUEST',
+    FETCH_NOTIF_COUNT_SUCCESS: 'FETCH_NOTIF_COUNT_SUCCESS',
+    FETCH_NOTIF_COUNT_FAILURE: 'FETCH_NOTIF_COUNT_FAILURE',
+
     LOG_OUT_USER: 'LOG_OUT_USER',
 
     SHOW_NEW_ADDRESS_MODAL: 'SHOW_NEW_ADDRESS_MODAL',
@@ -58,6 +62,7 @@ const actionTypes = createActionTypes(
 
 const initialState = {
   user: null,
+  notifCount: {},
   showNewAddressModal: false,
 };
 
@@ -748,6 +753,39 @@ const fetchUpdatedUser = () => dispatch => {
   });
 };
 
+const fetchNotifCount = () => dispatch => {
+  dispatch(fetchNotifCountRequest());
+  return new Promise((resolve, reject) => {
+    fetchGraphQL(`
+    query {
+      fetchUserNotificationsCount {
+        total
+        messages
+        orders
+      }
+    }
+    `)
+      .then(res => {
+        console.log(res);
+        if (
+          res !== null &&
+          res !== undefined &&
+          res.fetchUserNotificationsCount !== null
+        ) {
+          console.log(res.fetchUserNotificationsCount);
+          dispatch(fetchNotifCountSuccess(res.fetchUserNotificationsCount));
+          resolve({ success: true });
+        } else {
+          dispatch(fetchNotifCountFailure());
+          resolve({ success: false });
+        }
+      })
+      .catch(err => {
+        resolve({ success: false });
+      });
+  });
+};
+
 const showNewAddressModalCreator = () => dispatch => {
   dispatch(showNewAddressModalAction());
 };
@@ -892,6 +930,25 @@ const fetchUpdatedUserFailure = () => {
   };
 };
 
+const fetchNotifCountRequest = () => {
+  return {
+    type: actionTypes.FETCH_NOTIF_COUNT_REQUEST,
+  };
+};
+
+const fetchNotifCountSuccess = notifCount => {
+  return {
+    type: actionTypes.FETCH_NOTIF_COUNT_SUCCESS,
+    payload: { notifCount },
+  };
+};
+
+const fetchNotifCountFailure = () => {
+  return {
+    type: actionTypes.FETCH_NOTIF_COUNT_FAILURE,
+  };
+};
+
 const fetchUserAddressesRequest = () => {
   return {
     type: actionTypes.FETCH_USER_ADDRESSES_REQUEST,
@@ -1011,6 +1068,14 @@ const reducer = (state = initialState, action) => {
         isVerified: action.payload.user.authCode === 0,
       });
     case actionTypes.FETCH_UPDATED_USER_FAILURE:
+      return state;
+    case actionTypes.FETCH_NOTIF_COUNT_REQUEST:
+      return state;
+    case actionTypes.FETCH_NOTIF_COUNT_SUCCESS:
+      return Object.assign({}, state, {
+        notifCount: action.payload.notifCount,
+      });
+    case actionTypes.FETCH_NOTIF_COUNT_FAILURE:
       return state;
     case actionTypes.FETCH_USER_ADDRESSES_REQUEST:
       return state;
@@ -1174,5 +1239,6 @@ export default {
     createNewSellerAddress,
     showNewAddressModalCreator,
     hideNewAddressModalCreator,
+    fetchNotifCount,
   },
 };

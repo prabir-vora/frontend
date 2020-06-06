@@ -13,7 +13,7 @@ export default class MainFooter extends Component {
   render() {
     return (
       <div className={Style.mainFooter}>
-        <div className={Style.socialMediaLinks}>
+        {/* <div className={Style.socialMediaLinks}>
           <a className={Style.socialMediaLink}>
             <FacebookIcon />
           </a>
@@ -26,7 +26,7 @@ export default class MainFooter extends Component {
           <a className={Style.socialMediaLink}>
             <YoutubeIcon />
           </a>
-        </div>
+        </div> */}
         <ul className={Style.footerLinksContainer}>
           <li className={Style.footerLink}>
             <a href="/about">About</a>
@@ -38,7 +38,7 @@ export default class MainFooter extends Component {
             <a>T&C</a>
           </li>
           <li className={Style.footerLink}>
-            <a>Reseller Program</a>
+            <a>Sell</a>
           </li>
           <li className={Style.footerLink}>
             <div>Dripverse © 2020</div>

@@ -11,6 +11,7 @@ import {
   BrandsNavIcon,
   SellNavIcon,
   MyListNavIcon,
+  UserIcon,
 } from 'assets/Icons';
 
 import AppAuthDuck from 'stores/ducks/AppAuth.duck';
@@ -244,7 +245,7 @@ class MainNavBar extends Component {
               </React.Fragment>
             ) : (
               <React.Fragment>
-                <NavLink exact to="/user" className={Style.userLink}>
+                <NavLink exact to="/user/listings" className={Style.userLink}>
                   {this.props.user.name}
                 </NavLink>
               </React.Fragment>
@@ -383,38 +384,54 @@ class MainNavBar extends Component {
             )}
           </div> */}
 
-          {url === '/search' ? (
-            <div className={Style.searchContainer}>
-              <label className={Style.searchInputContainer}>
-                <input
-                  className={Style.searchInput}
-                  maxLength="80"
-                  autoCorrect="off"
-                  autoCapitalize="off"
-                  spellCheck={false}
-                  placeholder="Search Product, Brand, Designer, SKU ..."
-                  onChange={e => this.onChangeSearchInput(e.target.value)}
-                  value={searchInput}
-                  autoFocus
-                />
-              </label>
-              <div className={Style.searchInputOverlay}>
-                <span className={Style.searchLogo}>
-                  <SearchIcon />
-                </span>
-                <button
-                  className={Style.cancelSearchButton}
-                  onClick={() => this.removeSearch()}
-                >
-                  <CloseIcon />
-                </button>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            {this.props.user && (
+              <div className={Style.userAccountContainer}>
+                <NavLink className={Style.userIcon} exact to="/user/listings">
+                  <UserIcon />
+                </NavLink>
+                {(this.props.notifCount && this.props.notifCount.total) !==
+                  0 && (
+                  <div className={Style.notifCount}>
+                    {this.props.notifCount.total}
+                  </div>
+                )}
               </div>
-            </div>
-          ) : (
-            <NavLink exact to="/search">
-              <SearchIcon />
-            </NavLink>
-          )}
+            )}
+
+            {url === '/search' ? (
+              <div className={Style.searchContainer}>
+                <label className={Style.searchInputContainer}>
+                  <input
+                    className={Style.searchInput}
+                    maxLength="80"
+                    autoCorrect="off"
+                    autoCapitalize="off"
+                    spellCheck={false}
+                    placeholder="Search Product, Brand, Designer, SKU ..."
+                    onChange={e => this.onChangeSearchInput(e.target.value)}
+                    value={searchInput}
+                    autoFocus
+                  />
+                </label>
+                <div className={Style.searchInputOverlay}>
+                  <span className={Style.searchLogo}>
+                    <SearchIcon />
+                  </span>
+                  <button
+                    className={Style.cancelSearchButton}
+                    onClick={() => this.removeSearch()}
+                  >
+                    <CloseIcon />
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <NavLink exact to="/search">
+                <SearchIcon />
+              </NavLink>
+            )}
+          </div>
         </div>
       </nav>
     );
@@ -424,6 +441,7 @@ class MainNavBar extends Component {
 const mapStateToProps = state => {
   return {
     user: state[UserDuck.duckName].user,
+    notifCount: state[UserDuck.duckName].notifCount,
   };
 };
 

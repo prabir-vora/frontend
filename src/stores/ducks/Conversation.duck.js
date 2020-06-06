@@ -37,6 +37,10 @@ const actionTypes = createActionTypes(
     CHANGE_MESSAGE_SELECTION: 'CHANGE_MESSAGE_SELECTION',
     ON_CLICK_BUY_CONVERSATION: 'ON_CLICK_BUY_CONVERSATION',
     ON_CLICK_SELL_CONVERSATION: 'ON_CLICK_SELL_CONVERSATION',
+
+    CLEAR_MESSAGES: 'CLEAR_MESSAGES',
+    MARK_AS_READ_BUY: 'MARK_AS_READ_BUY',
+    MARK_AS_READ_SELL: 'MARK_AS_READ_SELL',
   },
   duckName,
 );
@@ -346,6 +350,36 @@ const onClickConversation = (conversationID, messageSelection) => dispatch => {
   }
 };
 
+const clearMessages = () => dispatch => {
+  dispatch(clearAllMessages());
+};
+
+const markAsRead = (conversationID, messageSelection) => dispatch => {
+  if (messageSelection === 'buying') {
+    dispatch(markAsReadBuyConversation(conversationID));
+  } else {
+    dispatch(markAsReadSellConversation(conversationID));
+  }
+
+  return new Promise((resolve, reject) => {
+    fetchGraphQL(`
+      mutation {
+        markConversationRead(conversationID: "${conversationID}") 
+      }
+    `)
+      .then(res => {
+        if (res.markConversationRead) {
+          resolve({ success: true });
+        } else {
+          resolve({ success: false });
+        }
+      })
+      .catch(err => {
+        resolve({ success: false });
+      });
+  });
+};
+
 const changeMessageSelection = selection => {
   return {
     type: actionTypes.CHANGE_MESSAGE_SELECTION,
@@ -493,6 +527,26 @@ const toggleSellConversation = conversationID => {
   };
 };
 
+const clearAllMessages = () => {
+  return {
+    type: actionTypes.CLEAR_MESSAGES,
+  };
+};
+
+const markAsReadBuyConversation = conversationID => {
+  return {
+    type: actionTypes.MARK_AS_READ_BUY,
+    payload: { conversationID },
+  };
+};
+
+const markAsReadSellConversation = conversationID => {
+  return {
+    type: actionTypes.MARK_AS_READ_SELL,
+    payload: { conversationID },
+  };
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.SHOW_MESSAGE_MODAL:
@@ -545,10 +599,16 @@ const reducer = (state = initialState, action) => {
         buying: immutable.set(state.buying, 'loadingConversations', true),
       });
     case actionTypes.FETCH_BUY_CONVERSATIONS_SUCCESS:
+      var fetchedConversations = action.payload.data;
+      for (const conversation of fetchedConversations) {
+        const { activityLog } = conversation;
+        conversation.activityLog = activityLog.reverse();
+      }
       const buyConversations = [
         ...state.buying.conversations,
-        ...action.payload.data,
+        ...fetchedConversations,
       ];
+
       const updatedNextPage = state.buying.nextPage + 1;
       return Object.assign({}, state, {
         buying: immutable
@@ -569,10 +629,16 @@ const reducer = (state = initialState, action) => {
         selling: immutable.set(state.selling, 'loadingConversations', true),
       });
     case actionTypes.FETCH_SELL_CONVERSATIONS_SUCCESS:
+      var fetchedConversations = action.payload.data;
+      for (const conversation of fetchedConversations) {
+        const { activityLog } = conversation;
+        conversation.activityLog = activityLog.reverse();
+      }
       const sellConversations = [
         ...state.selling.conversations,
-        ...action.payload.data,
+        ...fetchedConversations,
       ];
+
       const updatedNextSellPage = state.selling.nextPage + 1;
 
       return Object.assign({}, state, {
@@ -643,6 +709,88 @@ const reducer = (state = initialState, action) => {
         });
       }
 
+    // conversations: [],
+    // nextPage: 1,
+    // loadingConversation: false,
+    // unread_count: 0,
+    // openConversations: [],
+    // hasMoreMessages: true,
+
+    case actionTypes.CLEAR_MESSAGES: {
+      return Object.assign({}, state, {
+        selling: immutable
+          .wrap(state.selling)
+          .set('conversations', [])
+          .set('unread_count', 0)
+          .set('hasMoreMessages', true)
+          .set('nextPage', 1)
+          .set('loadingConversations', false)
+          .set('openConversations', [])
+          .value(),
+
+        buying: immutable
+          .wrap(state.buying)
+          .set('conversations', [])
+          .set('unread_count', 0)
+          .set('hasMoreMessages', true)
+          .set('nextPage', 1)
+          .set('loadingConversations', false)
+          .set('openConversations', [])
+          .value(),
+      });
+    }
+    case actionTypes.MARK_AS_READ_BUY: {
+      const buyConversations = state.buying.conversations;
+
+      let conversationIndex = -1;
+      for (var index = 0; index < buyConversations.length; index++) {
+        const currentConversation = buyConversations[index];
+        if (currentConversation.id === action.payload.conversationID) {
+          conversationIndex = index;
+        }
+      }
+
+      const matchedConversation = buyConversations[conversationIndex];
+
+      matchedConversation.buyerRead = true;
+
+      return Object.assign({}, state, {
+        buying: immutable
+          .wrap(state.buying)
+          .set('conversations', [
+            ...state.buying.conversations.slice(0, conversationIndex),
+            matchedConversation,
+            ...state.buying.conversations.slice(conversationIndex + 1),
+          ])
+          .value(),
+      });
+    }
+    case actionTypes.MARK_AS_READ_SELL: {
+      const sellConversations = state.selling.conversations;
+
+      let conversationIndex = -1;
+      for (var index = 0; index < sellConversations.length; index++) {
+        const currentConversation = sellConversations[index];
+        if (currentConversation.id === action.payload.conversationID) {
+          conversationIndex = index;
+        }
+      }
+
+      const matchedConversation = sellConversations[conversationIndex];
+
+      matchedConversation.sellerRead = true;
+
+      return Object.assign({}, state, {
+        selling: immutable
+          .wrap(state.selling)
+          .set('conversations', [
+            ...state.selling.conversations.slice(0, conversationIndex),
+            matchedConversation,
+            ...state.selling.conversations.slice(conversationIndex + 1),
+          ])
+          .value(),
+      });
+    }
     default:
       return state;
   }
@@ -663,5 +811,7 @@ export default {
     fetchSellMessages,
     toggleMessageView,
     onClickConversation,
+    clearMessages,
+    markAsRead,
   },
 };

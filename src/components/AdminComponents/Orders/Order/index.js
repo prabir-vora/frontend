@@ -31,10 +31,10 @@ class Order extends Component {
 
   onShowEditOrderModal = () => this.setState({ showEditOrderModal: true });
 
-  onUpdateAfterOrderSaved = ({ updated, message }) => {
-    if (updated) {
+  onUpdateAfterOrderSaved = success => {
+    if (success) {
       this.confirmNotif = ShowConfirmNotif({
-        message,
+        message: 'Updated Order Status Successfuly',
         type: 'success',
       });
       this.setState({ showEditOrderModal: false }, () =>
@@ -42,7 +42,7 @@ class Order extends Component {
       );
     } else {
       this.confirmNotif = ShowConfirmNotif({
-        message,
+        message: 'Failed to Update Order Status',
         type: 'error',
       });
       this.setState({ showEditOrderModal: false });

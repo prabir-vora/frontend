@@ -17,11 +17,13 @@ class AppAuthContainer extends Component {
     const jwt = this.props.cookies.get('jwt');
     if (jwt) {
       const { actionCreators } = UserDuck;
-      const { fetchCurrentUser } = actionCreators;
+      const { fetchCurrentUser, fetchNotifCount } = actionCreators;
 
       const { success, isSetup, isVerified } = await this.props.dispatch(
         fetchCurrentUser(),
       );
+
+      this.props.dispatch(fetchNotifCount());
 
       console.log(isVerified);
 
@@ -112,13 +114,15 @@ class AppAuthContainer extends Component {
     );
 
     if (success) {
-      const { fetchCurrentUser } = UserDuck.actionCreators;
+      const { fetchCurrentUser, fetchNotifCount } = UserDuck.actionCreators;
 
       this.props.cookies.set('jwt', token, { path: '/' });
       this.props.dispatch(hideModal('login'));
       const { success, isSetup } = await this.props.dispatch(
         fetchCurrentUser(),
       );
+
+      this.props.dispatch(fetchNotifCount());
 
       if (success && !isSetup) {
         this.props.dispatch(showModal('setup'));
@@ -142,13 +146,15 @@ class AppAuthContainer extends Component {
     );
 
     if (success) {
-      const { fetchCurrentUser } = UserDuck.actionCreators;
+      const { fetchCurrentUser, fetchNotifCount } = UserDuck.actionCreators;
 
       this.props.cookies.set('jwt', token, { path: '/' });
       this.props.dispatch(hideModal('login'));
       const { success, isSetup } = await this.props.dispatch(
         fetchCurrentUser(),
       );
+
+      this.props.dispatch(fetchNotifCount());
 
       if (success && !isSetup) {
         this.props.dispatch(showModal('setup'));

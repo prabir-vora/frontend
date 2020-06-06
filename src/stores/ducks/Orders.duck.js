@@ -19,6 +19,9 @@ const actionTypes = createActionTypes(
     CHANGE_ORDERS_SELECTION: 'CHANGE_ORDERS_SELECTION',
     ON_CLICK_BUY_ORDER: 'ON_CLICK_BUY_ORDER',
     ON_CLICK_SELL_ORDER: 'ON_CLICK_SELL_ORDER',
+
+    MARK_AS_READ_BUY: 'MARK_AS_READ_BUY',
+    MARK_AS_READ_SELL: 'MARK_AS_READ_SELL',
   },
   duckName,
 );
@@ -150,6 +153,32 @@ const onClickOrder = (orderID, orderSelection) => dispatch => {
   }
 };
 
+const markAsRead = (orderNumber, orderSelection) => dispatch => {
+  if (orderSelection === 'buying') {
+    dispatch(markAsReadBuyOrder(orderNumber));
+  } else {
+    dispatch(markAsReadSellOrder(orderNumber));
+  }
+
+  return new Promise((resolve, reject) => {
+    fetchGraphQL(`
+      mutation {
+        markOrderRead(orderNumber: "${orderNumber}") 
+      }
+    `)
+      .then(res => {
+        if (res.markOrderRead) {
+          resolve({ success: true });
+        } else {
+          resolve({ success: false });
+        }
+      })
+      .catch(err => {
+        resolve({ success: false });
+      });
+  });
+};
+
 const changeOrdersSelection = selection => {
   return {
     type: actionTypes.CHANGE_ORDERS_SELECTION,
@@ -206,6 +235,20 @@ const toggleSellOrder = orderID => {
   return {
     type: actionTypes.ON_CLICK_SELL_ORDER,
     payload: { orderID },
+  };
+};
+
+const markAsReadBuyOrder = orderNumber => {
+  return {
+    type: actionTypes.MARK_AS_READ_BUY,
+    payload: { orderNumber },
+  };
+};
+
+const markAsReadSellOrder = orderNumber => {
+  return {
+    type: actionTypes.MARK_AS_READ_SELL,
+    payload: { orderNumber },
   };
 };
 
@@ -290,6 +333,58 @@ const reducer = (state = initialState, action) => {
           ),
         });
       }
+    case actionTypes.MARK_AS_READ_BUY: {
+      const buyOrders = state.buying.orders;
+
+      let orderIndex = -1;
+      for (var index = 0; index < buyOrders.length; index++) {
+        const currentOrder = buyOrders[index];
+        if (currentOrder.orderNumber === action.payload.orderNumber) {
+          orderIndex = index;
+        }
+      }
+
+      const matchedOrder = buyOrders[orderIndex];
+
+      matchedOrder.buyerRead = true;
+
+      return Object.assign({}, state, {
+        buying: immutable
+          .wrap(state.buying)
+          .set('orders', [
+            ...state.buying.orders.slice(0, orderIndex),
+            matchedOrder,
+            ...state.buying.orders.slice(orderIndex + 1),
+          ])
+          .value(),
+      });
+    }
+    case actionTypes.MARK_AS_READ_SELL: {
+      const sellOrders = state.selling.orders;
+
+      let orderIndex = -1;
+      for (var index = 0; index < sellOrders.length; index++) {
+        const currentOrder = sellOrders[index];
+        if (currentOrder.orderNumber === action.payload.orderNumber) {
+          orderIndex = index;
+        }
+      }
+
+      const matchedOrder = sellOrders[orderIndex];
+
+      matchedOrder.sellerRead = true;
+
+      return Object.assign({}, state, {
+        selling: immutable
+          .wrap(state.selling)
+          .set('orders', [
+            ...state.selling.orders.slice(0, orderIndex),
+            matchedOrder,
+            ...state.selling.orders.slice(orderIndex + 1),
+          ])
+          .value(),
+      });
+    }
     default:
       return state;
   }
@@ -303,5 +398,6 @@ export default {
     fetchSellOrders,
     toggleOrdersView,
     onClickOrder,
+    markAsRead,
   },
 };

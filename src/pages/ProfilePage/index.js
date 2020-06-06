@@ -143,6 +143,7 @@ class ProfilePage extends Component {
               <ProfileNavBar
                 activeNavBarID={this.props.match.params.activeNavBarID}
                 onChangeNavBarID={this.onChangeNavBarID}
+                notifCount={this.props.notifCount}
               />
 
               <React.Fragment>
@@ -160,6 +161,7 @@ class ProfilePage extends Component {
 const mapStateToProps = state => {
   return {
     user: state[UserDuck.duckName].user,
+    notifCount: state[UserDuck.duckName].notifCount,
   };
 };
 

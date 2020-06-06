@@ -10,19 +10,22 @@ import { Img } from 'fields';
 import moment from 'moment';
 
 import ConversationDuck from 'stores/ducks/Conversation.duck';
+import UserDuck from 'stores/ducks/User.duck';
 
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { ClipLoader } from 'react-spinners';
 
 class Messages extends Component {
   componentDidMount() {
-    const { data } = this.props;
-    const { buying, selling } = data;
-
     const { actionCreators } = ConversationDuck;
-    const { fetchBuyMessages, fetchSellMessages } = actionCreators;
-    this.props.dispatch(fetchBuyMessages(buying.nextPage));
-    this.props.dispatch(fetchSellMessages(selling.nextPage));
+    const {
+      clearMessages,
+      fetchBuyMessages,
+      fetchSellMessages,
+    } = actionCreators;
+    this.props.dispatch(clearMessages());
+    this.props.dispatch(fetchBuyMessages(1));
+    this.props.dispatch(fetchSellMessages(1));
   }
 
   fetchMoreBuyMessages = () => {
@@ -60,6 +63,25 @@ class Messages extends Component {
     this.props.dispatch(onClickConversation(conversationID, messageSelection));
   };
 
+  onMarkAsRead = async conversationID => {
+    const { actionCreators } = ConversationDuck;
+    const { markAsRead } = actionCreators;
+
+    const { data } = this.props;
+    const { messageSelection } = data;
+    console.log(messageSelection);
+
+    const { success } = await this.props.dispatch(
+      markAsRead(conversationID, messageSelection),
+    );
+
+    const { fetchNotifCount } = UserDuck.actionCreators;
+
+    if (success) {
+      await this.props.dispatch(fetchNotifCount());
+    }
+  };
+
   toggleSelection = selection => {
     const { data } = this.props;
     const { messageSelection } = data;
@@ -92,6 +114,8 @@ class Messages extends Component {
       buyer,
       listingContext,
       activityLog,
+      buyerRead,
+      sellerRead,
     } = conversation;
     const { slug, images, product } = listing;
 
@@ -101,14 +125,22 @@ class Messages extends Component {
     let senderUsername =
       messageSelection === 'buying' ? seller.username : buyer.username;
 
-    const lastLogIndex = activityLog.length - 1;
-    const { message, createdAt } = activityLog[lastLogIndex];
+    console.log(senderUsername);
+
+    let isRead = messageSelection === 'buying' ? buyerRead : sellerRead;
+
+    const { message, createdAt } = activityLog[0];
 
     return (
       <div
         key={id}
         className={Style.conversationItem}
-        onClick={() => this.onConversationClick(id)}
+        onClick={() => {
+          this.onConversationClick(id);
+          if (!isRead) {
+            this.onMarkAsRead(id);
+          }
+        }}
       >
         <div className={Style.listingDetails}>
           <a
@@ -132,12 +164,24 @@ class Messages extends Component {
           </a>
         </div>
         <div className={Style.lastMessage}>
-          <div>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
             <p
-              style={{ color: 'white', textAlign: 'center', fontSize: '14px' }}
+              style={{
+                color: 'white',
+                textAlign: 'center',
+                fontSize: '14px',
+                marginRight: '10px',
+              }}
             >
               {message}
             </p>
+            {!isRead && <div className={Style.unreadAlert} />}
           </div>
         </div>
         <div className={Style.conversationDetails}>
@@ -163,8 +207,6 @@ class Messages extends Component {
 
     const { data } = this.props;
     const { messageSelection } = data;
-
-    const sortedActivityLog = activityLog.reverse();
 
     const username =
       messageSelection === 'buying' ? seller.username : buyer.username;
@@ -206,7 +248,7 @@ class Messages extends Component {
           </button>
         </div>
         <div className={Style.ActivityLog}>
-          {sortedActivityLog.map(log => {
+          {activityLog.map(log => {
             const { senderID, createdAt, message } = log;
             let senderUsername = senderID === user.id ? 'me' : username;
             return (
@@ -283,6 +325,7 @@ class Messages extends Component {
   renderSellMessages = () => {
     const { data } = this.props;
     const { selling } = data;
+    console.log(selling);
     const {
       conversations,
       openConversations,

@@ -6,6 +6,7 @@ import cx from 'classnames';
 import { connect } from 'react-redux';
 
 import OrdersDuck from 'stores/ducks/Orders.duck';
+import UserDuck from 'stores/ducks/User.duck';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { ClipLoader } from 'react-spinners';
 import moment from 'moment';
@@ -39,6 +40,26 @@ class Orders extends Component {
     console.log(orderSelection);
 
     this.props.dispatch(onClickOrder(orderID, orderSelection));
+  };
+
+  onMarkAsRead = async orderNumber => {
+    const { actionCreators } = OrdersDuck;
+    const { markAsRead } = actionCreators;
+
+    const { data } = this.props;
+    const { orderSelection } = data;
+    console.log(orderSelection);
+
+    const { success } = await this.props.dispatch(
+      markAsRead(orderNumber, orderSelection),
+    );
+
+    console.log(success);
+    const { fetchNotifCount } = UserDuck.actionCreators;
+
+    if (success) {
+      await this.props.dispatch(fetchNotifCount());
+    }
   };
 
   renderOrders = () => {
@@ -154,7 +175,13 @@ class Orders extends Component {
       <div
         key={id}
         className={Style.orderItem}
-        onClick={() => this.onOrderClick(id)}
+        onClick={() => {
+          this.onOrderClick(id);
+
+          if (!buyerRead) {
+            this.onMarkAsRead(orderNumber);
+          }
+        }}
       >
         <div style={{ marginRight: '40px' }}>
           <Img
@@ -180,8 +207,16 @@ class Orders extends Component {
             Price: ${price_cents / 100}
           </h4>
         </div>
-        <div style={{ marginLeft: 'auto' }}>
+        <div
+          style={{
+            marginLeft: 'auto',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
           <h3>Status: {this.renderBuyStatus(status)}</h3>
+          {!buyerRead && <div className={Style.unreadAlert} />}
         </div>
       </div>
     );
@@ -196,7 +231,6 @@ class Orders extends Component {
       price_cents,
       shipping_cents,
       total_price_cents,
-      buyerRead,
       purchased_at,
     } = order;
 
@@ -289,7 +323,12 @@ class Orders extends Component {
       <div
         key={id}
         className={Style.orderItem}
-        onClick={() => this.onOrderClick(id)}
+        onClick={() => {
+          this.onOrderClick(id);
+          if (!sellerRead) {
+            this.onMarkAsRead(orderNumber);
+          }
+        }}
       >
         <div style={{ marginRight: '40px' }}>
           <Img
@@ -315,8 +354,16 @@ class Orders extends Component {
             Price: ${price_cents / 100}
           </h4>
         </div>
-        <div style={{ marginLeft: 'auto' }}>
+        <div
+          style={{
+            marginLeft: 'auto',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
           <h3>Status: {this.renderSellStatus(status)}</h3>
+          {!sellerRead && <div className={Style.unreadAlert} />}
         </div>
       </div>
     );
@@ -332,7 +379,6 @@ class Orders extends Component {
       seller_shipping_cents,
       seller_amount_made_cents,
       platform_fees_seller_cents,
-      sellerRead,
       purchased_at,
     } = order;
 

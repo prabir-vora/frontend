@@ -1,90 +1,90 @@
 .overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.2);
-    z-index: 100;
-  }
-  
-  .modal {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    right: 0px;
-    border: none;
-    overflow: auto;
-    outline: none;
-    padding: 0px;
-    z-index: 9999;
-  }
-  
-  .contentContainer {
-    background: #fff;
-    height: auto;
-    min-height: 100%;
-    position: relative;
-  }
-  
-  .closeModalButton {
-    height: 50px;
-    top: 20px;
-    min-width: 50px;
-    border: none;
-    text-align: left;
-  }
-  
-  .closeIcon {
-    height: 20px;
-    width: 20px;
-  }
-  
-  // --------------------- Full page modal ---------------------
-  
-  $paddingLeftRight: 25px;
-  
-  .fullPageModal {
-    @extend .modal;
-    border-radius: 0px;
-  }
-  
-  .headerContainer {
-    padding: 15px $paddingLeftRight;
-    border-bottom: 1px solid #b2bec3;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 3vh;
-    max-height: 3vh;
-  }
-  
-  .bodyContainer {
-    padding: 0 $paddingLeftRight 130px;
-  }
-  
-  .footerContainer {
-    border-top: 1px solid rgba(217, 219, 224, 0.5);
-    background: #fff;
-    z-index: 50;
-    height: 70px;
-    position: fixed;
-    position: -webkit-sticky;
-    width: 100%;
-    bottom: 0;
-  }
-  
-  .footerContentContainer {
-    height: 100%;
-    padding: 0 50px;
-  }
-  
-  // --------------------- Full page modal ---------------------
-  
-  .centerPageModal {
-    @extend .modal;
-    border-radius: 4px;
-    bottom: 0;
-    margin: auto;
-  }
-  
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 100;
+}
+
+.modal {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  border: none;
+  overflow: auto;
+  outline: none;
+  padding: 0px;
+  z-index: 9999;
+}
+
+.contentContainer {
+  background: #fff;
+  height: auto;
+  min-height: 100%;
+  position: relative;
+  color: black;
+}
+
+.closeModalButton {
+  height: 50px;
+  top: 20px;
+  min-width: 50px;
+  border: none;
+  text-align: left;
+}
+
+.closeIcon {
+  height: 20px;
+  width: 20px;
+}
+
+// --------------------- Full page modal ---------------------
+
+$paddingLeftRight: 25px;
+
+.fullPageModal {
+  @extend .modal;
+  border-radius: 0px;
+}
+
+.headerContainer {
+  padding: 15px $paddingLeftRight;
+  border-bottom: 1px solid #b2bec3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 3vh;
+  max-height: 3vh;
+}
+
+.bodyContainer {
+  padding: 0 $paddingLeftRight 130px;
+}
+
+.footerContainer {
+  border-top: 1px solid rgba(217, 219, 224, 0.5);
+  background: #fff;
+  z-index: 50;
+  height: 70px;
+  position: fixed;
+  position: -webkit-sticky;
+  width: 100%;
+  bottom: 0;
+}
+
+.footerContentContainer {
+  height: 100%;
+  padding: 0 50px;
+}
+
+// --------------------- Full page modal ---------------------
+
+.centerPageModal {
+  @extend .modal;
+  border-radius: 4px;
+  bottom: 0;
+  margin: auto;
+}

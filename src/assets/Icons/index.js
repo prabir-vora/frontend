@@ -43,6 +43,7 @@ import { ReactComponent as ExpandLessIcon } from './ExpandLessIcon.svg';
 import { ReactComponent as RadioButtonCheckedIcon } from './RadioButtonCheckedIcon.svg';
 import { ReactComponent as RadioButtonUncheckedIcon } from './RadioButtonUncheckedIcon.svg';
 import { ReactComponent as SortIcon } from './SortIcon.svg';
+import { ReactComponent as UserIcon } from './UserIcon.svg';
 
 export {
   AddPhotoIcon,
@@ -88,6 +89,7 @@ export {
   FacebookIcon,
   FireIcon,
   InstagramIcon,
+  UserIcon,
   TwitterIcon,
   YoutubeIcon,
 };

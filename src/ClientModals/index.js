@@ -54,7 +54,13 @@ class ClientModals extends Component {
 
   onSendReply = async message => {
     const { actionCreators } = ConversationDuck;
-    const { newReply, undisplayReplyModal } = actionCreators;
+    const {
+      newReply,
+      undisplayReplyModal,
+      clearMessages,
+      fetchBuyMessages,
+      fetchSellMessages,
+    } = actionCreators;
 
     const { replyConversationID } = this.props;
 
@@ -62,10 +68,16 @@ class ClientModals extends Component {
       newReply(replyConversationID, message),
     );
 
-    console.log(success);
+    const { fetchNotifCount } = UserDuck.actionCreators;
 
     if (success) {
       this.props.dispatch(undisplayReplyModal());
+      this.props.dispatch(fetchNotifCount());
+      this.props.dispatch(clearMessages());
+
+      this.props.dispatch(fetchBuyMessages(1));
+      this.props.dispatch(fetchSellMessages(1));
+
       this.confirmNotif = ShowConfirmNotif({
         message: 'Message sent',
         type: 'success',

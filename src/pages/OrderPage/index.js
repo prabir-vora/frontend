@@ -28,6 +28,7 @@ class OrderPage extends Component {
     addNewPayment: false,
     ongoingPayment: false,
     orderPurchased: false,
+    errorMessage: '',
   };
 
   async componentDidMount() {
@@ -89,6 +90,12 @@ class OrderPage extends Component {
     const { success, message } = await this.props.dispatch(
       fetchOrder(orderNumber),
     );
+
+    if (!success) {
+      this.setState({
+        errorMessage: message,
+      });
+    }
   };
 
   newSetupIntent = async () => {
@@ -299,12 +306,35 @@ class OrderPage extends Component {
     const { orderNumber } = this.props.match.params;
     const { user, checkout } = this.props;
 
-    const { isSaving, ordersMap } = checkout;
+    const { isSaving, ordersMap, error } = checkout;
 
     const data = ordersMap[orderNumber];
 
-    if ((this.state.isUserPresent && !user) || isSaving || !data) {
+    if ((this.state.isUserPresent && !user) || isSaving || (!data && !error)) {
       return <LoadingScreen />;
+    }
+
+    if (error) {
+      return (
+        <div style={{ backgroundColor: 'black' }}>
+          <MainNavBar />
+          <h1
+            style={{
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'flex-start',
+              minHeight: '100vh',
+              padding: '5% 0',
+              height: '100%',
+            }}
+          >
+            Sorry, {error}
+          </h1>
+          <MainFooter />
+        </div>
+      );
     }
 
     return (
