@@ -34,7 +34,6 @@ function Hits(props) {
                       style={{
                         width: '100px',
                         height: '100px',
-                        borderRadius: '50%',
                         border: '1px solid #cfcaca',
                         objectFit: 'contain',
                         background: 'white',
@@ -73,12 +72,16 @@ const CustomHits = connectHits(Hits);
 export default class BrandsPage extends Component {
   render() {
     return (
-      <div>
+      <div
+        style={{
+          background: 'linear-gradient(100deg, #111010 0%, #4b4b4b 99%)',
+        }}
+      >
         <MainNavBar />
         <div className={Style.pageLayout}>
           <div className={Style.pageContent}>
             <div className={Style.pageTitle}>
-              <h1>Brands</h1>
+              <h1 className={Style.titleLarge}>Brands</h1>
             </div>
             <div className={Style.algoliaContentWrapper}>
               <InstantSearch

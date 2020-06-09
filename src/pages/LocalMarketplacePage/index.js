@@ -13,7 +13,12 @@ import LoadingScreen from 'components/LoadingScreen';
 import { withCookies } from 'react-cookie';
 
 class LocalMarketplace extends Component {
-  state = { lat: '', lng: '', address: '', isUserPresent: false };
+  state = {
+    lat: '',
+    lng: '',
+    address: '',
+    isUserPresent: false,
+  };
 
   componentDidMount() {
     const jwt = this.props.cookies.get('jwt');
@@ -65,7 +70,12 @@ class LocalMarketplace extends Component {
     }
 
     return (
-      <div style={{ background: 'black' }}>
+      <div
+        style={{
+          background:
+            'linear-gradient(rgb(136, 131, 128) 0%, rgb(43, 41, 40) 99%)',
+        }}
+      >
         <MainNavBar />
         <div className={Style.pageLayout}>
           {!this.state.address || !this.state.lat || !this.state.lng ? (

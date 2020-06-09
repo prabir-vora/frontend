@@ -75,13 +75,17 @@ class ProfilePage extends Component {
     }
 
     return (
-      <div style={{ background: 'black' }}>
+      <div
+        style={{
+          background: 'linear-gradient(100deg, #111010 0%, #4b4b4b 99%)',
+        }}
+      >
         <MainNavBar />
 
         {this.props.user && (
           <div className={Style.pageLayout}>
             <div className={Style.pageContent}>
-              <div className={Style.profileContainer}>
+              {/* <div className={Style.profileContainer}>
                 <div
                   style={{
                     width: '80px',
@@ -138,7 +142,7 @@ class ProfilePage extends Component {
                     Sell Something
                   </Button>
                 </a>
-              </div>
+              </div> */}
 
               <ProfileNavBar
                 activeNavBarID={this.props.match.params.activeNavBarID}

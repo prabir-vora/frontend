@@ -15,46 +15,44 @@ import SellDuck from 'stores/ducks/Sell.duck';
 import MainFooter from 'components/MainFooter';
 
 class SellPage extends Component {
-  componentDidMount() {
-    console.log(this.props);
+  createListing = () => {
     const { showModal } = SellDuck.actionCreators;
 
     const { user } = this.props;
-    if (user) {
-      const { resellItems } = user;
-      const noOfListings = resellItems.length;
-      if (noOfListings === 0) {
-        this.props.dispatch(showModal('howSellingWorks'));
-      }
-    }
-  }
+    const { stripe_connect_account_status, activeSellerAddressID } = user;
 
-  createListing = () => {
+    if (
+      stripe_connect_account_status !== 'active' ||
+      activeSellerAddressID === ''
+    ) {
+      return this.props.dispatch(showModal('sellerSetup'));
+    }
+
     this.props.history.push('/sell/createListing');
   };
 
-  becomeReseller = () => {
-    const { user } = this.props;
-    const { resellItems } = user;
-    if (resellItems && resellItems.length >= 5) {
-      this.props.history.push('/resellerSetup');
-    }
-  };
+  // becomeReseller = () => {
+  //   const { user } = this.props;
+  //   const { resellItems } = user;
+  //   if (resellItems && resellItems.length >= 5) {
+  //     this.props.history.push('/resellerSetup');
+  //   }
+  // };
 
-  renderResellerMessage = () => {
-    const { user } = this.props;
-    const { resellItems } = user;
-    const listingsNeeded = 5 - resellItems.length;
-    return resellItems && resellItems.length >= 5 ? (
-      <div style={{ color: '#1DB954' }}>
-        You are qualified to become a reseller
-      </div>
-    ) : (
-      <div style={{ color: 'red' }}>
-        You need {listingsNeeded} more listings to qualify
-      </div>
-    );
-  };
+  // renderResellerMessage = () => {
+  //   const { user } = this.props;
+  //   const { resellItems } = user;
+  //   const listingsNeeded = 5 - resellItems.length;
+  //   return resellItems && resellItems.length >= 5 ? (
+  //     <div style={{ color: '#1DB954' }}>
+  //       You are qualified to become a reseller
+  //     </div>
+  //   ) : (
+  //     <div style={{ color: 'red' }}>
+  //       You need {listingsNeeded} more listings to qualify
+  //     </div>
+  //   );
+  // };
 
   render() {
     const { user } = this.props;
@@ -63,23 +61,25 @@ class SellPage extends Component {
     }
 
     return (
-      <div>
+      <div
+        style={{
+          background: 'linear-gradient(#888380 0%, #2B2928 99%)',
+          overflowX: 'hidden',
+        }}
+      >
         <MainNavBar />
         <div className={Style.pageLayout}>
           <div className={Style.pageContent}>
             <div className={Style.pageTitle}>
-              <h1>Sell</h1>
-              <p className={Style.pageTitleDescription}>
+              <h1 className={Style.titleLarge}> Sell</h1>
+              <p className={Style.subtitle}>
                 Anyone can sell on Dripverse. Simply create a listing from
-                below. <br /> <br />
-                If you are big into reselling, Dripverse let's you create your
-                own branded Reseller page. The perfect way to grow your business
-                and create a following.
+                below. Sell both Globally and Locally.
               </p>
             </div>
             <div>
               <div className={Style.contentWrapper}>
-                <div>
+                <div className={Style.sellOptionContainer}>
                   <div
                     className={Style.sellOption}
                     onClick={() => {
@@ -89,21 +89,22 @@ class SellPage extends Component {
                     <PlusIcon />
                   </div>
                   <div style={{ color: 'white' }}>
-                    <h4>Create a listing</h4>
+                    <h4 className={Style.title}>Create a listing</h4>
                   </div>
                 </div>
                 <div>
                   <div
                     className={Style.sellOption}
                     onClick={() => {
-                      this.becomeReseller();
+                      const { showModal } = SellDuck.actionCreators;
+                      this.props.dispatch(showModal('howSellingWorks'));
                     }}
                   >
                     <SneakerIcon />
                   </div>
                   <div>
-                    <h4>Become a Reseller</h4>
-                    <p>{this.renderResellerMessage()}</p>
+                    <h4 className={Style.title}>How Selling Works</h4>
+                    {/* <p>{this.renderResellerMessage()}</p> */}
                   </div>
                 </div>
               </div>

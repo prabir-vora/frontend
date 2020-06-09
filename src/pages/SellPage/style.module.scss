@@ -7,20 +7,39 @@
   box-pack: start;
   justify-content: flex-start;
   flex: 1 1 0%;
-  background: black;
   color: white;
 }
 
 .pageContent {
   min-height: calc(100vh - 90px);
   position: relative;
-  width: calc(100% - 180px);
+  width: 100%;
   align-items: center;
 }
 
 .pageTitle {
   padding: 2em 20px;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  margin-bottom: 30px;
+}
+
+.titleLarge {
+  font-size: 45px;
+  text-transform: uppercase;
+  font-weight: 400;
+  margin: 20px 0px 0px 0px;
+  text-align: center;
+}
+
+.subtitle {
+  font-size: 25px;
+  font-weight: 400;
+  margin: 20px 0px 0px 0px;
 }
 
 .pageTitleDescription {
@@ -33,20 +52,25 @@
 
 .contentWrapper {
   display: flex;
-  justify-content: space-around;
-  margin: 4em;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 1em;
+}
+
+.sellOptionContainer {
+  margin-bottom: 20px;
 }
 
 .sellOption {
-  width: 250px;
-  height: 250px;
-  background: rgb(68, 21, 158);
+  width: 200px;
+  height: 200px;
   background: linear-gradient(
     139deg,
-    rgba(68, 21, 158, 1) 0%,
-    rgba(85, 51, 163, 1) 40%,
-    rgba(120, 112, 182, 1) 75%,
-    rgba(148, 158, 224, 1) 99%
+    #a7a7a7 0%,
+    #8f8e90 40%,
+    #8b8a96 75%,
+    #8a8a8a 99%
   );
   color: white;
   display: flex;
@@ -56,5 +80,48 @@
 
   & > svg {
     fill: white;
+  }
+}
+
+.title {
+  font-size: 20px;
+}
+
+@media (min-width: 60em) {
+  .pageTitle {
+    padding: 1em 20px;
+    margin-bottom: 0px;
+  }
+
+  .titleLarge {
+    font-size: 55px;
+    margin: 20px 0px 0px 0px;
+  }
+
+  .subtitle {
+    font-size: 30px;
+    font-weight: 400;
+    margin: 20px 0px 0px 0px;
+  }
+
+  .pageContent {
+    min-height: calc(100vh - 90px);
+    width: calc(100% - 180px);
+  }
+
+  .contentWrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin: 4em;
+  }
+
+  .sellOptionContainer {
+    margin-bottom: 0px;
+  }
+
+  .sellOption {
+    width: 250px;
+    height: 250px;
   }
 }

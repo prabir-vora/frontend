@@ -18,6 +18,7 @@ import MultipleImagesUploader from './MultipleImagesUploader';
 import LocationSearchInput from './LocationSearchInput';
 import Rheostat from './Rheostat';
 import ImageGallery from './ImageGallery';
+import CustomImageGallery from './CustomImageGallery';
 
 export {
   Button,
@@ -25,6 +26,7 @@ export {
   Chip,
   CheckBox,
   CheckBoxes,
+  CustomImageGallery,
   ImageUploader,
   Img,
   ImageGallery,

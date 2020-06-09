@@ -70,6 +70,8 @@ export default class LoginModal extends Component {
     this.props.toggleToSignUp();
   };
 
+  onResetPassword = () => {};
+
   renderLoginContainer() {
     return (
       <div>

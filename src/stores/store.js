@@ -21,6 +21,7 @@ import MyListDuck from './ducks/MyList.duck';
 import UserListingsDuck from './ducks/UserListings.duck';
 import CheckoutDuck from './ducks/Checkout.duck';
 import OrdersDuck from './ducks/Orders.duck';
+import SizeDuck from './ducks/Size.duck';
 
 const initialState = {};
 const middleware = [thunk];
@@ -51,12 +52,13 @@ const rootReducer = combineDucks(
   SellDuck,
   TestObjectsDuck,
   UserDuck,
-  ResellListingDuck,
+  // ResellListingDuck,
   LocalListingDuck,
-  BrowseUserDuck,
+  // BrowseUserDuck,
   MyListDuck,
   UserListingsDuck,
   OrdersDuck,
+  SizeDuck,
 );
 
 const store = createStore(

@@ -17,14 +17,12 @@
   box-sizing: border-box;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
-  max-width: 343px;
   height: auto;
-  max-height: 100%;
-  padding: 0;
-  width: 100%;
-  padding: 0px;
   max-height: 90%;
+  padding: 0;
   width: 90%;
+  padding: 0px;
+
   position: relative;
   background: #fff;
   -webkit-overflow-scrolling: touch;
@@ -46,6 +44,7 @@
   padding: 0 20px;
   box-sizing: border-box;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
@@ -56,85 +55,62 @@
   flex-direction: column;
 }
 
-.close {
-  cursor: pointer;
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: #fff;
-  height: 20px;
-  width: 20px;
-  // z-index: 2;
+.title {
+  margin: 20px;
+}
+
+.StepsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+}
+
+.Step {
+  width: 100%;
+  margin-right: 2%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 30px;
 
   & > svg {
-    height: 16px;
-    width: 17px;
-    fill: black;
+    width: 40%;
+    height: 50px;
+    margin-bottom: 10px;
   }
 }
 
-.title {
-  display: inline;
-  position: relative;
-  z-index: 2;
-  font-size: 25px;
-
-  // &::after {
-  //   background: #938cfc;
-  //   bottom: 0;
-  //   content: '';
-  //   display: block;
-  //   height: 25%;
-  //   left: -10px;
-  //   position: absolute;
-  //   right: -10px;
-  //   z-index: -1;
-  // }
-}
-
-.productName {
-  font-size: 15px;
-}
-
-.ListingSummary {
+.StepTitleContainer {
   width: 100%;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-}
-
-.ProductImage {
-  width: 150px;
-}
-
-.detailsContainer {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  text-align: center;
-  margin: 50px 0px;
-  width: 100%;
-}
-
-.detailsBlock {
-  width: 33%;
-}
-
-.detailsTitle {
-  font-size: 15px;
-  text-transform: uppercase;
-  color: #aaaaaa;
   margin-bottom: 10px;
 }
 
-.detailsContent {
-  font-size: 14px;
-  font-family: Druk Wide Web, futura-pt, HelveticaNeue-Light,
-    Helvetica Neue Light, Helvetica Neue, Helvetica, Arial, Lucida Grande,
-    sans-serif;
+.StepTitle {
+  text-align: center;
+  font-size: 13px;
+}
+
+.StepCount {
+  background: #97969c;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 1rem;
   font-weight: 700;
+  height: 1.5rem;
+  left: 50%;
+  line-height: 1.5rem;
+  width: 1.5rem;
+  margin-right: 10px;
+}
+
+.StepDescription {
+  font-size: 12px;
+  color: grey;
+  margin-bottom: 20px;
 }
 
 .ModalButton {
@@ -154,7 +130,7 @@
     display: inline;
     position: relative;
     z-index: 2;
-    font-size: 30px;
+    font-size: 40px;
   }
 
   .Modal {
@@ -164,8 +140,25 @@
     max-height: 75%;
   }
 
-  .productName {
-    font-size: 30px;
+  .Step {
+    width: 45%;
+    margin-right: 2%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 0px;
+
+    & > svg {
+      width: 40%;
+      height: 85px;
+      margin-bottom: 20px;
+    }
+  }
+
+  .StepTitle {
+    text-align: center;
+    font-size: 20px;
   }
 
   .header {
@@ -177,20 +170,36 @@
     padding: 15px 40px 20px 40px;
   }
 
-  .ProductImage {
-    width: 200px;
+  .StepDescription {
+    font-size: 15px;
+    color: grey;
   }
 
-  .detailsTitle {
-    font-size: 22px;
-  }
-
-  .detailsContent {
-    font-size: 18px;
-    font-family: Druk Wide Web, futura-pt, HelveticaNeue-Light,
-      Helvetica Neue Light, Helvetica Neue, Helvetica, Arial, Lucida Grande,
-      sans-serif;
+  .StepCount {
+    background: #97969c;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 1.75rem;
     font-weight: 700;
+    height: 2.5rem;
+    left: 50%;
+    line-height: 2.5rem;
+    width: 2.5rem;
+    margin-right: 10px;
+  }
+
+  .points {
+    display: block;
+    background: red;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    height: 4rem;
+    left: 50%;
+    line-height: 4rem;
+    width: 4rem;
+    margin-right: 10px;
   }
 
   .ModalButton {

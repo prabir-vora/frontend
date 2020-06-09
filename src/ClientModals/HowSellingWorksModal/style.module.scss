@@ -17,11 +17,10 @@
   box-sizing: border-box;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
-  max-width: 343px;
   height: auto;
-  max-height: 100%;
+  max-height: 90%;
   padding: 0;
-  width: 100%;
+  width: 90%;
   padding: 0px;
 
   position: relative;
@@ -32,6 +31,8 @@
   box-sizing: border-box;
   box-shadow: 0 0 18px rgba(0, 0, 0, 0.4);
   overflow-y: auto;
+  color: black;
+  font-family: Roboto, sans-serif;
 }
 
 .header {
@@ -57,37 +58,39 @@
   display: inline;
   position: relative;
   z-index: 2;
-  font-size: 40px;
+  font-size: 20px;
 
-  &::after {
-    background: #938cfc;
-    bottom: 0;
-    content: '';
-    display: block;
-    height: 25%;
-    left: -10px;
-    position: absolute;
-    right: -10px;
-    z-index: -1;
-  }
+  // &::after {
+  //   background: #938cfc;
+  //   bottom: 0;
+  //   content: '';
+  //   display: block;
+  //   height: 25%;
+  //   left: -10px;
+  //   position: absolute;
+  //   right: -10px;
+  //   z-index: -1;
+  // }
 }
 
 .StepsContainer {
   display: flex;
+  flex-wrap: wrap;
 }
 
 .Step {
-  width: 23%;
+  width: 100%;
   margin-right: 2%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
+  margin-bottom: 30px;
 
   & > svg {
     width: 40%;
-    height: 85px;
-    margin-bottom: 20px;
+    height: 50px;
+    margin-bottom: 10px;
   }
 }
 
@@ -101,23 +104,24 @@
 
 .StepTitle {
   text-align: center;
+  font-size: 13px;
 }
 
 .StepCount {
-  background: #938cfc;
+  background: #97969c;
   border-radius: 50%;
   color: #fff;
-  font-size: 1.75rem;
+  font-size: 1rem;
   font-weight: 700;
-  height: 2.5rem;
+  height: 1.5rem;
   left: 50%;
-  line-height: 2.5rem;
-  width: 2.5rem;
+  line-height: 1.5rem;
+  width: 1.5rem;
   margin-right: 10px;
 }
 
 .StepDescription {
-  font-size: 13px;
+  font-size: 12px;
   color: grey;
   margin-bottom: 10px;
 }
@@ -126,38 +130,54 @@
   width: 100%;
   padding: 20px;
   display: flex;
+  box-sizing: border-box;
 }
 
 .points {
-  background: red;
-  border-radius: 50%;
-  color: #fff;
-  font-size: 1rem;
-  font-weight: 700;
-  height: 4rem;
-  left: 50%;
-  line-height: 4rem;
-  width: 4rem;
-  margin-right: 10px;
+  display: none;
 }
 
 .ModalButton {
   padding: 14px 25px;
-  width: 50%;
+  width: 150px;
   background: black;
   color: white;
   border-radius: 10px;
-  font-size: 14px;
+  font-size: 12px;
   margin-bottom: 1em;
   margin-top: 1em;
+  font-family: Roboto, sans-serif;
 }
 
 @media only screen and (min-width: 771px) {
+  .title {
+    display: inline;
+    position: relative;
+    z-index: 2;
+    font-size: 40px;
+  }
+
   .Modal {
     max-width: 90%;
     width: 80%;
     height: auto;
-    max-height: 95%;
+    max-height: 75%;
+  }
+
+  .Step {
+    width: 23%;
+    margin-right: 2%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 0px;
+
+    & > svg {
+      width: 40%;
+      height: 85px;
+      margin-bottom: 20px;
+    }
   }
 
   .header {
@@ -167,5 +187,49 @@
 
   .body {
     padding: 15px 40px 20px 40px;
+  }
+
+  .StepDescription {
+    font-size: 13px;
+    color: grey;
+    margin-bottom: 10px;
+  }
+
+  .StepCount {
+    background: #97969c;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 1.75rem;
+    font-weight: 700;
+    height: 2.5rem;
+    left: 50%;
+    line-height: 2.5rem;
+    width: 2.5rem;
+    margin-right: 10px;
+  }
+
+  .points {
+    display: block;
+    background: red;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    height: 4rem;
+    left: 50%;
+    line-height: 4rem;
+    width: 4rem;
+    margin-right: 10px;
+  }
+
+  .ModalButton {
+    padding: 14px 25px;
+    width: 50%;
+    background: black;
+    color: white;
+    border-radius: 10px;
+    font-size: 14px;
+    margin-bottom: 1em;
+    margin-top: 1em;
   }
 }

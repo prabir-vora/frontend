@@ -4,6 +4,7 @@ import * as JSCookie from 'js-cookie';
 export async function fetchGraphQL(query, token, variables) {
   const localToken = JSCookie.get('jwt');
   console.log(localToken);
+  console.log(AppConfig.apiUrl);
   return fetch(AppConfig.apiUrl, {
     method: 'post',
     headers: {

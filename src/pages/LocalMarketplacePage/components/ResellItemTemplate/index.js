@@ -13,10 +13,20 @@ export default class ResellItemTemplate extends Component {
       askingPrice,
       _rankingInfo,
       reseller_username,
+      brand_name,
+      condition,
+      size,
     } = hit;
     const { matchedGeoLocation } = _rankingInfo;
     const { distance } = matchedGeoLocation;
     const distanceInMiles = Math.round((distance / 1609) * 100) / 100;
+
+    const conditionMap = {
+      new: { label: 'New, Deadstock', order: 1 },
+      new_defects: { label: 'New, Defects', order: 3 },
+      new_opened: { label: 'New, Opened', order: 2 },
+      preowned: { label: 'Preowned', order: 4 },
+    };
 
     return (
       <div className={Style.gridCellWrapper}>
@@ -24,41 +34,26 @@ export default class ResellItemTemplate extends Component {
           <a title={name} href={`/localMarketplace/${resellItemSlug}`}>
             <div>
               <div className={Style.gridCell}>
-                <div
-                  style={{
-                    textAlign: 'center',
-                    position: 'absolute',
-                    top: '7%',
-                    right: '7%',
-                    fontSize: '13px',
-                  }}
-                >
-                  {distanceInMiles} miles away
+                <div className={Style.distance}>{distanceInMiles} miles</div>
+                <div className={Style.resellerTag}>
+                  <div>@{reseller_username}</div>
                 </div>
                 <div className={Style.gridCellImage}>
                   <Img src={original_image_url} className={Style.gridImage} />
                 </div>
-                <div
-                  style={{
-                    textAlign: 'center',
-                    fontFamily:
-                      'Druk Wide Web,futura-pt,HelveticaNeue-Light,Helvetica Neue Light,Helvetica Neue,Helvetica,Arial,Lucida Grande,sans-serif',
 
-                    fontSize: '13px',
-                    fontWeight: '800',
-                    textTransform: 'uppercase',
-                  }}
-                >
-                  {name}
+                <div className={Style.brandAndPrice}>
+                  <div
+                    style={{ textAlign: 'center', color: '#b5b0ae' }}
+                    className={Style.brandSizeCondition}
+                  >
+                    {brand_name} - {size} / {conditionMap[condition].label}
+                  </div>
+                  <div style={{ textAlign: 'center' }}>${askingPrice}</div>
                 </div>
-                <br />
-                <div style={{ textAlign: 'center' }}>
-                  <a className={Style.userLink} href={`/${reseller_username}`}>
-                    @{reseller_username}
-                  </a>
-                </div>
-                <br />
-                <div style={{ textAlign: 'center' }}>${askingPrice}</div>
+              </div>
+              <div className={Style.gridCellBackground}>
+                <div className={Style.gridCellProductName}>{name}</div>
               </div>
             </div>
           </a>

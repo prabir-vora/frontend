@@ -41,8 +41,8 @@ export default class HowSellingWorksModal extends Component {
                 <h4 className={ModalStyle.StepTitle}>Respond</h4>
               </div>
               <div className={ModalStyle.StepDescription}>
-                Respond to customer messages on your listings. These could be
-                about condition, pricing, etc.
+                Respond to customer messages on your Local Marketplace listings.
+                These could be about condition, pricing, etc.
               </div>
             </div>
             <div className={ModalStyle.Step}>

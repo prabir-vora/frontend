@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import AppAuthDuck from 'stores/ducks/AppAuth.duck';
 import UserDuck from 'stores/ducks/User.duck';
+import SizeDuck from 'stores/ducks/Size.duck';
 
 import {
   SignUpModal,
@@ -14,6 +15,9 @@ import { withCookies } from 'react-cookie';
 
 class AppAuthContainer extends Component {
   async componentDidMount() {
+    const { getSizing } = SizeDuck.actionCreators;
+    this.props.dispatch(getSizing());
+
     const jwt = this.props.cookies.get('jwt');
     if (jwt) {
       const { actionCreators } = UserDuck;

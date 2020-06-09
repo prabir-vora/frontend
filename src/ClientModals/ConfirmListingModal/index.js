@@ -38,7 +38,7 @@ export default class ConfirmListingModal extends Component {
               src={original_image_url}
               alt={name}
             />
-            <h1 style={{ textTransform: 'capitalize' }}>{name}</h1>
+            <h1 className={ModalStyle.productName}>{name}</h1>
             <div className={ModalStyle.detailsContainer}>
               <div className={ModalStyle.detailsBlock}>
                 <div className={ModalStyle.detailsTitle}>Size</div>

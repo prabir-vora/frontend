@@ -15,7 +15,7 @@ import {
   RadioButtonUncheckedIcon,
   SortIcon,
 } from 'assets/Icons';
-import { Rheostat } from 'fields';
+import { Rheostat, ScreenSize } from 'fields';
 import './pagination.css';
 import { withCookies } from 'react-cookie';
 
@@ -53,7 +53,11 @@ const searchClient = algoliasearch(
 function Hits(props) {
   console.log(props);
   if (props.hits.length === 0) {
-    return null;
+    return (
+      <div className={Style.noResultsContainer}>
+        <h1 className={Style.noResultsTitle}>Sorry, no results found</h1>
+      </div>
+    );
   }
   return (
     <div className={Style.resultsGrid}>
@@ -680,6 +684,10 @@ function RangeSlider(props) {
     toggleIndividualFilter,
   } = props;
 
+  if (min === max) {
+    return null;
+  }
+
   return (
     <div>
       <div className={Style.IndividualFilterDesktop}>
@@ -854,17 +862,19 @@ class ShopPage extends Component {
       <div
         style={{
           background: 'linear-gradient(#888380 0%, #2B2928 99%)',
-          width: '100vw',
+          overflowX: 'hidden',
         }}
       >
-        <ReactTooltip
-          html={true}
-          id="like"
-          effect="solid"
-          multiline={true}
-          type="light"
-          className={Style.reactTooltip}
-        />
+        <ScreenSize deviceType="desktop">
+          <ReactTooltip
+            html={true}
+            id="like"
+            effect="solid"
+            multiline={true}
+            type="light"
+            className={Style.reactTooltip}
+          />
+        </ScreenSize>
 
         <MainNavBar />
         <div className={Style.pageLayout}>

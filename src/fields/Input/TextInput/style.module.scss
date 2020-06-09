@@ -17,17 +17,19 @@ $error-shadow: 0 0 0 1px rgba(241, 93, 92, 0.3), 0 1px 1px 0 rgba(0, 0, 0, 0.07)
   textarea {
     line-height: 25px;
     padding: 0;
+    min-width: 100%;
+    max-width: 100%;
   }
-  &.focused {
-    border-color: transparent;
-    box-shadow: $focus-shadow;
-    -webkit-box-shadow: $focus-shadow;
-  }
-  &.invalid {
-    border-color: transparent;
-    box-shadow: $error-shadow;
-    -webkit-box-shadow: $error-shadow;
-  }
+  // &.focused {
+  // border-color: transparent;
+  // box-shadow: $focus-shadow;
+  // -webkit-box-shadow: $focus-shadow;
+  // }
+  // &.invalid {
+  // border-color: transparent;
+  // box-shadow: $error-shadow;
+  // -webkit-box-shadow: $error-shadow;
+  // }
   &.readOnly {
     background: #f7f7f7;
     border: none;
@@ -69,6 +71,6 @@ $error-shadow: 0 0 0 1px rgba(241, 93, 92, 0.3), 0 1px 1px 0 rgba(0, 0, 0, 0.07)
 }
 
 .requiredText {
-  color: #636e72;
+  color: white;
   font-size: 0.7rem;
 }

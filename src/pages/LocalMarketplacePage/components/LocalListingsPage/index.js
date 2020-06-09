@@ -1,7 +1,18 @@
 import React, { Component } from 'react';
 import algoliasearch from 'algoliasearch';
-import { TickIcon } from 'assets/Icons';
+import {
+  TickIcon,
+  SortAndFilterIcon,
+  ExpandMoreIcon,
+  ExpandLessIcon,
+  SearchIcon,
+  CloseIcon,
+  RadioButtonCheckedIcon,
+  RadioButtonUncheckedIcon,
+  SortIcon,
+} from 'assets/Icons';
 import { Rheostat } from 'fields';
+import Switch from 'react-switch';
 
 import ResellItemTemplate from '../ResellItemTemplate';
 
@@ -12,7 +23,8 @@ import {
   connectStats,
   //   Hits,
   connectRefinementList,
-  SortBy,
+  connectCurrentRefinements,
+  connectSortBy,
   Pagination,
   Configure,
   connectHits,
@@ -35,6 +47,16 @@ const searchClient = algoliasearch(
 
 function Hits(props) {
   console.log(props.hits);
+  if (props.hits.length === 0) {
+    return (
+      <div className={Style.noResultsContainer}>
+        <h1 className={Style.noResultsTitle}>
+          Sorry, no results found. Try a different location or change the
+          radius.
+        </h1>
+      </div>
+    );
+  }
   return (
     <div className={Style.resultsGrid}>
       {props.hits.map(hit => {
@@ -45,12 +67,104 @@ function Hits(props) {
 }
 
 function Stats(props) {
+  if (props.nbHits === 0) {
+    return null;
+  }
   return (
     <p className={Style.stats}>
       {props.nbHits > 10000
-        ? 'SHOWING 10,000+ RESULTS'
-        : `SHOWING ${props.nbHits} RESULTS`}
+        ? 'Showing 10,000+ pieces'
+        : `Showing ${props.nbHits} pieces`}
     </p>
+  );
+}
+
+function ClearRefinements(props) {
+  const { items, refine } = props;
+  return (
+    <div>
+      <button
+        className={Style.resetFiltersButtonDesktop}
+        onClick={() => refine(items)}
+        disabled={!items.length}
+      >
+        Clear Filters
+      </button>
+      <button
+        className={Style.resetFiltersButtonMobile}
+        onClick={() => refine(items)}
+        disabled={!items.length}
+      >
+        Clear All
+      </button>
+    </div>
+  );
+}
+
+function SortBy(props) {
+  const {
+    items,
+    currentRefinement,
+    refine,
+    showSortBy,
+    toggleIndividualFilter,
+  } = props;
+  console.log(props);
+  return (
+    <div className={Style.sortByContainer}>
+      <div className={Style.sortByDesktop}>
+        <div
+          className={Style.filterHeadingContainer}
+          onClick={() => toggleIndividualFilter('sortBy')}
+        >
+          <p className={Style.filterHeading}>Sort By</p>
+          <label className={Style.expandButton}>
+            {showSortBy ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          </label>
+        </div>
+
+        <div className={showSortBy ? Style.filterList : Style.hideFilterList}>
+          {items.map(item => {
+            return (
+              <div
+                className={Style.filterItemContainer}
+                onClick={() => props.refine(item.value)}
+              >
+                <label className={Style.filterItemRadioButton}>
+                  {item.isRefined ? (
+                    <RadioButtonCheckedIcon />
+                  ) : (
+                    <RadioButtonUncheckedIcon />
+                  )}{' '}
+                </label>
+                <p className={Style.filterListItemDefault}>{item.label}</p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <div className={Style.sortByMobile}>
+        <select
+          value={currentRefinement.label}
+          onChange={e => {
+            console.log(e.target.value);
+            props.refine(e.target.value);
+          }}
+        >
+          {items.map(item => {
+            return (
+              <option value={item.value} className={Style.filterItemContainer}>
+                {item.label}
+              </option>
+            );
+          })}
+        </select>
+        <span className={Style.sortByLabelMobile}>
+          <SortIcon />
+          Sort By
+        </span>
+      </div>
+    </div>
   );
 }
 
@@ -79,7 +193,12 @@ function renderConditionRefinementList(props) {
     new_opened: { label: 'New, Opened', order: 2 },
     preowned: { label: 'Preowned', order: 4 },
   };
-  const { attribute, items } = props;
+  const {
+    attribute,
+    items,
+    showConditionFilter,
+    toggleIndividualFilter,
+  } = props;
 
   const sortedItems = items.sort((conditionA, conditionB) => {
     return conditionMap[conditionA.label].order >
@@ -88,123 +207,304 @@ function renderConditionRefinementList(props) {
       : -1;
   });
   return (
-    <div style={{ marginBottom: '40px' }}>
-      <p
-        style={{
-          textTransform: 'uppercase',
-          fontSize: '14px',
-          fontWeight: '600',
-          marginBottom: '7px',
-        }}
-      >
-        {attribute}
-      </p>
-      <div>
-        {sortedItems.map(item => {
-          return (
-            <p
-              style={{
-                fontSize: '12px',
-                cursor: 'pointer',
-                marginBottom: '7px',
-              }}
-              onClick={() => props.refine(item.value)}
-            >
-              {item.isRefined ? (
-                <TickIcon
-                  style={{ width: '15px', height: '15px', fill: 'white' }}
-                />
-              ) : null}{' '}
-              {conditionMap[item.label].label}
-            </p>
-          );
-        })}
+    <div>
+      <div className={Style.IndividualFilterDesktop}>
+        <div
+          className={Style.filterHeadingContainer}
+          onClick={() => toggleIndividualFilter('condition')}
+        >
+          <p className={Style.filterHeading}>{attribute}</p>
+          <label className={Style.expandButton}>
+            {showConditionFilter ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          </label>
+        </div>
+        <div
+          className={
+            showConditionFilter ? Style.filterList : Style.hideFilterList
+          }
+        >
+          {sortedItems.map(item => {
+            return (
+              <div
+                className={Style.filterItemContainer}
+                onClick={() => props.refine(item.value)}
+              >
+                <label className={Style.filterItemRadioButton}>
+                  {item.isRefined ? (
+                    <RadioButtonCheckedIcon />
+                  ) : (
+                    <RadioButtonUncheckedIcon />
+                  )}{' '}
+                </label>
+                <p className={Style.filterListItemDefault}>
+                  {conditionMap[item.label].label}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <div className={Style.IndividualFilterMobile}>
+        <div
+          className={Style.filterHeadingContainerMobile}
+          onClick={() => toggleIndividualFilter('condition')}
+        >
+          <p className={Style.filterHeadingMobile}>{attribute}</p>
+          <label className={Style.expandButtonMobile}>
+            {showConditionFilter ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          </label>
+        </div>
+        <div
+          className={
+            showConditionFilter ? Style.filterList : Style.hideFilterList
+          }
+        >
+          {sortedItems.map(item => {
+            return (
+              <div
+                className={Style.filterItemContainerMobile}
+                onClick={() => props.refine(item.value)}
+              >
+                <label className={Style.filterItemRadioButtonMobile}>
+                  {item.isRefined ? (
+                    <RadioButtonCheckedIcon />
+                  ) : (
+                    <RadioButtonUncheckedIcon />
+                  )}{' '}
+                </label>
+                <p className={Style.filterListItemDefaultMobile}>
+                  {conditionMap[item.label].label}
+                </p>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
 }
 
 function renderBrandRefinementList(props) {
-  const { items } = props;
+  const {
+    items,
+    showBrandsFilter,
+    toggleIndividualFilter,
+    searchForItems,
+  } = props;
   return (
-    <div style={{ marginBottom: '40px' }}>
-      <p
-        style={{
-          textTransform: 'uppercase',
-          fontSize: '14px',
-          fontWeight: '600',
-          marginBottom: '10px',
-        }}
-      >
-        Brands
-      </p>
-      <div>
-        {items.map(item => {
-          return (
-            <p
-              style={{
-                fontSize: '12px',
-                cursor: 'pointer',
-                marginBottom: '7px',
-              }}
-              onClick={() => props.refine(item.value)}
-            >
-              {item.isRefined ? (
-                <TickIcon
-                  style={{ width: '15px', height: '15px', fill: 'white' }}
-                />
-              ) : null}{' '}
-              {item.label}
-            </p>
-          );
-        })}
+    <div>
+      <div className={Style.IndividualFilterDesktop}>
+        <div
+          className={Style.filterHeadingContainer}
+          onClick={() => toggleIndividualFilter('brands')}
+        >
+          <p className={Style.filterHeading}>Brands</p>
+          <label className={Style.expandButton}>
+            {showBrandsFilter ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          </label>
+        </div>{' '}
+        <div
+          className={showBrandsFilter ? Style.filterList : Style.hideFilterList}
+        >
+          <div className={Style.brandsSearchContainer}>
+            <label className={Style.brandsSearchInputContainer}>
+              <input
+                className={Style.brandsSearchInput}
+                maxLength="80"
+                autoCorrect="off"
+                autoCapitalize="off"
+                spellCheck={false}
+                placeholder="Search Brands"
+                onChange={e => searchForItems(e.target.value)}
+                autoFocus
+              />
+            </label>
+            <div className={Style.brandsSearchInputOverlay}>
+              <span className={Style.brandsSearchLogo}>
+                <SearchIcon />
+              </span>
+            </div>
+          </div>
+          {items.map(item => {
+            return (
+              <div
+                className={Style.filterItemContainer}
+                onClick={() => props.refine(item.value)}
+              >
+                <label className={Style.filterItemRadioButton}>
+                  {item.isRefined ? (
+                    <RadioButtonCheckedIcon />
+                  ) : (
+                    <RadioButtonUncheckedIcon />
+                  )}{' '}
+                </label>
+                <p className={Style.filterListItemDefault}>{item.label}</p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <div className={Style.IndividualFilterMobile}>
+        <div
+          className={Style.filterHeadingContainerMobile}
+          onClick={() => toggleIndividualFilter('brands')}
+        >
+          <p className={Style.filterHeadingMobile}>Brands</p>
+          <label className={Style.expandButtonMobile}>
+            {showBrandsFilter ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          </label>
+        </div>{' '}
+        <div
+          className={showBrandsFilter ? Style.filterList : Style.hideFilterList}
+        >
+          <div className={Style.brandsSearchContainerMobile}>
+            <label className={Style.brandsSearchInputContainer}>
+              <input
+                className={Style.brandsSearchInput}
+                maxLength="80"
+                autoCorrect="off"
+                autoCapitalize="off"
+                spellCheck={false}
+                placeholder="Search Brands"
+                onChange={e => searchForItems(e.target.value)}
+                autoFocus
+              />
+            </label>
+            <div className={Style.brandsSearchInputOverlay}>
+              <span className={Style.brandsSearchLogo}>
+                <SearchIcon />
+              </span>
+            </div>
+          </div>
+          {items.map(item => {
+            return (
+              <div
+                className={Style.filterItemContainerMobile}
+                onClick={() => props.refine(item.value)}
+              >
+                <label className={Style.filterItemRadioButtonMobile}>
+                  {item.isRefined ? (
+                    <RadioButtonCheckedIcon />
+                  ) : (
+                    <RadioButtonUncheckedIcon />
+                  )}{' '}
+                </label>
+                <p className={Style.filterListItemDefaultMobile}>
+                  {item.label}
+                </p>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
 }
 
 function renderGenderRefinementList(props) {
-  const { items } = props;
+  const { items, showGenderFilter, toggleIndividualFilter } = props;
+
+  const activeFilterList = items.filter(item => item.isRefined);
+
+  const activeFilter =
+    activeFilterList.length !== 0 ? activeFilterList[0] : { label: 'All' };
+
   return (
-    <div style={{ marginBottom: '40px' }}>
-      <p
-        style={{
-          textTransform: 'uppercase',
-          fontSize: '14px',
-          fontWeight: '600',
-          marginBottom: '10px',
-        }}
-      >
-        Gender
-      </p>
-      <div>
-        {items.map(item => {
-          return (
-            <p
-              style={{
-                fontSize: '12px',
-                textTransform: 'capitalize',
-                cursor: 'pointer',
-                marginBottom: '7px',
-              }}
-              onClick={() => props.refine(item.value)}
+    <div>
+      <div className={Style.IndividualFilterDesktop}>
+        <div
+          className={Style.filterHeadingContainer}
+          onClick={() => toggleIndividualFilter('gender')}
+        >
+          <p className={Style.filterHeading}>
+            Gender{' '}
+            <span
+              className={
+                showGenderFilter
+                  ? Style.hideFilterLabel
+                  : Style.activeFilterLabel
+              }
             >
-              {item.isRefined ? (
-                <TickIcon
-                  style={{ width: '15px', height: '15px', fill: 'white' }}
-                />
-              ) : null}{' '}
-              {item.label}
-            </p>
-          );
-        })}
+              - {activeFilter.label}
+            </span>
+          </p>
+          <label className={Style.expandButton}>
+            {showGenderFilter ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          </label>
+        </div>{' '}
+        <div
+          className={showGenderFilter ? Style.filterList : Style.hideFilterList}
+        >
+          {items.map(item => {
+            return (
+              <div
+                className={Style.filterItemContainer}
+                onClick={() => props.refine(item.value)}
+              >
+                <label className={Style.filterItemRadioButton}>
+                  {item.isRefined ? (
+                    <RadioButtonCheckedIcon />
+                  ) : (
+                    <RadioButtonUncheckedIcon />
+                  )}{' '}
+                </label>
+                <p className={Style.filterListItemDefault}>{item.label}</p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <div className={Style.IndividualFilterMobile}>
+        <div
+          className={Style.filterHeadingContainerMobile}
+          onClick={() => toggleIndividualFilter('gender')}
+        >
+          <p className={Style.filterHeadingMobile}>
+            Gender{' '}
+            <span
+              className={
+                showGenderFilter
+                  ? Style.hideFilterLabel
+                  : Style.activeFilterLabel
+              }
+            >
+              - {activeFilter.label}
+            </span>
+          </p>
+          <label className={Style.expandButtonMobile}>
+            {showGenderFilter ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          </label>
+        </div>{' '}
+        <div
+          className={showGenderFilter ? Style.filterList : Style.hideFilterList}
+        >
+          {items.map(item => {
+            return (
+              <div
+                className={Style.filterItemContainerMobile}
+                onClick={() => props.refine(item.value)}
+              >
+                <label className={Style.filterItemRadioButtonMobile}>
+                  {item.isRefined ? (
+                    <RadioButtonCheckedIcon />
+                  ) : (
+                    <RadioButtonUncheckedIcon />
+                  )}{' '}
+                </label>
+                <p className={Style.filterListItemDefaultMobile}>
+                  {item.label}
+                </p>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
 }
 
 function renderProductTypeRefinementList(props) {
-  const { items } = props;
+  const { items, showProductTypeFilter, toggleIndividualFilter } = props;
   console.log(items);
 
   if (items.length === 0) {
@@ -212,45 +512,88 @@ function renderProductTypeRefinementList(props) {
   }
 
   return (
-    <div style={{ marginBottom: '40px' }}>
-      <p
-        style={{
-          textTransform: 'uppercase',
-          fontSize: '14px',
-          fontWeight: '600',
-          marginBottom: '10px',
-        }}
-      >
-        Product Type
-      </p>
-      <div>
-        {items.map(item => {
-          return (
-            <p
-              style={{
-                fontSize: '12px',
-                textTransform: 'capitalize',
-                cursor: 'pointer',
-                marginBottom: '7px',
-              }}
-              onClick={() => props.refine(item.value)}
-            >
-              {item.isRefined ? (
-                <TickIcon
-                  style={{ width: '15px', height: '15px', fill: 'white' }}
-                />
-              ) : null}{' '}
-              {item.label}
-            </p>
-          );
-        })}
+    <div>
+      <div className={Style.IndividualFilterDesktop}>
+        <div
+          className={Style.filterHeadingContainer}
+          onClick={() => toggleIndividualFilter('productType')}
+        >
+          <p className={Style.filterHeading}>Product Type</p>
+          <label className={Style.expandButton}>
+            {showProductTypeFilter ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          </label>
+        </div>{' '}
+        <div
+          className={
+            showProductTypeFilter ? Style.filterList : Style.hideFilterList
+          }
+        >
+          {items.map(item => {
+            return (
+              <div
+                className={Style.filterItemContainer}
+                onClick={() => props.refine(item.value)}
+              >
+                <label className={Style.filterItemRadioButton}>
+                  {item.isRefined ? (
+                    <RadioButtonCheckedIcon />
+                  ) : (
+                    <RadioButtonUncheckedIcon />
+                  )}{' '}
+                </label>
+                <p className={Style.filterListItemDefault}>{item.label}</p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <div className={Style.IndividualFilterMobile}>
+        <div
+          className={Style.filterHeadingContainerMobile}
+          onClick={() => toggleIndividualFilter('productType')}
+        >
+          <p className={Style.filterHeadingMobile}>Product Type</p>
+          <label className={Style.expandButtonMobile}>
+            {showProductTypeFilter ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          </label>
+        </div>{' '}
+        <div
+          className={
+            showProductTypeFilter ? Style.filterList : Style.hideFilterList
+          }
+        >
+          {items.map(item => {
+            return (
+              <div
+                className={Style.filterItemContainerMobile}
+                onClick={() => props.refine(item.value)}
+              >
+                <label className={Style.filterItemRadioButtonMobile}>
+                  {item.isRefined ? (
+                    <RadioButtonCheckedIcon />
+                  ) : (
+                    <RadioButtonUncheckedIcon />
+                  )}{' '}
+                </label>
+                <p className={Style.filterListItemDefaultMobile}>
+                  {item.label}
+                </p>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
 }
 
 function renderSizeRefinementList(props) {
-  const { items, productCategory } = props;
+  const {
+    items,
+    productCategory,
+    showSizeFilter,
+    toggleIndividualFilter,
+  } = props;
   console.log(productCategory);
 
   if (productCategory === 'sneakers') {
@@ -264,38 +607,68 @@ function renderSizeRefinementList(props) {
   }
 
   return (
-    <div style={{ marginBottom: '40px' }}>
-      <p
-        style={{
-          textTransform: 'uppercase',
-          fontSize: '14px',
-          fontWeight: '600',
-          marginBottom: '10px',
-        }}
-      >
-        Size
-      </p>
-      <div>
-        {items.map(item => {
-          return (
-            <p
-              style={{
-                fontSize: '12px',
-                textTransform: 'capitalize',
-                cursor: 'pointer',
-                marginBottom: '7px',
-              }}
-              onClick={() => props.refine(item.value)}
-            >
-              {item.isRefined ? (
-                <TickIcon
-                  style={{ width: '15px', height: '15px', fill: 'white' }}
-                />
-              ) : null}{' '}
-              {item.label}
-            </p>
-          );
-        })}
+    <div>
+      <div className={Style.IndividualFilterDesktop}>
+        <div
+          className={Style.filterHeadingContainer}
+          onClick={() => toggleIndividualFilter('size')}
+        >
+          <p className={Style.filterHeading}>Size</p>
+          <label className={Style.expandButton}>
+            {showSizeFilter ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          </label>
+        </div>{' '}
+        <div
+          className={showSizeFilter ? Style.filterList : Style.hideFilterList}
+        >
+          <div className={Style.sizeFilterListContainer}>
+            {items.map(item => {
+              return (
+                <p
+                  className={
+                    item.isRefined
+                      ? cx(Style.sizeFilterListItem, Style.sizeFilterItemActive)
+                      : Style.sizeFilterListItem
+                  }
+                  onClick={() => props.refine(item.value)}
+                >
+                  {item.label}
+                </p>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+      <div className={Style.IndividualFilterMobile}>
+        <div
+          className={Style.filterHeadingContainerMobile}
+          onClick={() => toggleIndividualFilter('size')}
+        >
+          <p className={Style.filterHeadingMobile}>Size</p>
+          <label className={Style.expandButtonMobile}>
+            {showSizeFilter ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          </label>
+        </div>{' '}
+        <div
+          className={showSizeFilter ? Style.filterList : Style.hideFilterList}
+        >
+          <div className={Style.sizeFilterListContainerMobile}>
+            {items.map(item => {
+              return (
+                <p
+                  className={
+                    item.isRefined
+                      ? cx(Style.sizeFilterListItem, Style.sizeFilterItemActive)
+                      : Style.sizeFilterListItem
+                  }
+                  onClick={() => props.refine(item.value)}
+                >
+                  {item.label}
+                </p>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -303,27 +676,91 @@ function renderSizeRefinementList(props) {
 
 function RangeSlider(props) {
   console.log(props);
-  const { min, max, currentRefinement, refine } = props;
+  const {
+    min,
+    max,
+    currentRefinement,
+    refine,
+    showPriceFilter,
+    toggleIndividualFilter,
+  } = props;
+
+  if (min === max) {
+    return null;
+  }
 
   return (
     <div>
-      <p
-        style={{
-          textTransform: 'uppercase',
-          fontSize: '14px',
-          fontWeight: '600',
-        }}
-      >
-        PRICE
-      </p>
-      <Rheostat
-        values={[currentRefinement.min, currentRefinement.max]}
-        min={min}
-        max={max}
-        onChange={({ values: [min, max] }) => {
-          refine({ min, max });
-        }}
-      />
+      <div className={Style.IndividualFilterDesktop}>
+        <div
+          className={Style.filterHeadingContainer}
+          onClick={() => toggleIndividualFilter('price')}
+        >
+          <p className={Style.filterHeading}>
+            Price{' '}
+            <span
+              className={
+                showPriceFilter
+                  ? Style.hideFilterLabel
+                  : Style.activeFilterLabel
+              }
+            >
+              - ${currentRefinement.min} to ${currentRefinement.max}
+            </span>
+          </p>
+          <label className={Style.expandButton}>
+            {showPriceFilter ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          </label>
+        </div>{' '}
+        <div
+          className={showPriceFilter ? Style.filterList : Style.hideFilterList}
+        >
+          <Rheostat
+            values={[currentRefinement.min, currentRefinement.max]}
+            min={min}
+            max={max}
+            onChange={({ values: [min, max] }) => {
+              refine({ min, max });
+            }}
+          />
+        </div>
+      </div>
+      <div className={Style.IndividualFilterMobile}>
+        <div
+          className={Style.filterHeadingContainerMobile}
+          onClick={() => toggleIndividualFilter('price')}
+        >
+          <p className={Style.filterHeadingMobile}>
+            Price{' '}
+            <span
+              className={
+                showPriceFilter
+                  ? Style.hideFilterLabel
+                  : Style.activeFilterLabel
+              }
+            >
+              - ${currentRefinement.min} to ${currentRefinement.max}
+            </span>
+          </p>
+          <label className={Style.expandButtonMobile}>
+            {showPriceFilter ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          </label>
+        </div>{' '}
+        <div
+          className={showPriceFilter ? Style.filterList : Style.hideFilterList}
+        >
+          <div className={Style.priceSliderContainerMobile}>
+            <Rheostat
+              values={[currentRefinement.min, currentRefinement.max]}
+              min={min}
+              max={max}
+              onChange={({ values: [min, max] }) => {
+                refine({ min, max });
+              }}
+            />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -335,6 +772,10 @@ const CustomStats = connectStats(Stats);
 const CustomRefinementList = connectRefinementList(RefinementListCustom);
 
 const CustomRangeSlider = connectRange(RangeSlider);
+
+const CustomClearRefinements = connectCurrentRefinements(ClearRefinements);
+
+const CustomSortBy = connectSortBy(SortBy);
 
 const radiusOptions = [
   {
@@ -376,6 +817,51 @@ export default class LocalListingsPage extends Component {
     showFilters: false,
     productCategory: 'sneakers',
     selectedRadius: radiusOptions[0],
+    showSortBy: true,
+    showBrandsFilter: false,
+    showProductTypeFilter: false,
+    showConditionFilter: false,
+    showGenderFilter: false,
+    showSizeFilter: false,
+    showPriceFilter: false,
+    productCategory: 'sneakers',
+    isUserPresent: false,
+    showMobileFilterContainer: false,
+  };
+
+  toggleIndividualFilter = filterType => {
+    switch (filterType) {
+      case 'sortBy':
+        return this.setState({
+          showSortBy: !!!this.state.showSortBy,
+        });
+      case 'brands':
+        return this.setState({
+          showBrandsFilter: !!!this.state.showBrandsFilter,
+        });
+      case 'productType':
+        return this.setState({
+          showProductTypeFilter: !!!this.state.showProductTypeFilter,
+        });
+      case 'condition':
+        return this.setState({
+          showConditionFilter: !!!this.state.showConditionFilter,
+        });
+      case 'gender':
+        return this.setState({
+          showGenderFilter: !!!this.state.showGenderFilter,
+        });
+      case 'size':
+        return this.setState({
+          showSizeFilter: !!!this.state.showSizeFilter,
+        });
+      case 'price':
+        return this.setState({
+          showPriceFilter: !!!this.state.showPriceFilter,
+        });
+      default:
+        return;
+    }
   };
 
   render() {
@@ -389,7 +875,7 @@ export default class LocalListingsPage extends Component {
     return (
       <div className={Style.pageContent}>
         <div className={Style.pageTitle}>
-          <h1>Local Marketplace</h1>
+          <h1 className={Style.titleLarge}>Local Marketplace</h1>
         </div>
         <div>
           <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -415,6 +901,17 @@ export default class LocalListingsPage extends Component {
                 options={radiusOptions}
                 value={this.state.selectedRadius}
                 onChange={selectedRadius => this.setState({ selectedRadius })}
+                styles={{
+                  // Fixes the overlapping problem of the component
+                  menu: provided => ({
+                    ...provided,
+                    zIndex: 9999,
+                    fontFamily: 'Arial',
+                    border: '0 !important',
+                  }),
+                }}
+                inputProps={{ readOnly: true }}
+                isSearchable={false}
               />
             </div>
           </div>
@@ -424,38 +921,182 @@ export default class LocalListingsPage extends Component {
             indexName="test_LOCAL_LISTINGS"
             searchClient={searchClient}
           >
-            <div className={Style.productCategoryToggle}>
-              <button
+            <div>
+              <div className={Style.productToggleAndStatsMobile}>
+                <div className={Style.productCategoryToggleMobile}>
+                  <label
+                    className={Style.productCategoryLabelMobile}
+                    onClick={() => {
+                      this.setState({ productCategory: 'sneakers' });
+                    }}
+                  >
+                    Sneakers
+                  </label>
+                  <Switch
+                    checked={
+                      this.state.productCategory === 'sneakers' ? false : true
+                    }
+                    onChange={value => {
+                      if (value !== true) {
+                        this.setState({
+                          productCategory: 'sneakers',
+                        });
+                      } else {
+                        this.setState({
+                          productCategory: 'apparel',
+                        });
+                      }
+                    }}
+                    onColor="#9A8686"
+                    onHandleColor="#fff"
+                    handleDiameter={30}
+                    uncheckedIcon={false}
+                    checkedIcon={false}
+                    boxShadow="0px 1px 5px rgba(0, 0, 0, 0.6)"
+                    activeBoxShadow="0px 0px 1px 5px rgba(0, 0, 0, 0.2)"
+                    height={20}
+                    width={48}
+                    className="react-switch"
+                    id="material-switch"
+                  />
+                  <label
+                    className={Style.productCategoryLabelMobile}
+                    onClick={() => {
+                      this.setState({ productCategory: 'apparel' });
+                    }}
+                  >
+                    Apparel
+                  </label>
+                </div>
+                <CustomStats />
+              </div>
+              <div
                 className={
-                  this.state.productCategory === 'sneakers'
+                  this.state.showMobileFilterContainer
                     ? cx(
-                        Style.productCategoryButton,
-                        Style.activeProductCategory,
+                        Style.filterContainerOverlay,
+                        Style.filterContainerOverlayActive,
                       )
-                    : Style.productCategoryButton
+                    : Style.filterContainerOverlay
                 }
-                onClick={() => {
-                  this.setState({ productCategory: 'sneakers' });
-                }}
               >
-                Sneakers
-              </button>
-              <button
+                <div
+                  className={Style.overlayCover}
+                  onClick={() =>
+                    this.setState({
+                      showMobileFilterContainer: false,
+                    })
+                  }
+                />
+              </div>
+              <div
                 className={
-                  this.state.productCategory === 'apparel'
-                    ? cx(
-                        Style.productCategoryButton,
-                        Style.activeProductCategory,
-                      )
-                    : Style.productCategoryButton
+                  this.state.showMobileFilterContainer
+                    ? cx(Style.filterContainer, Style.filterContainerActive)
+                    : Style.filterContainer
                 }
-                onClick={() => {
-                  this.setState({ productCategory: 'apparel' });
-                }}
               >
-                Apparel
-              </button>
+                <div className={Style.filterContainerHeader}>
+                  <div
+                    className={Style.filterCloseButton}
+                    onClick={() =>
+                      this.setState({
+                        showMobileFilterContainer: false,
+                      })
+                    }
+                  >
+                    Back
+                  </div>
+                  <h2 className={Style.filterContainerTitle}>Filters</h2>
+                  <div>
+                    <CustomClearRefinements />
+                  </div>
+                </div>
+                <div>
+                  <CustomRefinementList
+                    attribute="productType"
+                    operator="or"
+                    showProductTypeFilter={this.state.showProductTypeFilter}
+                    toggleIndividualFilter={this.toggleIndividualFilter}
+                  />
+                </div>
+                <div>
+                  <CustomRefinementList
+                    attribute="brand_name"
+                    operator="or"
+                    showBrandsFilter={this.state.showBrandsFilter}
+                    toggleIndividualFilter={this.toggleIndividualFilter}
+                    searchable={true}
+                    limit={20}
+                  />
+                </div>
+                <div>
+                  <CustomRefinementList
+                    attribute="condition"
+                    operator="or"
+                    showConditionFilter={this.state.showConditionFilter}
+                    toggleIndividualFilter={this.toggleIndividualFilter}
+                  />
+                </div>
+                <div>
+                  <CustomRefinementList
+                    attribute="gender"
+                    operator="or"
+                    showGenderFilter={this.state.showGenderFilter}
+                    toggleIndividualFilter={this.toggleIndividualFilter}
+                  />
+                </div>
+                <div>
+                  <CustomRefinementList
+                    attribute="size"
+                    operator="or"
+                    productCategory={this.state.productCategory}
+                    showSizeFilter={this.state.showSizeFilter}
+                    toggleIndividualFilter={this.toggleIndividualFilter}
+                  />
+                </div>
+                <div style={{ width: '100%' }}>
+                  <CustomRangeSlider
+                    attribute="askingPrice"
+                    showPriceFilter={this.state.showPriceFilter}
+                    toggleIndividualFilter={this.toggleIndividualFilter}
+                  />
+                </div>
+              </div>
             </div>
+
+            <div className={Style.mobileSortAndFilter}>
+              <div className={Style.mobileSortAndFilterButtonsContainer}>
+                <div className={Style.sortByInput}>
+                  <CustomSortBy
+                    defaultRefinement="test_LOCAL_LISTINGS"
+                    items={[
+                      { value: 'test_LOCAL_LISTINGS', label: 'Featured' },
+                      {
+                        value: 'test_LOCAL_LISTINGS_ascPrice',
+                        label: 'Price: Low to High',
+                      },
+                      {
+                        value: 'test_LOCAL_LISTINGS_descPrice',
+                        label: 'Price: High to Low',
+                      },
+                    ]}
+                  />
+                </div>
+                <span className={Style.sortAndFilterSeperator} />
+                <button
+                  className={Style.filterButtonMobile}
+                  onClick={() =>
+                    this.setState({
+                      showMobileFilterContainer: true,
+                    })
+                  }
+                >
+                  <SortAndFilterIcon /> Filter
+                </button>
+              </div>
+            </div>
+
             <div className={Style.filterSummary}>
               <div className={Style.filterSummaryRowItem}>
                 <div className={Style.flexRow}>
@@ -467,9 +1108,8 @@ export default class LocalListingsPage extends Component {
                       })
                     }
                   >
-                    <span className={Style.toggleName}>
-                      {this.state.showFilters ? 'HIDE FILTERS' : 'SHOW FILTERS'}
-                    </span>
+                    <SortAndFilterIcon />
+                    <span className={Style.toggleName}>Sort and Filter</span>
                   </label>
                 </div>
               </div>
@@ -477,36 +1117,50 @@ export default class LocalListingsPage extends Component {
                 <CustomStats />
               </div>
               <div className={Style.filterSummaryRowItem}>
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <p
-                    style={{
-                      margin: '0px 10px',
-                      fontSize: '10px',
-                      textTransform: 'uppercase',
+                <div className={Style.productCategoryToggle}>
+                  <label
+                    className={Style.productCategoryLabel}
+                    onClick={() => {
+                      this.setState({ productCategory: 'sneakers' });
                     }}
                   >
-                    Sort By
-                  </p>
-                  <SortBy
-                    defaultRefinement="test_LOCAL_LISTINGS"
-                    items={[
-                      { value: 'test_LOCAL_LISTINGS', label: 'Featured' },
-                      {
-                        value: 'test_LOCAL_LISTINGS_ascPrice',
-                        label: 'Price asc.',
-                      },
-                      {
-                        value: 'test_LOCAL_LISTINGS_descPrice',
-                        label: 'Price desc.',
-                      },
-                    ]}
+                    Sneakers
+                  </label>
+                  <Switch
+                    checked={
+                      this.state.productCategory === 'sneakers' ? false : true
+                    }
+                    onChange={value => {
+                      if (value !== true) {
+                        this.setState({
+                          productCategory: 'sneakers',
+                        });
+                      } else {
+                        this.setState({
+                          productCategory: 'apparel',
+                        });
+                      }
+                    }}
+                    onColor="#9A8686"
+                    onHandleColor="#fff"
+                    handleDiameter={30}
+                    uncheckedIcon={false}
+                    checkedIcon={false}
+                    boxShadow="0px 1px 5px rgba(0, 0, 0, 0.6)"
+                    activeBoxShadow="0px 0px 1px 5px rgba(0, 0, 0, 0.2)"
+                    height={20}
+                    width={48}
+                    className="react-switch"
+                    id="material-switch"
                   />
+                  <label
+                    className={Style.productCategoryLabel}
+                    onClick={() => {
+                      this.setState({ productCategory: 'apparel' });
+                    }}
+                  >
+                    Apparel
+                  </label>
                 </div>
               </div>
             </div>
@@ -518,28 +1172,76 @@ export default class LocalListingsPage extends Component {
                     : Style.filterControls
                 }
               >
-                {/* <ClearRefinements /> */}
                 <div>
-                  <CustomRefinementList attribute="productType" operator="or" />
+                  <CustomClearRefinements />
                 </div>
                 <div>
-                  <CustomRefinementList attribute="brand_name" operator="or" />
+                  <CustomSortBy
+                    defaultRefinement="test_LOCAL_LISTINGS"
+                    items={[
+                      { value: 'test_LOCAL_LISTINGS', label: 'Featured' },
+                      {
+                        value: 'test_LOCAL_LISTINGS_ascPrice',
+                        label: 'Price: Low to High',
+                      },
+                      {
+                        value: 'test_LOCAL_LISTINGS_descPrice',
+                        label: 'Price: High to Low',
+                      },
+                    ]}
+                    showSortBy={this.state.showSortBy}
+                    toggleIndividualFilter={this.toggleIndividualFilter}
+                  />
                 </div>
                 <div>
-                  <CustomRefinementList attribute="condition" operator="or" />
+                  <CustomRefinementList
+                    attribute="productType"
+                    operator="or"
+                    showProductTypeFilter={this.state.showProductTypeFilter}
+                    toggleIndividualFilter={this.toggleIndividualFilter}
+                  />
                 </div>
                 <div>
-                  <CustomRefinementList attribute="gender" operator="or" />
+                  <CustomRefinementList
+                    attribute="brand_name"
+                    operator="or"
+                    showBrandsFilter={this.state.showBrandsFilter}
+                    toggleIndividualFilter={this.toggleIndividualFilter}
+                    searchable={true}
+                    limit={20}
+                  />
+                </div>
+                <div>
+                  <CustomRefinementList
+                    attribute="condition"
+                    operator="or"
+                    showConditionFilter={this.state.showConditionFilter}
+                    toggleIndividualFilter={this.toggleIndividualFilter}
+                  />
+                </div>
+                <div>
+                  <CustomRefinementList
+                    attribute="gender"
+                    operator="or"
+                    showGenderFilter={this.state.showGenderFilter}
+                    toggleIndividualFilter={this.toggleIndividualFilter}
+                  />
                 </div>
                 <div>
                   <CustomRefinementList
                     attribute="size"
                     operator="or"
                     productCategory={this.state.productCategory}
+                    showSizeFilter={this.state.showSizeFilter}
+                    toggleIndividualFilter={this.toggleIndividualFilter}
                   />
                 </div>
                 <div style={{ width: '100%' }}>
-                  <CustomRangeSlider attribute="askingPrice" />
+                  <CustomRangeSlider
+                    attribute="askingPrice"
+                    showPriceFilter={this.state.showPriceFilter}
+                    toggleIndividualFilter={this.toggleIndividualFilter}
+                  />
                 </div>
                 <Configure
                   hitsPerPage={9}

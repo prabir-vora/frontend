@@ -7,6 +7,8 @@ import moment from 'moment';
 
 import { connect } from 'react-redux';
 import ProductListingDuck from 'stores/ducks/ProductListing.duck';
+import NumberOfLikesDuck from 'stores/ducks/NumberOfLikes.duck';
+
 import AppAuthDuck from 'stores/ducks/AppAuth.duck';
 import UserDuck from 'stores/ducks/User.duck';
 import CheckoutDuck from 'stores/ducks/Checkout.duck';
@@ -19,9 +21,13 @@ import cx from 'classnames';
 
 import { Button, Img } from 'fields';
 import MainFooter from 'components/MainFooter';
+import { FireIcon, FavoriteIcon } from 'assets/Icons';
 
 import ReactTooltip from 'react-tooltip';
 import LoadingScreen from 'components/LoadingScreen';
+
+import Lightbox from 'react-image-lightbox';
+import 'react-image-lightbox/style.css';
 
 class ProductListingPage extends Component {
   confirmNotif = null;
@@ -33,6 +39,9 @@ class ProductListingPage extends Component {
     newSizeMap: {},
     usedSizeMap: {},
     error: '',
+    images: [],
+    showDetailedImages: false,
+    imageIndex: 0,
   };
 
   async componentDidMount() {
@@ -53,11 +62,20 @@ class ProductListingPage extends Component {
       ) {
         const { currentSlug, listingsMap } = this.props.productListing;
         const product = listingsMap[currentSlug];
+        const { fetchNumberOfLikes } = NumberOfLikesDuck.actionCreators;
+        const numberOfLikes = await this.props.dispatch(
+          fetchNumberOfLikes(product.id),
+        );
+        this.setState({ numberOfLikes });
         this.constructSizeMap(product);
       }
     } else {
       console.log(message);
     }
+  }
+
+  componentDidUpdate() {
+    ReactTooltip.rebuild();
   }
 
   onClickLike = async productID => {
@@ -70,13 +88,25 @@ class ProductListingPage extends Component {
     }
 
     const { likedProducts } = user;
+
     const { actionCreators } = UserDuck;
     const { followProduct, unfollowProduct } = actionCreators;
 
     if (likedProducts.includes(productID)) {
-      this.props.dispatch(unfollowProduct(productID));
+      await this.props.dispatch(unfollowProduct(productID));
+
+      const { fetchNumberOfLikes } = NumberOfLikesDuck.actionCreators;
+      const numberOfLikes = await this.props.dispatch(
+        fetchNumberOfLikes(productID),
+      );
+      this.setState({ numberOfLikes });
     } else {
-      this.props.dispatch(followProduct(productID));
+      await this.props.dispatch(followProduct(productID));
+      const { fetchNumberOfLikes } = NumberOfLikesDuck.actionCreators;
+      const numberOfLikes = await this.props.dispatch(
+        fetchNumberOfLikes(productID),
+      );
+      this.setState({ numberOfLikes });
     }
   };
 
@@ -266,20 +296,59 @@ class ProductListingPage extends Component {
     return `$${listing.askingPrice}`;
   };
 
+  renderDetailedImages = data => {
+    const { imageIndex, showDetailedImages, selectedResellItem } = this.state;
+
+    const { resellItems } = data;
+
+    if (!selectedResellItem) {
+      return null;
+    }
+
+    const filteredResellItems = resellItems.filter(
+      resellItem => resellItem.id === selectedResellItem,
+    );
+
+    const activeResellItem = filteredResellItems[0];
+
+    const { images } = activeResellItem;
+
+    return (
+      <React.Fragment>
+        {showDetailedImages && images.length !== 0 && (
+          <Lightbox
+            mainSrc={images[imageIndex]}
+            nextSrc={images[(imageIndex + 1) % images.length]}
+            prevSrc={images[(imageIndex + images.length - 1) % images.length]}
+            onCloseRequest={() => this.setState({ showDetailedImages: false })}
+            onMovePrevRequest={() =>
+              this.setState({
+                imageIndex: (imageIndex + images.length - 1) % images.length,
+              })
+            }
+            onMoveNextRequest={() =>
+              this.setState({
+                imageIndex: (imageIndex + 1) % images.length,
+              })
+            }
+            imageTitle={`Seller Image Uploads ${imageIndex + 1} / ${
+              images.length
+            }`}
+            // enableZoom={false}
+            // discourageDownloads={true}
+          />
+        )}
+      </React.Fragment>
+    );
+  };
+
   renderNavigationLinks = (brand, name) => (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginBottom: '10px',
-      }}
-    >
+    <div className={Style.navigationLinkContainer}>
       <a
         style={{
           color: 'grey',
           textTransform: 'uppercase',
-          fontSize: '16px',
+          fontSize: '14px',
           marginRight: '10px',
         }}
         href={`/brands/${brand.slug}`}
@@ -289,7 +358,7 @@ class ProductListingPage extends Component {
       <h5
         style={{
           color: 'grey',
-          fontSize: '16px',
+          fontSize: '14px',
           margin: '0px 10px 0px 0px',
           textTransform: 'uppercase',
         }}
@@ -301,13 +370,14 @@ class ProductListingPage extends Component {
         style={{
           color: 'grey',
           textTransform: 'uppercase',
-          fontSize: '16px',
+          fontSize: '14px',
         }}
       >
         {name}
       </a>
     </div>
   );
+
   render() {
     console.log(this.props);
     const { currentSlug, listingsMap } = this.props.productListing;
@@ -316,6 +386,9 @@ class ProductListingPage extends Component {
     if (data === null || data === undefined) {
       return <LoadingScreen />;
     }
+
+    const likedProducts = this.props.user ? this.props.user.likedProducts : [];
+    const isLiked = likedProducts.includes(data.id);
 
     const {
       brand,
@@ -393,6 +466,20 @@ class ProductListingPage extends Component {
             {selectedResellItem && (
               <div className={Style.priceContainer}>
                 <div className={Style.price}>{this.renderPrice(data)}</div>
+                <div>
+                  {selectedResellItem && selectedCondition === 'used' && (
+                    <button
+                      onClick={() =>
+                        this.setState({
+                          showDetailedImages: true,
+                        })
+                      }
+                      className={Style.showImageUploads}
+                    >
+                      Show seller image uploads
+                    </button>
+                  )}
+                </div>
               </div>
             )}
 
@@ -404,6 +491,26 @@ class ProductListingPage extends Component {
               >
                 Buy Now
               </Button>
+              <Button className={Style.myListButton}>
+                <FavoriteIcon />
+              </Button>
+              <div className={Style.likeButtonContainer}>
+                <button
+                  className={
+                    isLiked
+                      ? cx(Style.likeButton, Style.active)
+                      : Style.likeButton
+                  }
+                  data-tip="Cop or not?"
+                  data-for="like"
+                  onClick={() => this.onClickLike(data.id)}
+                >
+                  <FireIcon />
+                </button>
+                <h4 className={Style.likeButtonCount}>
+                  {this.state.numberOfLikes}
+                </h4>
+              </div>
             </div>
             {this.state.selectedResellItem && (
               <Button
@@ -424,6 +531,15 @@ class ProductListingPage extends Component {
             {this.renderProductImageGallery(data)}
           </div>
         </div>
+        <ReactTooltip
+          html={true}
+          id="like"
+          effect="solid"
+          multiline={true}
+          type="light"
+          className={Style.reactTooltip}
+        />{' '}
+        {this.renderDetailedImages(data)}
         <MainFooter />
       </div>
     );

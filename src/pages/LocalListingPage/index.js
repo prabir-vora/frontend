@@ -11,17 +11,34 @@ import UserDuck from 'stores/ducks/User.duck';
 import AppAuthDuck from 'stores/ducks/AppAuth.duck';
 import ReactTooltip from 'react-tooltip';
 
-import { TickIcon, PlusIcon, ShareIcon } from 'assets/Icons';
+import { TickIcon, PlusIcon, ShareIcon, FavoriteIcon } from 'assets/Icons';
 import { ShowConfirmNotif } from 'functions';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
-import { ImageGallery, Img } from 'fields';
+import {
+  ImageGallery,
+  Img,
+  CustomImageGallery,
+  Button,
+  ScreenSize,
+} from 'fields';
 
 import Style from './style.module.scss';
+import cx from 'classnames';
 import MainFooter from 'components/MainFooter';
 import LoadingScreen from 'components/LoadingScreen';
 
+import moment from 'moment';
+
+import Lightbox from 'react-image-lightbox';
+import 'react-image-lightbox/style.css';
+
 class LocalListingPage extends Component {
+  state = {
+    images: [],
+    showDetailedImages: false,
+    imageIndex: 0,
+  };
   async componentDidMount() {
     const { listingID } = this.props.match.params;
     console.log(listingID);
@@ -117,6 +134,123 @@ class LocalListingPage extends Component {
         />
       </div>
     );
+  };
+
+  renderDetailedImages = data => {
+    const { imageIndex, showDetailedImages, selectedResellItem } = this.state;
+
+    const { images } = data;
+
+    return (
+      <React.Fragment>
+        {showDetailedImages && images.length !== 0 && (
+          <Lightbox
+            mainSrc={images[imageIndex]}
+            nextSrc={images[(imageIndex + 1) % images.length]}
+            prevSrc={images[(imageIndex + images.length - 1) % images.length]}
+            onCloseRequest={() => this.setState({ showDetailedImages: false })}
+            onMovePrevRequest={() =>
+              this.setState({
+                imageIndex: (imageIndex + images.length - 1) % images.length,
+              })
+            }
+            onMoveNextRequest={() =>
+              this.setState({
+                imageIndex: (imageIndex + 1) % images.length,
+              })
+            }
+            imageTitle={`Seller Image Uploads ${imageIndex + 1} / ${
+              images.length
+            }`}
+            // enableZoom={false}
+            // discourageDownloads={true}
+          />
+        )}
+      </React.Fragment>
+    );
+  };
+
+  renderNavigationLinks = (brand, name) => (
+    <div className={Style.navigationLinkContainer}>
+      <a
+        style={{
+          color: 'grey',
+          textTransform: 'uppercase',
+          fontSize: '14px',
+          marginRight: '10px',
+        }}
+        href={`/brands/${brand.slug}`}
+      >
+        {brand.name}
+      </a>
+      <h5
+        style={{
+          color: 'grey',
+          fontSize: '14px',
+          margin: '0px 10px 0px 0px',
+          textTransform: 'uppercase',
+        }}
+      >
+        {' '}
+        /{' '}
+      </h5>
+      <a
+        style={{
+          color: 'grey',
+          textTransform: 'uppercase',
+          fontSize: '14px',
+        }}
+      >
+        {name}
+      </a>
+    </div>
+  );
+
+  renderProductImageGallery = data => {
+    let imageGalleryInput = [];
+
+    const { images } = data;
+
+    images.forEach(pictureURL => {
+      imageGalleryInput.push(pictureURL);
+    });
+
+    return (
+      <React.Fragment>
+        <ScreenSize deviceType="mobile">
+          <CustomImageGallery
+            images={imageGalleryInput}
+            onClickImage={this.onClickImage}
+          />
+        </ScreenSize>
+        <ScreenSize deviceType="tablet">
+          <CustomImageGallery
+            images={imageGalleryInput}
+            onClickImage={() => null}
+          />
+        </ScreenSize>
+        <ScreenSize deviceType="desktop">
+          <CustomImageGallery
+            images={imageGalleryInput}
+            onClickImage={() => null}
+          />
+        </ScreenSize>
+      </React.Fragment>
+    );
+
+    return (
+      <CustomImageGallery
+        images={imageGalleryInput}
+        onClickImage={this.onClickImage}
+      />
+    );
+  };
+
+  onClickImage = currentIndex => {
+    this.setState({
+      showDetailedImages: true,
+      imageIndex: currentIndex,
+    });
   };
 
   renderProductDetails = data => {
@@ -253,36 +387,133 @@ class LocalListingPage extends Component {
     const { currentSlug, listingsMap } = this.props.localListing;
     const data = listingsMap[currentSlug];
 
+    const { listingID } = this.props.match.params;
+
     if (data === null || data === undefined) {
       return <LoadingScreen />;
     }
 
+    const { product, condition, askingPrice, size, reseller } = data;
+
+    const {
+      brand,
+      productCategory,
+      name,
+      sku,
+      colorway,
+      designer,
+      releaseDate,
+      gender,
+    } = product;
+
+    const { user } = this.props;
+
+    let myLocalList;
+
+    myLocalList = user ? user.myLocalList : [];
+
+    const isAddedToList = myLocalList.includes(data.id);
+
+    const conditionMap = {
+      new: { label: 'New, Deadstock' },
+      new_defects: { label: 'New, Defects' },
+      new_opened: { label: 'New, Opened' },
+      preowned: { label: 'Preowned' },
+    };
+
     return (
-      <div>
+      <div className={Style.productBackground}>
+        <ScreenSize deviceType="desktop">
+          <ReactTooltip
+            html={true}
+            effect="solid"
+            multiline={true}
+            type="light"
+            className={Style.reactTooltip}
+          />
+        </ScreenSize>
         <MainNavBar />
-        <ReactTooltip
-          effect="solid"
-          multiline={true}
-          type="light"
-          place="bottom"
-        />
-        <div className={Style.pageLayout}>
-          <div style={{ display: 'flex' }}>
-            <div className={Style.mediaContainer}>
-              {this.renderImageGallery(data)}
-            </div>
-            <div className={Style.productContainer}>
-              <div className={Style.contentContainer}>
-                <div className={Style.content}>
-                  <div className={Style.productName}>{data.product.name}</div>
-                  <div style={{ width: '100%' }}>
-                    {this.renderProductDetails(data)}
-                  </div>
+
+        <div className={Style.productLayout}>
+          <div className={Style.productContainer}>
+            <Img src={brand.imageURL} className={Style.brandImage} />
+            <h6 className={Style.productCategory}>{productCategory}</h6>
+
+            <h1 className={Style.productName}>{name}</h1>
+            <div className={Style.productDetailsContainer}>
+              <div className={Style.productDetail}>
+                <span className={Style.bold}>SKU </span> {sku}{' '}
+              </div>
+              <div className={Style.productDetail}>
+                <span className={Style.bold}>Colorway</span>
+                {colorway}
+              </div>
+              {designer && (
+                <div className={Style.productDetail}>
+                  <span className={Style.bold}>Designer</span>
+                  {designer.name}
                 </div>
+              )}
+              {releaseDate && (
+                <div className={Style.productDetail}>
+                  <span className={Style.bold}>Release Date</span>
+                  {moment(releaseDate).format('YYYY-MM-DD')}
+                </div>
+              )}
+              <div className={Style.productDetail}>
+                <span className={Style.bold}>Seller</span>@{reseller.username}
               </div>
             </div>
+
+            <div className={Style.conditionContainer}>
+              Condition: {conditionMap[condition].label}
+            </div>
+            <div className={Style.sizeContainer}>Size: {size}</div>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                marginTop: '30px',
+              }}
+            >
+              <div className={Style.approxLocation}>Approx. Location</div>
+              <MapContainer
+                _geoloc={data.reseller._geoloc}
+                containerElement={<div className={Style.mapContainer} />}
+                mapElement={<div style={{ height: `100%` }} />}
+              />
+            </div>
+            <div className={Style.buttonsContainer}>
+              <Button
+                className={Style.buyButton}
+                onClick={() => {
+                  this.openMessageModal();
+                }}
+              >
+                Message
+              </Button>
+              <Button
+                className={
+                  isAddedToList
+                    ? cx(Style.myListButton, Style.active)
+                    : Style.myListButton
+                }
+                onClick={() => this.onClickAddToList(data.id)}
+                data-tip={
+                  isAddedToList ? 'Remove from My List' : 'Add to My List'
+                }
+              >
+                <FavoriteIcon />
+              </Button>
+            </div>
+          </div>
+          <div className={Style.mediaContainer}>
+            {this.renderNavigationLinks(brand, name)}
+            {this.renderProductImageGallery(data)}
           </div>
         </div>
+        {this.renderDetailedImages(data)}
         <MainFooter />
       </div>
     );

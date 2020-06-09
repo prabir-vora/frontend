@@ -7,9 +7,11 @@ import MainNavBar from 'components/MainNavBar';
 import Style from './style.module.scss';
 
 import { connect } from 'react-redux';
-import AdminDuck from 'stores/ducks/Admin/Admin.duck';
+import SizeDuck from 'stores/ducks/Size.duck';
 import UserDuck from 'stores/ducks/User.duck';
 import SellDuck from 'stores/ducks/Sell.duck';
+
+import { RadioButtonCheckedIcon, RadioButtonUncheckedIcon } from 'assets/Icons';
 
 // Fields
 import {
@@ -72,7 +74,7 @@ const RESELL_ITEM_FIELDS = [
   {
     fieldKind: 'dropdown',
     id: 'size',
-    label: 'Select size',
+    label: 'Select size (US)',
   },
   {
     fieldKind: 'checkboxes',
@@ -106,13 +108,6 @@ class CreateListingPage extends Component {
     submitBtnStatus: 'inactive',
     query: '',
   };
-
-  async componentDidMount() {
-    const { actionCreators } = AdminDuck;
-    const { getSizing } = actionCreators;
-    await this.props.dispatch(getSizing());
-    console.log(this.props);
-  }
 
   onUploadResellItemImages = imageURLs => {
     console.log(imageURLs);
@@ -230,64 +225,59 @@ class CreateListingPage extends Component {
     switch (fieldKind) {
       case 'autocomplete':
         return (
-          <InstantSearch indexName="test_PRODUCTS" searchClient={searchClient}>
-            <h4 style={{ fontWeight: '500', color: '#919496' }}>
-              {field.label}
-            </h4>
-            <Configure
-              hitsPerPage={8}
-              filters={`productCategory:${this.state.resellItemInfo.productType}`}
-            />
-            {!this.state.resellItemInfo.product ? (
-              <Autocomplete
-                onProductSelection={this.onProductSelection}
-                onSuggestionCleared={this.onSuggestionCleared}
+          <InstantSearch
+            indexName="test_PRODUCTS"
+            searchClient={searchClient}
+            className={Style.formFieldContainer}
+          >
+            <div className={Style.formFieldContainer}>
+              <h4 className={Style.formFieldTitle}>{field.label}</h4>
+              <Configure
+                hitsPerPage={8}
+                distinct={true}
+                filters={`productCategory:${this.state.resellItemInfo.productType}`}
               />
-            ) : (
-              <div style={{ width: '100%', display: 'flex' }}>
-                <Img
-                  src={this.state.resellItemInfo.product.original_image_url}
-                  style={{ width: '100px', height: '100px' }}
+              {!this.state.resellItemInfo.product ? (
+                <Autocomplete
+                  onProductSelection={this.onProductSelection}
+                  onSuggestionCleared={this.onSuggestionCleared}
                 />
-                <div
-                  style={{
-                    fontSize: '12px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-around',
-                    alignItems: 'center',
-                  }}
-                >
-                  {this.state.resellItemInfo.product.name}
-                  <Button
-                    className={Style.removeProductSelection}
-                    onClick={() => {
-                      this.setState(
-                        {
-                          resellItemInfo: immutable.set(
-                            this.state.resellItemInfo,
-                            'product',
-                            '',
-                          ),
-                        },
-                        this.onGetButtonStatus,
-                      );
-                    }}
-                  >
-                    Remove
-                  </Button>
+              ) : (
+                <div style={{ width: '100%', display: 'flex' }}>
+                  <Img
+                    src={this.state.resellItemInfo.product.original_image_url}
+                    className={Style.selectedItemImage}
+                  />
+                  <div className={Style.selectedItemTitle}>
+                    {this.state.resellItemInfo.product.name}
+                    <Button
+                      className={Style.removeProductSelection}
+                      onClick={() => {
+                        this.setState(
+                          {
+                            resellItemInfo: immutable.set(
+                              this.state.resellItemInfo,
+                              'product',
+                              '',
+                            ),
+                          },
+                          this.onGetButtonStatus,
+                        );
+                      }}
+                    >
+                      Remove
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </InstantSearch>
         );
       case 'radio':
         return (
-          <div style={{ marginBottom: '30px' }} key={id}>
+          <div className={Style.formFieldContainer} key={id}>
             <div>
-              <h4 style={{ fontWeight: '500', color: '#919496' }}>
-                {field.label}
-              </h4>
+              <h4 className={Style.formFieldTitle}>{field.label}</h4>
               {this.renderRadioButtons(id, options)}
             </div>
           </div>
@@ -295,47 +285,45 @@ class CreateListingPage extends Component {
       case 'text':
       case 'textarea':
         return (
-          <div key={id} style={{ marginBottom: '20px', margin: '20px 0px' }}>
-            <h4 style={{ fontWeight: '500', color: '#919496' }}>
-              Asking Price $ (USD)
-            </h4>
+          <div key={id} className={Style.formFieldContainer}>
+            <h4 className={Style.formFieldTitle}>Asking Price $ (USD)</h4>
             <TextInput
               {...field}
               hasMultipleLines={fieldKind === 'textarea' ? true : false}
               name={id}
               onChange={value => this.onChangeTextInputValue(id, value)}
               value={this.state.resellItemInfo[id] || ''}
+              type={'number'}
             />
           </div>
         );
       case 'dropdown':
         return (
-          <div key={id}>
-            <h4 style={{ fontWeight: '500', color: '#919496' }}>
-              {field.label}
-            </h4>
+          <div key={id} className={Style.formFieldContainer}>
+            <h4 className={Style.formFieldTitle}>{field.label}</h4>
             {this.renderDropdown(id)}
           </div>
         );
       case 'checkboxes':
         return (
-          <div key={id}>
-            <h4 style={{ fontWeight: '500', color: '#919496' }}>
-              {field.label}
-            </h4>
+          <div key={id} className={Style.formFieldContainer}>
+            <h4 className={Style.formFieldTitle}>{field.label}</h4>
             {this.renderCheckBoxes(options)}
           </div>
         );
       case 'multipleImagesUploader':
         return (
-          <div key={id}>
-            <h4 style={{ fontWeight: '500', color: '#919496' }}>
-              {field.label}
-            </h4>
-            <h6 style={{ fontSize: '13px' }}>
+          <div key={id} className={Style.formFieldContainer}>
+            <h4 className={Style.formFieldTitle}>{field.label}</h4>
+            <h6
+              style={{
+                fontSize: '13px',
+                fontWeight: '400',
+              }}
+            >
               Upload 4 - 5 images from good angles.
               <a
-                style={{ color: '#938cfc' }}
+                style={{ textDecoration: 'underline', marginLeft: '5px' }}
                 href="/photoGuidelines"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -349,6 +337,7 @@ class CreateListingPage extends Component {
               imageURLs={this.state.resellItemInfo.images}
               typeOfUpload={'resellItem'}
               onUploadImages={this.onUploadResellItemImages}
+              style={{ background: 'none', boxShadow: 'none' }}
             />
           </div>
         );
@@ -368,7 +357,39 @@ class CreateListingPage extends Component {
     return Object.keys(options).map(optionID => {
       return (
         <div key={optionID} style={{ marginBottom: '10px' }}>
-          <RadioButton
+          <Button
+            className={Style.radioButton}
+            onClick={() => {
+              if (id === 'productType') {
+                this.setState({
+                  resellItemInfo: immutable
+                    .wrap(this.state.resellItemInfo)
+                    .set('product', '')
+                    .set(id, optionID)
+                    .value(),
+                });
+              } else {
+                this.setState(
+                  {
+                    resellItemInfo: immutable.set(
+                      this.state.resellItemInfo,
+                      id,
+                      optionID,
+                    ),
+                  },
+                  this.onGetButtonStatus,
+                );
+              }
+            }}
+          >
+            {optionID === this.state.resellItemInfo[id] ? (
+              <RadioButtonCheckedIcon />
+            ) : (
+              <RadioButtonUncheckedIcon />
+            )}
+            {options[optionID].label}
+          </Button>
+          {/* <RadioButton
             checked={optionID === this.state.resellItemInfo[id]}
             id={optionID}
             label={options[optionID].label}
@@ -394,7 +415,7 @@ class CreateListingPage extends Component {
                 );
               }
             }}
-          />
+          /> */}
         </div>
       );
     });
@@ -441,7 +462,7 @@ class CreateListingPage extends Component {
 
     if (!product) {
       return (
-        <p style={{ fontSize: '12px', color: 'red' }}>Select product first</p>
+        <p style={{ fontSize: '15px', color: 'white' }}>Select product first</p>
       );
     }
     const { size_brand, gender } = product;
@@ -457,6 +478,18 @@ class CreateListingPage extends Component {
         options={sizeDropDownValues}
         value={size}
         onChange={this.onSelectSize}
+        styles={{
+          // Fixes the overlapping problem of the component
+          menu: provided => ({
+            ...provided,
+            zIndex: 9999,
+            fontFamily: 'Arial',
+            border: '0 !important',
+            color: 'black',
+            maxWidth: '400px',
+            width: '400px',
+          }),
+        }}
       />
     );
   };
@@ -474,6 +507,7 @@ class CreateListingPage extends Component {
             id={optionID}
             label={options[optionID].label}
             onClick={this.onSelectAvailability}
+            className={Style.availabilityCheckbox}
           />
         </div>
       );
@@ -482,19 +516,18 @@ class CreateListingPage extends Component {
 
   render() {
     return (
-      <div>
+      <div className={Style.pageWrapper}>
         <MainNavBar />
         <div className={Style.pageLayout}>
           <div className={Style.pageContent}>
             <div className={Style.pageTitle}>
-              <h2>Create Listing</h2>
+              <h2 className={Style.titleLarge}>Create Listing</h2>
             </div>
-            <div>
-              <div className={Style.createListingForm}>
-                {RESELL_ITEM_FIELDS.map(this.renderField)}
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  {this.renderSubmitButton()}
-                </div>
+
+            <div className={Style.createListingForm}>
+              {RESELL_ITEM_FIELDS.map(this.renderField)}
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                {this.renderSubmitButton()}
               </div>
             </div>
           </div>
@@ -508,7 +541,7 @@ class CreateListingPage extends Component {
 const mapStateToProps = state => {
   return {
     user: state[UserDuck.duckName].user,
-    sizing: state[AdminDuck.duckName].sizing.data,
+    sizing: state[SizeDuck.duckName].sizing.data,
   };
 };
 

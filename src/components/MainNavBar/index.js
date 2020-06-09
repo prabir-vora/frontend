@@ -286,26 +286,22 @@ class MainNavBar extends Component {
               </NavLink>
             </li>
             <li>
-              <NavLink
-                exact
-                to="/sell"
+              <label
                 className={Style.navLink}
-                activeClassName={Style.navLinkActive}
+                onClick={() => this.protectedRouteClick('sell')}
               >
                 <SellNavIcon />
                 <div className={Style.navLinkContent}>Sell</div>
-              </NavLink>
+              </label>
             </li>
             <li>
-              <NavLink
-                exact
-                to="/myList"
+              <label
                 className={Style.navLink}
-                activeClassName={Style.navLinkActive}
+                onClick={() => this.protectedRouteClick('myList')}
               >
                 <MyListNavIcon />
                 <div className={Style.navLinkContent}>My List</div>
-              </NavLink>
+              </label>
             </li>
           </ul>
           <div className={Style.logoutButtonContainer}>

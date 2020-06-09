@@ -26,14 +26,15 @@ const actionTypes = createActionTypes(
 const initialState = {
   showHowSellingWorksModal: false,
   showConfirmListingModal: false,
+  showSellerSetupModal: false,
   listingInfo: null,
   creatingNewListing: false,
-  brands: {
-    data: [],
-    errorMessage: {},
-    isFetching: false,
-    isMutating: false,
-  },
+  // brands: {
+  //   data: [],
+  //   errorMessage: {},
+  //   isFetching: false,
+  //   isMutating: false,
+  // },
 };
 
 const submitListingInfo = listingInfo => dispatch => {
@@ -49,6 +50,9 @@ const showModal = modalType => dispatch => {
     case 'confirmListing':
       dispatch(showConfirmListingModal());
       return;
+    case 'sellerSetup':
+      dispatch(showSellerSetupModal());
+      return;
     default:
       return null;
   }
@@ -61,6 +65,9 @@ const hideModal = modalType => dispatch => {
       return;
     case 'confirmListing':
       dispatch(hideConfirmListingModal());
+      return;
+    case 'sellerSetup':
+      dispatch(hideSellerSetupModal());
       return;
     default:
       return null;
@@ -176,10 +183,24 @@ const showConfirmListingModal = () => {
   };
 };
 
+const showSellerSetupModal = () => {
+  return {
+    type: actionTypes.SHOW_MODAL,
+    payload: 'showSellerSetupModal',
+  };
+};
+
 const hideConfirmListingModal = () => {
   return {
     type: actionTypes.HIDE_MODAL,
     payload: 'showConfirmListingModal',
+  };
+};
+
+const hideSellerSetupModal = () => {
+  return {
+    type: actionTypes.HIDE_MODAL,
+    payload: 'showSellerSetupModal',
   };
 };
 

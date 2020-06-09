@@ -46,7 +46,7 @@ export default class MessageModal extends Component {
             hasMultipleLines={true}
             className={ModalStyle.formInput}
             placeholder={
-              'Send a message regarding price, condition, shipping, etc.'
+              'Send a message regarding price, condition, meeting up, etc.'
             }
           />
           <Button

@@ -60,8 +60,7 @@ export default class SignUpModal extends Component {
     return (
       <div>
         <p className={ModalStyle.Message}>
-          Create an account to Shop resell items, Browse local listings, Find
-          resellers, and much more...
+          Sign up to buy and sell Sneakers and Apparel globally and locally...
         </p>
         <GoogleLogin
           clientId="516409520927-4sl33hnsnkremqjskn8qbq97s6ncslrm.apps.googleusercontent.com"

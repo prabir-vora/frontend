@@ -44,6 +44,7 @@ import { ReactComponent as RadioButtonCheckedIcon } from './RadioButtonCheckedIc
 import { ReactComponent as RadioButtonUncheckedIcon } from './RadioButtonUncheckedIcon.svg';
 import { ReactComponent as SortIcon } from './SortIcon.svg';
 import { ReactComponent as UserIcon } from './UserIcon.svg';
+import { ReactComponent as FavoriteIcon } from './FavoriteIcon.svg';
 
 export {
   AddPhotoIcon,
@@ -60,6 +61,7 @@ export {
   EngageMessagesIcon,
   ExpandMoreIcon,
   ExpandLessIcon,
+  FavoriteIcon,
   FollowersCountIcon,
   GridViewIcon,
   LeftArrowIcon,

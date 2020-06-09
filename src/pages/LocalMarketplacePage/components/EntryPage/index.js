@@ -7,25 +7,41 @@ import { ListingIcon, ChatIcon, NetworkIcon } from 'assets/Icons';
 import { LocationSearchInput } from 'fields';
 
 export default class EntryPage extends Component {
+  state = {
+    lat: '',
+    lng: '',
+    address: '',
+  };
+
+  onSelectLocation = (address, lat, lng) => {
+    this.setState({ lat, lng, address });
+  };
+
+  onSearch = () => {
+    const { lat, lng, address } = this.state;
+    this.props.onSelectLocation(address, lat, lng);
+  };
+
   render() {
     return (
       <div className={Style.pageContainer}>
         <div className={Style.locationContainer}>
           <div className={Style.locationTitle}>
-            <div className={Style.text}>
-              <span className={Style.nearbyText}>Find Drip near you</span>
-            </div>
+            <h4 className={Style.subtitle}>Find Drip near you</h4>
           </div>
           <div className={Style.locationInput}>
             <LocationSearchInput
-              address={this.props.address}
-              latitude={this.props.lat}
-              longitude={this.props.lng}
-              onSelectLocation={this.props.onSelectLocation}
+              address={this.address}
+              latitude={this.lat}
+              longitude={this.lng}
+              onSelectLocation={this.onSelectLocation}
             />
           </div>
           <div className={Style.buttonContainer}>
-            <button className={Style.pillButton}>
+            <button
+              className={Style.pillButton}
+              onClick={() => this.onSearch()}
+            >
               <span className={Style.buttonText}>Search</span>
             </button>
           </div>

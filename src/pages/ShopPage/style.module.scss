@@ -10,6 +10,19 @@
   color: white;
 }
 
+.noResultsContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.noResultsTitle {
+  font-size: 25px;
+  font-weight: 400;
+  text-align: center;
+}
+
 .filterContainerOverlay {
   position: fixed;
   top: 0;
@@ -69,6 +82,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  font-size: 18px;
 }
 
 .filterCloseButton {
@@ -215,8 +229,10 @@
 }
 
 .mobileSortAndFilter {
-  position: sticky;
-  top: 0;
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+  width: 100%;
   z-index: 2;
 }
 
@@ -253,7 +269,7 @@
 }
 
 .sortByMobile {
-  padding: 15px;
+  padding: 16px;
   position: relative;
 
   & > select {
@@ -588,6 +604,7 @@
   font-size: 14px;
   line-height: 20px;
   letter-spacing: 0.015em;
+  border: 1px solid black;
 }
 
 .brandsSearchInputOverlay {
@@ -730,6 +747,10 @@
       color: rgb(181, 176, 174);
       border-bottom: 1px solid rgb(181, 176, 174);
     }
+  }
+
+  .brandsSearchInput {
+    border: none;
   }
 
   .resetFiltersButtonMobile {

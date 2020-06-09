@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
+
+import Lightbox from 'react-image-lightbox';
+import 'react-image-lightbox/style.css';
+
 // Style
 import Style from '../style.module.scss';
 
@@ -15,7 +19,7 @@ import {
 class ChangePhotoModal extends Component {
   confirmNotif = null;
 
-  state = { images: [] };
+  state = { images: [], showDetailedImages: false, imageIndex: 0 };
 
   componentDidMount = () =>
     this.setState({
@@ -42,6 +46,35 @@ class ChangePhotoModal extends Component {
     );
   };
 
+  renderDetailedImages = () => {
+    const { imageIndex, images, showDetailedImages } = this.state;
+    return (
+      <React.Fragment>
+        {showDetailedImages && images.length !== 0 && (
+          <Lightbox
+            mainSrc={images[imageIndex]}
+            nextSrc={images[(imageIndex + 1) % images.length]}
+            prevSrc={images[(imageIndex + images.length - 1) % images.length]}
+            onCloseRequest={() => this.setState({ showDetailedImages: false })}
+            onMovePrevRequest={() =>
+              this.setState({
+                imageIndex: (imageIndex + images.length - 1) % images.length,
+              })
+            }
+            onMoveNextRequest={() =>
+              this.setState({
+                imageIndex: (imageIndex + 1) % images.length,
+              })
+            }
+            imageTitle={`Seller Image Uploads ${imageIndex + 1} / ${
+              images.length
+            }`}
+          />
+        )}
+      </React.Fragment>
+    );
+  };
+
   render() {
     console.log(this.props);
     const { name } = this.props;
@@ -58,7 +91,24 @@ class ChangePhotoModal extends Component {
         shouldCloseOnOverlayClick={true}
       >
         <h2>{name}</h2>
+        <button
+          style={{
+            width: '150px',
+            height: '40px',
+            background: 'black',
+            color: 'white',
+            marginBottom: '20px',
+          }}
+          onClick={() =>
+            this.setState({
+              showDetailedImages: true,
+            })
+          }
+        >
+          View Images
+        </button>
         {this.renderMultipleImagesUploader()}
+        {this.renderDetailedImages()}
         <Button
           className={Style.saveButton}
           name="save new item image url"

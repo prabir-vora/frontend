@@ -41,7 +41,6 @@
   padding: 16px;
   font-size: 16px;
   max-width: 400px;
-  border: 1px solid black;
   border-radius: 6px;
   outline: none;
 }
@@ -71,6 +70,7 @@
   z-index: 100000;
   width: 100%;
   max-width: 400px;
+  font-family: Arial;
 }
 
 .Demo__suggestion-item {

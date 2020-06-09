@@ -31,10 +31,24 @@ const getLocalListing = resellItemSlug => dispatch => {
             getLocalListing(slug: "${resellItemSlug}") {
                 id
                 product {
-                    id
+                  id
+                  productCategory
+                  productType
+                  name
+                  nickName
+                  description
+                  sku
+                  brand {
                     name
-                    slug 
-                    original_image_url
+                    id
+                    imageURL
+                    slug
+                  }
+                  gender
+                  hasSizing
+                  colorway
+                  releaseDate
+                  slug
                 }
                 reseller {
                     id

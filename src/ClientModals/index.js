@@ -11,11 +11,75 @@ import ReplyModal from './ReplyModal';
 import HowSellingWorksModal from './HowSellingWorksModal';
 import ConfirmListingModal from './ConfirmListingModal';
 import NewAddressModal from './NewAddressModal';
+import SellerSetupModal from './SellerSetupModal';
 
 import { ShowConfirmNotif } from 'functions';
 
+import qs from 'query-string';
+
 class ClientModals extends Component {
   confirmNotif = null;
+
+  componentDidMount() {
+    const { user } = this.props;
+
+    if (!user) {
+      return;
+    }
+
+    const {
+      email,
+      username,
+      stripe_connect_account_status,
+      activeSellerAddressID,
+    } = user;
+
+    const queryParameters = {
+      client_id: 'ca_HEFQOOaKgt2E08XtNo3uTO5Nu9WI0dMJ',
+      scope: 'read_write',
+      redirect_uri: 'https://localhost:3000/stripeRedirect',
+      response_type: 'code',
+      'stripe_user[country]': 'US',
+      'stripe_user[business_type]': 'sole_prop',
+      'stripe_user[currency]': 'usd',
+    };
+    const queryString = qs.stringify(queryParameters);
+    console.log(queryString);
+
+    this.setState({
+      stripeConnectOnboardingUrl: `https://connect.stripe.com/oauth/authorize?${queryString}`,
+    });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.user !== this.props.user) {
+      const { user } = this.props;
+
+      if (!user) {
+        return this.setState({
+          stripeConnectOnboardingUrl: '',
+        });
+      }
+
+      const { email, username } = user;
+
+      const queryParameters = {
+        client_id: 'ca_HEFQOOaKgt2E08XtNo3uTO5Nu9WI0dMJ',
+        scope: 'read_write',
+        redirect_uri: 'https://localhost:3000/stripeRedirect',
+        response_type: 'code',
+        'stripe_user[country]': 'US',
+        'stripe_user[business_type]': 'sole_prop',
+        'stripe_user[currency]': 'usd',
+      };
+      const queryString = qs.stringify(queryParameters);
+      console.log(queryString);
+
+      this.setState({
+        stripeConnectOnboardingUrl: `https://connect.stripe.com/oauth/authorize?${queryString}`,
+      });
+    }
+  }
 
   onCloseMessageModal = () => {
     const { actionCreators } = ConversationDuck;
@@ -87,6 +151,8 @@ class ClientModals extends Component {
     return { success };
   };
 
+  onClickStripeButton = () => {};
+
   onCloseHowSellingWorksModal = () => {
     const { hideModal } = SellDuck.actionCreators;
     this.props.dispatch(hideModal('howSellingWorks'));
@@ -95,6 +161,11 @@ class ClientModals extends Component {
   onCloseConfirmListingModal = () => {
     const { hideModal } = SellDuck.actionCreators;
     this.props.dispatch(hideModal('confirmListing'));
+  };
+
+  onCloseSellerSetupModal = () => {
+    const { hideModal } = SellDuck.actionCreators;
+    this.props.dispatch(hideModal('sellerSetup'));
   };
 
   onCloseNewAddressModal = () => {
@@ -148,7 +219,16 @@ class ClientModals extends Component {
       showConfirmListingModal,
       listingInfo,
       showNewAddressModal,
+      showSellerSetupModal,
+      user,
     } = this.props;
+
+    if (!user) {
+      return null;
+    }
+
+    const { stripe_connect_account_status, activeSellerAddressID } = user;
+
     return (
       <React.Fragment>
         {showMessageModal && (
@@ -175,6 +255,14 @@ class ClientModals extends Component {
             onSubmitListing={this.onCreateListing}
           />
         )}
+        {showSellerSetupModal && (
+          <SellerSetupModal
+            onClose={this.onCloseSellerSetupModal}
+            stripeConnectOnboardingUrl={this.state.stripeConnectOnboardingUrl}
+            stripe_connect_account_status={stripe_connect_account_status}
+            activeSellerAddressID={activeSellerAddressID}
+          />
+        )}
         {showNewAddressModal && (
           <NewAddressModal
             onClose={this.onCloseNewAddressModal}
@@ -195,6 +283,7 @@ const mapStateToProps = state => {
     replyConversationID: state[ConversationDuck.duckName].replyConversationID,
     showHowSellingWorksModal: state[SellDuck.duckName].showHowSellingWorksModal,
     showConfirmListingModal: state[SellDuck.duckName].showConfirmListingModal,
+    showSellerSetupModal: state[SellDuck.duckName].showSellerSetupModal,
     listingInfo: state[SellDuck.duckName].listingInfo,
     user: state[UserDuck.duckName].user,
     showNewAddressModal: state[UserDuck.duckName].showNewAddressModal,

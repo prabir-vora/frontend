@@ -128,7 +128,7 @@ class MultipleImagesUploader extends Component {
       onSubmit={this.onSubmit}
     >
       <input
-        style={{ textAlign: 'center' }}
+        style={{ textAlign: 'center', background: 'none', boxShadow: 'none' }}
         type="file"
         accept="image/*"
         multiple
