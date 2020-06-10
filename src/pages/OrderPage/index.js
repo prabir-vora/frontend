@@ -26,7 +26,6 @@ class OrderPage extends Component {
     isUserPresent: false,
     addNewAddress: false,
     addNewPayment: false,
-    ongoingPayment: false,
     orderPurchased: false,
     errorMessage: '',
   };
@@ -175,10 +174,6 @@ class OrderPage extends Component {
   };
 
   onPurchaseOrder = async () => {
-    this.setState({
-      ongoingPayment: true,
-    });
-
     const { orderNumber } = this.props.match.params;
 
     const { purchaseOrder } = CheckoutDuck.actionCreators;
@@ -188,11 +183,7 @@ class OrderPage extends Component {
     );
 
     if (paymentIntentClientSecret === '') {
-      this.setState({
-        ongoingPayment: true,
-      });
-
-      return;
+      return { success: false };
     }
 
     const { stripe } = this.props;
@@ -210,11 +201,11 @@ class OrderPage extends Component {
       this.setState({
         orderPurchased: true,
       });
+
+      return { success: true };
     }
 
-    this.setState({
-      ongoingPayment: false,
-    });
+    return { success: false };
   };
 
   renderResellItem = data => {
@@ -232,27 +223,92 @@ class OrderPage extends Component {
     };
 
     return (
-      <div className={Style.contentContainer}>
-        <div className={Style.imageContainer}>
-          <Img src={original_image_url} className={Style.productImage} />
-          <div className={Style.productDetails}>
-            <h1 style={{ marginTop: '50px', textAlign: 'center' }}>{name}</h1>
-            <div className={Style.detailsContainer}>
-              <div className={Style.detailsBlock}>
-                <div className={Style.detailsTitle}>Size</div>
-                <div className={Style.detailsContent}>{size}</div>
-              </div>
-              <div className={Style.detailsBlock}>
-                <div className={Style.detailsTitle}>Price</div>
-                <div className={Style.detailsContent}>${askingPrice}</div>
-              </div>
-              <div className={Style.detailsBlock}>
-                <div className={Style.detailsTitle}>Condition</div>
-                <div className={Style.detailsContent}>
-                  {conditionMap[condition].label}
-                </div>
+      <React.Fragment>
+        <div className={Style.productNameMobile}>{resellItem.product.name}</div>
+        <div className={Style.contentContainer}>
+          <div className={Style.detailsContainer}>
+            <div className={Style.detailsBlock}>
+              <div className={Style.detailsTitle}>Size</div>
+              <div className={Style.detailsContent}>{size}</div>
+            </div>
+            <div className={Style.detailsBlock}>
+              <div className={Style.detailsTitle}>Price</div>
+              <div className={Style.detailsContent}>${askingPrice}</div>
+            </div>
+            <div className={Style.detailsBlock}>
+              <div className={Style.detailsTitle}>Condition</div>
+              <div className={Style.detailsContent}>
+                {conditionMap[condition].label}
               </div>
             </div>
+          </div>
+
+          <div className={Style.imageContainer}>
+            <Img src={original_image_url} className={Style.productImage} />
+          </div>
+        </div>
+      </React.Fragment>
+    );
+  };
+
+  renderOrderProgression = data => {
+    const { addNewAddress, addNewPayment, orderPurchased } = this.state;
+    const { buyerAddress, billingInfo, purchased_at } = data;
+
+    console.log(this.state);
+    if (orderPurchased || purchased_at) {
+      return null;
+    }
+
+    return (
+      <div className={Style.orderProgressContainer}>
+        <div className={Style.orderProgress}>
+          <div style={{ position: 'relative' }}>
+            <div className={Style.individualOrderProgress}>
+              {!buyerAddress || addNewAddress ? (
+                <span className={Style.activeBullet}>
+                  <span className={Style.insideBullet} />
+                </span>
+              ) : (
+                <span className={Style.bullet} />
+              )}
+            </div>
+            <h4 className={Style.orderProgressLabel}>SHIPPING</h4>
+          </div>
+
+          <hr className={Style.seperator} />
+
+          <div style={{ position: 'relative' }}>
+            <div className={Style.individualOrderProgress}>
+              {(!billingInfo || addNewPayment) &&
+              buyerAddress &&
+              !addNewAddress ? (
+                <span className={Style.activeBullet}>
+                  <span className={Style.insideBullet} />
+                </span>
+              ) : (
+                <span className={Style.bullet} />
+              )}
+            </div>
+            <h4 className={Style.orderProgressLabel}>PAYMENT</h4>
+          </div>
+
+          <hr className={Style.seperator} />
+
+          <div style={{ position: 'relative' }}>
+            <div className={Style.individualOrderProgress}>
+              {buyerAddress &&
+              !addNewAddress &&
+              billingInfo &&
+              !addNewPayment ? (
+                <span className={Style.activeBullet}>
+                  <span className={Style.insideBullet} />
+                </span>
+              ) : (
+                <span className={Style.bullet} />
+              )}
+            </div>
+            <h4 className={Style.orderProgressLabel}>CONFIRMATION</h4>
           </div>
         </div>
       </div>
@@ -261,10 +317,17 @@ class OrderPage extends Component {
 
   renderCheckoutContainer = data => {
     const { addNewAddress, addNewPayment, orderPurchased } = this.state;
-    const { buyerAddress, billingInfo, purchased_at } = data;
+    const { buyerAddress, billingInfo, purchased_at, status } = data;
 
-    if (orderPurchased || purchased_at) {
-      return <ItemPurchased purchased_at={purchased_at} />;
+    if (orderPurchased || purchased_at || status !== 'BUYER_PENDING') {
+      return (
+        <ItemPurchased
+          orderDetails={data}
+          user={this.props.user}
+          purchased_at={purchased_at}
+          status={status}
+        />
+      );
     }
 
     if (!buyerAddress || addNewAddress) {
@@ -295,7 +358,6 @@ class OrderPage extends Component {
           updateShippingAddress={this.updateShippingAddress}
           updatePaymentMethod={this.updatePaymentMethod}
           onPurchaseOrder={this.onPurchaseOrder}
-          ongoingPayment={this.state.ongoingPayment}
         />
       );
     }
@@ -316,7 +378,11 @@ class OrderPage extends Component {
 
     if (error) {
       return (
-        <div style={{ backgroundColor: 'black' }}>
+        <div
+          style={{
+            backgroundColor: 'linear-gradient(100deg, #111010 0%, #4b4b4b 99%)',
+          }}
+        >
           <MainNavBar />
           <h1
             style={{
@@ -337,11 +403,22 @@ class OrderPage extends Component {
       );
     }
 
+    const { resellItem } = data;
+
     return (
-      <div style={{ backgroundColor: 'black' }}>
+      <div
+        style={{
+          background: 'linear-gradient(100deg, #111010 0%, #4b4b4b 99%)',
+          minHeight: '100vh',
+        }}
+      >
         <MainNavBar />
         <div className={Style.pageLayout}>
-          <div style={{ display: 'flex', width: '100%' }}>
+          {this.renderOrderProgression(data)}
+          <div className={Style.productNameLarge}>
+            {resellItem.product.name}
+          </div>
+          <div className={Style.checkoutLayout}>
             <div className={Style.resellItemContainer}>
               {this.renderResellItem(data)}
             </div>

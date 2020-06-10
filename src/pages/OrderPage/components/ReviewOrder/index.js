@@ -2,7 +2,11 @@ import React, { Component } from 'react';
 
 import Style from '../style.module.scss';
 
-import { Button, Img, RadioButton } from 'fields';
+import { RadioButtonCheckedIcon, RadioButtonUncheckedIcon } from 'assets/Icons';
+
+import { Button, Img } from 'fields';
+
+import { ClipLoader } from 'react-spinners';
 
 const visaImage = require('assets/Images/visa.png');
 const mastercardImage = require('assets/Images/mastercard.png');
@@ -15,6 +19,8 @@ export default class ReviewOrder extends Component {
     changePayment: false,
     activeShippingID: '',
     activePaymentID: '',
+    confirmingOrder: false,
+    errorMessage: '',
   };
 
   componentDidMount() {
@@ -74,10 +80,25 @@ export default class ReviewOrder extends Component {
     }
   };
 
-  onSubmitOrder = e => {
+  onSubmitOrder = async e => {
     e.preventDefault();
 
-    this.props.onPurchaseOrder();
+    this.setState({
+      confirmingOrder: true,
+    });
+
+    const { success } = await this.props.onPurchaseOrder();
+
+    if (success) {
+      this.setState({
+        confirmingOrder: false,
+      });
+    } else {
+      this.setState({
+        errorMessage: 'Something went wrong. Try again.',
+        confirmingOrder: false,
+      });
+    }
   };
 
   goBack = () => {
@@ -140,25 +161,25 @@ export default class ReviewOrder extends Component {
         {paymentMethods.map(payment => {
           const { card_brand, last_4_digits } = payment;
           return (
-            <div className={Style.PaymentListItem} key={payment.id}>
-              <div
-                style={{ display: 'flex', marginBottom: '20px' }}
-                className={Style.PaymentListItemContent}
+            <div
+              style={{ display: 'flex', marginBottom: '20px' }}
+              className={Style.PaymentListItemContent}
+            >
+              <button
+                onClick={() =>
+                  this.setState({
+                    activePaymentID: payment.id,
+                  })
+                }
+                className={Style.ListItemButton}
               >
-                <RadioButton
-                  checked={payment.id === this.state.activePaymentID}
-                  id={payment.id}
-                  label={''}
-                  onClick={() =>
-                    this.setState({
-                      activePaymentID: payment.id,
-                    })
-                  }
-                />
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  {this.renderCardBrand(card_brand)} {last_4_digits}
-                </div>
-              </div>
+                {payment.id === this.state.activePaymentID ? (
+                  <RadioButtonCheckedIcon />
+                ) : (
+                  <RadioButtonUncheckedIcon />
+                )}
+                {this.renderCardBrand(card_brand)} {last_4_digits}
+              </button>
             </div>
           );
         })}
@@ -214,19 +235,22 @@ export default class ReviewOrder extends Component {
           const addressLabel = `${address1} ${address2}, ${city_locality}, ${state_province}, ${country_code}, ${postal_code}`;
 
           return (
-            <div className={Style.ShippingListItem} key={address.id}>
-              <div className={Style.ShippingListItemContent}>
-                <RadioButton
-                  checked={address.id === this.state.activeShippingID}
-                  id={address.id}
-                  label={addressLabel}
-                  onClick={() =>
-                    this.setState({
-                      activeShippingID: address.id,
-                    })
-                  }
-                />
-              </div>
+            <div className={Style.shippingListItem} key={address.id}>
+              <button
+                onClick={() =>
+                  this.setState({
+                    activeShippingID: address.id,
+                  })
+                }
+                className={Style.ListItemButton}
+              >
+                {address.id === this.state.activeShippingID ? (
+                  <RadioButtonCheckedIcon />
+                ) : (
+                  <RadioButtonUncheckedIcon />
+                )}
+                {addressLabel}
+              </button>
             </div>
           );
         })}
@@ -286,7 +310,16 @@ export default class ReviewOrder extends Component {
     return (
       <div>
         <div className={Style.OrderReviewSummaryDetail}>
-          <h3 className={Style.OrderReviewSummaryDetailTitle}>SHIP TO</h3>
+          <div className={Style.OrderReviewTitleContainer}>
+            <h3 className={Style.OrderReviewSummaryDetailTitle}>Ship To</h3>
+            <button
+              className={Style.OrderReviewSummaryDetailEditLink}
+              onClick={() => this.onClickEdit('shipping')}
+            >
+              EDIT
+            </button>
+          </div>
+
           <div className={Style.OrderReviewSummaryDetailContent}>
             <div className={Style.OrderReviewSummaryDetailContentItem}>
               <div className={Style.addressLabel}>
@@ -295,22 +328,11 @@ export default class ReviewOrder extends Component {
               </div>
               <div>{phone}</div>
             </div>
-            <button
-              className={Style.OrderReviewSummaryDetailEditLink}
-              onClick={() => this.onClickEdit('shipping')}
-            >
-              EDIT
-            </button>
           </div>
         </div>
         <div className={Style.OrderReviewSummaryDetail}>
-          <h3 className={Style.OrderReviewSummaryDetailTitle}>PAYMENT</h3>
-          <div className={Style.OrderReviewSummaryDetailContent}>
-            <div className={Style.OrderReviewSummaryDetailContentItem}>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                {this.renderCardBrand(card_brand)} {last_4_digits}
-              </div>
-            </div>
+          <div className={Style.OrderReviewTitleContainer}>
+            <h3 className={Style.OrderReviewSummaryDetailTitle}>Payment</h3>
             <button
               className={Style.OrderReviewSummaryDetailEditLink}
               onClick={() => this.onClickEdit('payment')}
@@ -318,22 +340,32 @@ export default class ReviewOrder extends Component {
               EDIT
             </button>
           </div>
+
+          <div className={Style.OrderReviewSummaryDetailContent}>
+            <div className={Style.OrderReviewSummaryDetailContentItem}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                {this.renderCardBrand(card_brand)} {last_4_digits}
+              </div>
+            </div>
+          </div>
         </div>
         <div className={Style.OrderReviewSummaryDetail}>
-          <h3 className={Style.OrderReviewSummaryDetailTitle}>ORDER SUMMARY</h3>
+          <div className={Style.OrderReviewTitleContainer}>
+            <h3 className={Style.OrderReviewSummaryDetailTitle}>Price</h3>
+          </div>
           <div className={Style.OrderReviewSummaryDetailContent}>
             <div className={Style.OrderReviewSummaryDetailContentItem}>
               <div>
                 <div className={Style.priceSummary}>
-                  <div>Subtotal</div>
+                  <div style={{ marginRight: '20px' }}>Subtotal</div>
                   <div>${price_cents / 100}</div>
                 </div>
                 <div className={Style.priceSummary}>
-                  <div>Shipping</div>
+                  <div style={{ marginRight: '20px' }}>Shipping</div>
                   <div>${shipping_cents / 100}</div>
                 </div>
                 <div className={Style.priceSummary}>
-                  <div>Total</div>
+                  <div style={{ marginRight: '20px' }}>Total</div>
                   <div>${total_price_cents / 100}</div>
                 </div>
               </div>
@@ -354,7 +386,6 @@ export default class ReviewOrder extends Component {
         <div className={Style.formContainer}>
           <h1 className={Style.title}>CHANGE SHIPPING</h1>
           <div className={Style.form}>
-            <br />
             {this.renderChangeShipping()}
             <br />
           </div>
@@ -367,7 +398,6 @@ export default class ReviewOrder extends Component {
         <div className={Style.formContainer}>
           <h1 className={Style.title}>CHANGE PAYMENT</h1>
           <div className={Style.form}>
-            <br />
             {this.renderChangePayment()}
             <br />
           </div>
@@ -382,13 +412,39 @@ export default class ReviewOrder extends Component {
           <br />
           {this.renderOrderDetails()}
           <br />
-          <Button
-            className={Style.submitButton}
-            status={this.determinePaymentBtnStatus()}
-            name="submit"
-          >
-            CONFIRM ORDER
-          </Button>
+          <div className={Style.errorMessage}>{this.state.errorMessage}</div>
+          <br />
+          {!this.state.confirmingOrder ? (
+            <div className={Style.buttonsContainer}>
+              {/* {this.props.addNewAddress && (
+                <Button
+                  className={Style.submitButton}
+                  onClick={() => this.props.goBack()}
+                >
+                  Back
+                </Button>
+              )} */}
+              <Button
+                className={Style.submitButton}
+                status={this.determinePaymentBtnStatus()}
+                name="submit"
+              >
+                CONFIRM
+              </Button>
+            </div>
+          ) : (
+            <div
+              style={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
+            >
+              <ClipLoader width={'30px'} color={'#fff'} />
+              <div>Confirming Payment. Do not close.</div>
+            </div>
+          )}
         </form>
       </div>
     );

@@ -12,6 +12,8 @@ import { Button } from 'fields';
 
 import countryRegionData from 'country-region-data';
 
+import { ClipLoader } from 'react-spinners';
+
 export default class NewAddressInput extends Component {
   state = {
     address: {
@@ -26,6 +28,7 @@ export default class NewAddressInput extends Component {
       phone: '',
     },
     errorMessage: '',
+    creatingNewAdress: false,
   };
 
   // componentDidMount() {
@@ -98,6 +101,10 @@ export default class NewAddressInput extends Component {
     e.preventDefault();
     console.log(this.state);
 
+    this.setState({
+      creatingNewAdress: true,
+    });
+
     const { updated, message } = await this.props.createNewAddress(
       this.state.address,
     );
@@ -107,6 +114,11 @@ export default class NewAddressInput extends Component {
     if (!updated && message) {
       this.setState({
         errorMessage: message,
+        creatingNewAdress: false,
+      });
+    } else {
+      this.setState({
+        creatingNewAdress: false,
       });
     }
   };
@@ -130,16 +142,10 @@ export default class NewAddressInput extends Component {
           className={Style.form}
           onSubmit={e => this.onSubmitShippingForm(e)}
         >
-          <p className={Style.formInputLabel}>Country</p>
-          <CountryDropdown
-            value={country}
-            onChange={val => this.selectCountry(val)}
-            classes={cx(Style.inputSelector, Style.countrySelect)}
-          />
           <br />
-          <p className={Style.formInputLabel}>Full Legal Name</p>
           <input
             className={Style.formInput}
+            placeholder={'Full Legal Name'}
             type="text"
             name="name"
             value={name}
@@ -148,9 +154,9 @@ export default class NewAddressInput extends Component {
             }
           />
           <br />
-          <p className={Style.formInputLabel}>Street Address 1</p>
           <input
             className={Style.formInput}
+            placeholder={'Street Address 1'}
             type="address"
             name="address1"
             value={address1}
@@ -159,9 +165,9 @@ export default class NewAddressInput extends Component {
             }
           />
           <br />
-          <p className={Style.formInputLabel}>Street Address 2</p>
           <input
             className={Style.formInput}
+            placeholder={'Street Address 2'}
             type="address"
             name="address2"
             value={address2}
@@ -172,9 +178,9 @@ export default class NewAddressInput extends Component {
           <br />
           <div className={Style.twoInputsContainer}>
             <div className={Style.halfWidthInput}>
-              <p className={Style.formInputLabel}>City</p>
               <input
                 className={Style.formInput}
+                placeholder={'City'}
                 type="city"
                 name="city_locality"
                 value={city_locality}
@@ -184,10 +190,10 @@ export default class NewAddressInput extends Component {
               />
             </div>
             <div className={Style.halfWidthInput}>
-              <p className={Style.formInputLabel}>State/Province</p>
               <RegionDropdown
-                blankOptionLabel="No country selected"
-                defaultOptionLabel="Select a region"
+                placeeholder={'State/Province'}
+                blankOptionLabel="State"
+                defaultOptionLabel="State"
                 value={state_province}
                 country={country}
                 onChange={val => this.selectRegion(val)}
@@ -198,9 +204,9 @@ export default class NewAddressInput extends Component {
           <br />
           <div className={Style.twoInputsContainer}>
             <div className={Style.halfWidthInput}>
-              <p className={Style.formInputLabel}>Postal/Zip Code</p>
               <input
                 className={Style.formInput}
+                placeholder={'Zip Code'}
                 type="postal"
                 name="postal_code"
                 value={postal_code}
@@ -210,36 +216,60 @@ export default class NewAddressInput extends Component {
               />
             </div>
             <div className={Style.halfWidthInput}>
-              <p className={Style.formInputLabel}>Phone Number</p>
-              <input
-                className={Style.formInput}
-                type="phone"
-                name="phone"
-                value={phone}
-                onChange={e =>
-                  this.onChangeFieldValue(e.target.name, e.target.value)
-                }
+              <CountryDropdown
+                placeeholder={'Country'}
+                value={country}
+                onChange={val => this.selectCountry(val)}
+                classes={cx(Style.inputSelector, Style.countrySelect)}
               />
             </div>
           </div>
           <br />
+          <input
+            className={Style.formInput}
+            placeholder={'Phone Number'}
+            type="phone"
+            name="phone"
+            value={phone}
+            onChange={e =>
+              this.onChangeFieldValue(e.target.name, e.target.value)
+            }
+          />
+          <br />
           <div className={Style.errorMessage}>{this.state.errorMessage}</div>
           <br />
-          {this.props.addNewAddress && (
-            <Button
-              className={Style.submitButton}
-              onClick={() => this.props.goBack()}
+          {!this.state.creatingNewAdress ? (
+            <div className={Style.buttonsContainer}>
+              {this.props.addNewAddress && (
+                <Button
+                  className={Style.submitButton}
+                  onClick={() => this.props.goBack()}
+                >
+                  Back
+                </Button>
+              )}
+              <Button
+                className={Style.submitButton}
+                name="submit"
+                status={this.onGetButtonStatus()}
+              >
+                Continue
+              </Button>
+            </div>
+          ) : (
+            <div
+              style={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+
+                alignItems: 'center',
+              }}
             >
-              Back
-            </Button>
+              <ClipLoader width={'30px'} color={'#fff'} />
+              <div>Adding address...</div>
+            </div>
           )}
-          <Button
-            className={Style.submitButton}
-            name="submit"
-            status={this.onGetButtonStatus()}
-          >
-            Continue
-          </Button>
         </form>
       </div>
     );

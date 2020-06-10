@@ -176,10 +176,16 @@ class AppAuthContainer extends Component {
 
   submitVerificationCode = async authCode => {
     const { userVerification } = UserDuck.actionCreators;
-    const { hideModal } = AppAuthDuck.actionCreators;
+    const { hideModal, showModal } = AppAuthDuck.actionCreators;
     const { success } = await this.props.dispatch(userVerification(authCode));
+
+    const { user } = this.props;
     if (success) {
       this.props.dispatch(hideModal('verification'));
+      if (!user.username) {
+        this.props.dispatch(showModal('setup'));
+      }
+
       return { success };
     } else {
       return { success };
@@ -187,11 +193,12 @@ class AppAuthContainer extends Component {
   };
 
   onSubmitUserSetup = async setupInfo => {
-    const { userSetup } = UserDuck.actionCreators;
+    const { userSetup, fetchUpdatedUser } = UserDuck.actionCreators;
     const { hideModal } = AppAuthDuck.actionCreators;
     const { success } = await this.props.dispatch(userSetup(setupInfo));
     if (success) {
       this.props.dispatch(hideModal('setup'));
+      this.props.dispatch(fetchUpdatedUser());
     }
   };
 

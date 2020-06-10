@@ -28,6 +28,7 @@ import LoadingScreen from 'components/LoadingScreen';
 
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css';
+import { ClipLoader } from 'react-spinners';
 
 class ProductListingPage extends Component {
   confirmNotif = null;
@@ -42,6 +43,7 @@ class ProductListingPage extends Component {
     images: [],
     showDetailedImages: false,
     imageIndex: 0,
+    isCreatingOrder: false,
   };
 
   async componentDidMount() {
@@ -113,6 +115,10 @@ class ProductListingPage extends Component {
   onClickBuy = async () => {
     const { user } = this.props;
 
+    this.setState({
+      isCreatingOrder: true,
+    });
+
     if (!user) {
       const { actionCreators } = AppAuthDuck;
       const { showModal } = actionCreators;
@@ -133,9 +139,13 @@ class ProductListingPage extends Component {
     );
     if (success) {
       this.props.history.push(`/orders/${orderNumber}`);
+      this.setState({
+        isCreatingOrder: false,
+      });
     } else {
       this.setState({
         error: message,
+        isCreatingOrder: false,
       });
     }
   };
@@ -484,13 +494,28 @@ class ProductListingPage extends Component {
             )}
 
             <div className={Style.buttonsContainer}>
-              <Button
-                className={Style.buyButton}
-                onClick={() => this.onClickBuy()}
-                status={this.buyButtonStatus()}
-              >
-                Buy Now
-              </Button>
+              {!this.state.isCreatingOrder ? (
+                <Button
+                  className={Style.buyButton}
+                  onClick={() => this.onClickBuy()}
+                  status={this.buyButtonStatus()}
+                >
+                  Buy Now
+                </Button>
+              ) : (
+                <div
+                  style={{
+                    width: '150px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                  }}
+                >
+                  <ClipLoader width={'30px'} color={'#fff'} />
+                  <div>Creating order...</div>
+                </div>
+              )}
+
               <Button className={Style.myListButton}>
                 <FavoriteIcon />
               </Button>

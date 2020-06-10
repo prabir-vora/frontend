@@ -8,16 +8,19 @@ import { Button } from 'fields';
 
 import { CardElement, ElementsConsumer } from '@stripe/react-stripe-js';
 
+import { ClipLoader } from 'react-spinners';
+
 const cardStyle = {
   style: {
     base: {
-      color: '#32325d',
-      fontFamily: 'Arial, sans-serif',
+      color: 'white',
+      fontFamily: 'Baskerville',
       fontSmoothing: 'antialiased',
       fontSize: '16px',
       '::placeholder': {
-        color: '#32325d',
+        color: '#919496',
       },
+      borderBottom: '2px solid #fff',
     },
     invalid: {
       color: '#fa755a',
@@ -32,6 +35,7 @@ class PaymentInputForm extends Component {
     clientSecret: '',
     errorMessage: '',
     isLoading: false,
+    creatingNewPayment: false,
   };
 
   async componentDidMount() {
@@ -67,7 +71,7 @@ class PaymentInputForm extends Component {
     event.preventDefault();
 
     this.setState({
-      isLoading: true,
+      creatingNewPayment: true,
     });
 
     const { stripe, elements } = this.props;
@@ -95,6 +99,7 @@ class PaymentInputForm extends Component {
       console.log('[error]', result.error);
       this.setState({
         errorMessage: result.error.message,
+        creatingNewPayment: false,
       });
     } else {
       console.log('[PaymentMethod]', result.setupIntent.payment_method);
@@ -107,7 +112,7 @@ class PaymentInputForm extends Component {
       console.log(updated);
 
       this.setState({
-        isLoading: false,
+        creatingNewPayment: false,
       });
     }
   };
@@ -131,9 +136,9 @@ class PaymentInputForm extends Component {
         >
           <br />
           <br />
-          <p className={Style.formInputLabel}>CARD HOLDER NAME</p>
           <input
             className={Style.formInput}
+            placeholder={'Cardholder Name'}
             type="name"
             name="name"
             value={name}
@@ -143,25 +148,47 @@ class PaymentInputForm extends Component {
           />
           <br />
           <br />
-          <p className={Style.formInputLabel}>CREDIT OR DEBIT CARD</p>
-          <CardElement id="card-element" options={cardStyle} />
-          <br />
-          <br />
-          {this.props.addNewPayment && (
-            <Button
-              className={Style.submitButton}
-              onClick={() => this.props.goBack()}
-            >
-              Back
-            </Button>
-          )}
-          <Button
-            className={Style.submitButton}
-            name="submit"
-            status={this.onDetermineBtnStatus()}
+          <div
+            style={{ borderBottom: '2px solid white', paddingBottom: '10px' }}
           >
-            Continue
-          </Button>
+            <CardElement id="card-element" options={cardStyle} />
+          </div>
+          <br />
+          <div className={Style.errorMessage}>{this.state.errorMessage}</div>
+          <br />
+
+          {!this.state.creatingNewPayment ? (
+            <div className={Style.buttonsContainer}>
+              {this.props.addNewPayment && (
+                <Button
+                  className={Style.submitButton}
+                  onClick={() => this.props.goBack()}
+                >
+                  Back
+                </Button>
+              )}
+              <Button
+                className={Style.submitButton}
+                name="submit"
+                status={this.onDetermineBtnStatus()}
+              >
+                Continue
+              </Button>
+            </div>
+          ) : (
+            <div
+              style={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+
+                alignItems: 'center',
+              }}
+            >
+              <ClipLoader width={'30px'} color={'#fff'} />
+              <div>Adding payment...</div>
+            </div>
+          )}
         </form>
       </div>
     );
