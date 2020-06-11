@@ -12,6 +12,8 @@ import { ClipLoader } from 'react-spinners';
 import moment from 'moment';
 import { Img } from 'fields';
 
+import Switch from 'react-switch';
+
 class Orders extends Component {
   componentDidMount() {
     const { actionCreators } = OrdersDuck;
@@ -515,8 +517,9 @@ class Orders extends Component {
 
     return (
       <div className={Style.ordersContainer}>
+        <div className={Style.mobileTitle}>Orders</div>
         <div style={{ width: '80%' }}>
-          <div className={Style.orderSelectionContainer}>
+          {/* <div className={Style.orderSelectionContainer}>
             <span
               className={
                 orderSelection === 'buying'
@@ -538,6 +541,41 @@ class Orders extends Component {
             >
               SELL ORDERS
             </span>
+          </div> */}
+          <div className={Style.orderSelectionContainer}>
+            <label
+              className={Style.orderSelectionLabel}
+              onClick={() => this.toggleSelection('buying')}
+            >
+              Buy Orders
+            </label>
+            <Switch
+              checked={orderSelection === 'selling' ? true : false}
+              onChange={value => {
+                if (value !== true) {
+                  this.toggleSelection('buying');
+                } else {
+                  this.toggleSelection('selling');
+                }
+              }}
+              onColor="#9A8686"
+              onHandleColor="#fff"
+              handleDiameter={30}
+              uncheckedIcon={false}
+              checkedIcon={false}
+              boxShadow="0px 1px 5px rgba(0, 0, 0, 0.6)"
+              activeBoxShadow="0px 0px 1px 5px rgba(0, 0, 0, 0.2)"
+              height={20}
+              width={48}
+              className="react-switch"
+              id="material-switch"
+            />
+            <label
+              className={Style.orderSelectionLabel}
+              onClick={() => this.toggleSelection('selling')}
+            >
+              Sell Orders
+            </label>
           </div>
           <div>{this.renderOrders()}</div>
         </div>

@@ -134,11 +134,18 @@
 }
 
 .titleLarge {
-  font-size: 45px;
+  font-size: 40px;
   text-transform: uppercase;
   font-weight: 400;
   margin: 20px 0px 0px 0px;
   text-align: center;
+}
+
+.searchTitle {
+  font-size: 25px;
+  text-transform: uppercase;
+  font-weight: 400;
+  margin: 20px 0px;
 }
 
 .subtitle {
@@ -667,6 +674,11 @@
   .pageTitle {
     padding: 1em 20px;
     margin-bottom: 0px;
+  }
+
+  .searchTitle {
+    font-size: 35px;
+    margin: 20px 0px;
   }
 
   .shopAll {

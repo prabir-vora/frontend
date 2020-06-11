@@ -92,6 +92,7 @@ class LocalMarketplace extends Component {
               longitude={this.state.lng}
               onSelectLocation={this.onSelectLocation}
               user={this.props.user}
+              location={this.props.location}
             />
           )}
         </div>

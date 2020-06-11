@@ -228,6 +228,7 @@ const fetchBuyMessages = page => dispatch => {
             product {
               id 
               name
+              original_image_url
             }
             askingPrice
             slug
@@ -289,6 +290,7 @@ const fetchSellMessages = page => dispatch => {
             product {
               id 
               name
+              original_image_url
             }
             askingPrice
             slug

@@ -43,19 +43,7 @@ export default class SearchLocalTemplate extends Component {
                 <div className={Style.gridCellImage}>
                   <Img src={original_image_url} className={Style.gridImage} />
                 </div>
-                <div
-                  style={{
-                    textAlign: 'center',
-                    fontFamily:
-                      'Druk Wide Web,futura-pt,HelveticaNeue-Light,Helvetica Neue Light,Helvetica Neue,Helvetica,Arial,Lucida Grande,sans-serif',
-
-                    fontSize: '11px',
-                    fontWeight: '800',
-                    textTransform: 'uppercase',
-                  }}
-                >
-                  {name}
-                </div>
+                <div className={Style.productName}>{name}</div>
                 <br />
               </div>
             </div>

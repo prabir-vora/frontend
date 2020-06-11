@@ -376,15 +376,17 @@ class OrderPage extends Component {
       return <LoadingScreen />;
     }
 
+    console.log(error);
+
     if (error) {
       return (
         <div
           style={{
-            backgroundColor: 'linear-gradient(100deg, #111010 0%, #4b4b4b 99%)',
+            background: 'linear-gradient(100deg, #111010 0%, #4b4b4b 99%)',
           }}
         >
           <MainNavBar />
-          <h1
+          <div
             style={{
               width: '100%',
               display: 'flex',
@@ -396,8 +398,12 @@ class OrderPage extends Component {
               height: '100%',
             }}
           >
-            Sorry, {error}
-          </h1>
+            <h1 className={Style.noResultsTitle}>Sorry, {error}</h1>
+            <a style={{ textDecoration: 'underline' }} href="/shop">
+              Go to shop
+            </a>
+          </div>
+
           <MainFooter />
         </div>
       );

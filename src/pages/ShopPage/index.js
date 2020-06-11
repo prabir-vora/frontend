@@ -19,6 +19,8 @@ import { Rheostat, ScreenSize } from 'fields';
 import './pagination.css';
 import { withCookies } from 'react-cookie';
 
+import qs from 'query-string';
+
 import {
   InstantSearch,
   connectStats,
@@ -789,9 +791,19 @@ class ShopPage extends Component {
     productCategory: 'sneakers',
     isUserPresent: false,
     showMobileFilterContainer: false,
+    searchInput: '',
   };
 
   componentDidMount() {
+    const parsed = qs.parse(this.props.location.search);
+    const { searchInput = '' } = parsed;
+
+    if (searchInput !== '') {
+      this.setState({
+        searchInput,
+      });
+    }
+
     const jwt = this.props.cookies.get('jwt');
     if (jwt) {
       this.setState({ isUserPresent: true });
@@ -848,6 +860,8 @@ class ShopPage extends Component {
   render() {
     const { user } = this.props;
 
+    const { searchInput } = this.state;
+
     if (this.state.isUserPresent && !user) {
       return <LoadingScreen />;
     }
@@ -879,10 +893,20 @@ class ShopPage extends Component {
         <MainNavBar />
         <div className={Style.pageLayout}>
           <div className={Style.pageContent}>
-            <div className={Style.pageTitle}>
-              <h1 className={Style.titleLarge}>Shop All</h1>
-              <h4 className={Style.subtitle}>Find all the drip, right here.</h4>
-            </div>
+            {searchInput ? (
+              <div className={Style.pageTitle}>
+                <h1 className={Style.searchTitle}>
+                  {`Search Results for "${searchInput}"`}
+                </h1>
+              </div>
+            ) : (
+              <div className={Style.pageTitle}>
+                <h1 className={Style.titleLarge}>Shop All</h1>
+                <h4 className={Style.subtitle}>
+                  Find all the drip, right here.
+                </h4>
+              </div>
+            )}
             <div className={Style.algoliaContentWrapper}>
               <InstantSearch
                 indexName="test_PRODUCT_LISTINGS"
@@ -1218,6 +1242,7 @@ class ShopPage extends Component {
                       hitsPerPage={30}
                       filters={filters}
                       distinct={true}
+                      query={`${searchInput}`}
                     />
                   </div>
                   <div className={Style.filterResultsArea}>

@@ -1,8 +1,7 @@
 .gridView {
   display: grid;
-  grid-template-columns: repeat(auto-fill, 45%);
+  grid-template-columns: repeat(auto-fill, 50%);
   grid-auto-rows: minmax(300px, auto);
-  grid-gap: 40px;
 }
 
 .listView {
@@ -10,6 +9,28 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+.mobileTitle {
+  font-size: 35px;
+  text-transform: uppercase;
+  font-weight: 400;
+  margin: 20px 0px 0px 0px;
+  text-align: center;
+}
+
+.sellButton {
+  padding: 10px;
+  font-family: Baskerville;
+  margin-right: 5%;
+  background: #919496;
+  color: white;
+  border-radius: 10px;
+  text-transform: uppercase;
+  font-size: 16px;
+  margin-bottom: 1em;
+  margin-top: 1em;
+  width: 200px;
 }
 
 .filterSummary {
@@ -52,5 +73,14 @@
   .gridView {
     grid-template-columns: repeat(auto-fill, 23%);
     grid-gap: 2vw;
+  }
+
+  .reactTooltip {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+  }
+
+  .mobileTitle {
+    display: none;
   }
 }

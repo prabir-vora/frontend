@@ -62,7 +62,7 @@ class ProfilePage extends Component {
       case 'settings':
         return <Settings user={this.props.user} />;
       default:
-        return null;
+        return <UserListings user={this.props.user} />;
     }
   };
 

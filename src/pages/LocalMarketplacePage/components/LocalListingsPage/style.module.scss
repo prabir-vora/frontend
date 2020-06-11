@@ -195,6 +195,13 @@
   text-align: center;
 }
 
+.searchTitle {
+  font-size: 25px;
+  text-transform: uppercase;
+  font-weight: 400;
+  margin: 20px 0px;
+}
+
 .filterContainerOverlay {
   position: fixed;
   top: 0;
@@ -838,6 +845,10 @@
   .pageTitle {
     padding: 3em 20px;
     margin-bottom: 0px;
+  }
+  .searchTitle {
+    font-size: 35px;
+    margin: 20px 0px;
   }
 
   .shopAll {

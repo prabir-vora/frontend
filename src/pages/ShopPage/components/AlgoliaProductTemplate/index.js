@@ -30,6 +30,9 @@ class AlgoliaProductTemplate extends Component {
   }
 
   onClickLike = async productID => {
+    if (this.state.fetchingLikes) {
+      return;
+    }
     const { user, hit } = this.props;
 
     if (!user) {
@@ -37,6 +40,7 @@ class AlgoliaProductTemplate extends Component {
       const { showModal } = actionCreators;
       return this.props.dispatch(showModal('login'));
     }
+    this.setState({ fetchingLikes: true });
 
     const { likedProducts } = user;
 

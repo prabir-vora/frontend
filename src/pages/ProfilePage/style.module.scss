@@ -13,7 +13,7 @@
 .pageContent {
   min-height: calc(100vh - 90px);
   position: relative;
-  width: calc(100% - 180px);
+  width: 100%;
   align-items: center;
 }
 
@@ -48,4 +48,11 @@
   background-image: none;
   border: 1px solid transparent;
   margin-right: 20px;
+}
+
+@media (min-width: 60em) {
+  .pageContent {
+    min-height: calc(100vh - 90px);
+    width: calc(100% - 180px);
+  }
 }

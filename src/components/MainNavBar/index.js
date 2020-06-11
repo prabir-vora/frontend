@@ -11,6 +11,7 @@ import {
   BrandsNavIcon,
   SellNavIcon,
   MyListNavIcon,
+  HomeNavIcon,
   UserIcon,
 } from 'assets/Icons';
 
@@ -23,24 +24,78 @@ import { Img } from 'fields';
 
 import qs from 'query-string';
 
+import algoliasearch from 'algoliasearch/lite';
+import { InstantSearch, Configure } from 'react-instantsearch-dom';
+
+import SearchInput from './components/SearchInput';
+
 // Style
 import Style from './style.module.scss';
 import cx from 'classnames';
 
+const searchClient = algoliasearch(
+  'UYWEM6FQPE',
+  '3b918f48b5c7755f15435a3c749c9bbe',
+);
+
 class MainNavBar extends Component {
-  state = { showSideNavBar: false };
+  state = { showSideNavBar: false, searchInput: '' };
+
+  componentDidMount = () => {
+    const { url = '' } = this.props.match;
+
+    if (url === '/search') {
+      const parsed = qs.parse(this.props.location.search);
+      console.log(parsed);
+
+      const { searchInput = '' } = parsed;
+
+      this.setState({
+        searchInput,
+      });
+    }
+  };
 
   removeSearch = () => {
     return this.props.history.push({ pathname: '/search' });
   };
 
   onChangeSearchInput = searchInput => {
+    this.setState({
+      searchInput,
+    });
+  };
+
+  onClickSearch = e => {
+    e.preventDefault();
+    const { searchInput } = this.state;
+
+    console.log(searchInput);
+
     if (searchInput === '') {
       return this.props.history.push({ pathname: '/search' });
     }
+
     const query = qs.stringify({ searchInput });
 
     this.props.history.push({ search: query });
+  };
+
+  onProductSelection = selection => {
+    console.log(selection);
+    const { slug } = selection;
+
+    this.props.history.push(`/shop/${slug}`);
+    // this.setState(
+    //   {
+    //     resellItemInfo: immutable.set(
+    //       this.state.resellItemInfo,
+    //       'product',
+    //       selection,
+    //     ),
+    //   },
+    //   this.onGetButtonStatus,
+    // );
   };
 
   protectedRouteClick = route => {
@@ -156,13 +211,13 @@ class MainNavBar extends Component {
               >
                 <span className={Style.navLinkText}>Sell</span>
               </label>
-              <label
+              {/* <label
                 className={Style.sideBarNavLink}
                 activeClassName={Style.sideBarNavLinkActive}
                 onClick={() => this.protectedRouteClick('myList')}
               >
                 <span className={Style.navLinkText}>My List</span>
-              </label>
+              </label> */}
               <React.Fragment>
                 {!this.props.user ? (
                   <div className={Style.sideBarAuthLink}>
@@ -251,7 +306,19 @@ class MainNavBar extends Component {
               </React.Fragment>
             )}
           </div>
+
           <ul className={Style.navLinkTable}>
+            <li>
+              <NavLink
+                exact
+                to="/"
+                className={Style.navLink}
+                activeClassName={Style.navLinkActive}
+              >
+                <HomeNavIcon />
+                <div className={Style.navLinkContent}>Home</div>
+              </NavLink>
+            </li>
             <li>
               <NavLink
                 exact
@@ -294,7 +361,7 @@ class MainNavBar extends Component {
                 <div className={Style.navLinkContent}>Sell</div>
               </label>
             </li>
-            <li>
+            {/* <li>
               <label
                 className={Style.navLink}
                 onClick={() => this.protectedRouteClick('myList')}
@@ -302,6 +369,17 @@ class MainNavBar extends Component {
                 <MyListNavIcon />
                 <div className={Style.navLinkContent}>My List</div>
               </label>
+            </li> */}
+            <li>
+              <NavLink
+                exact
+                to="/about"
+                className={Style.navLink}
+                activeClassName={Style.navLinkActive}
+              >
+                <MyListNavIcon />
+                <div className={Style.navLinkContent}>About Us</div>
+              </NavLink>
             </li>
           </ul>
           <div className={Style.logoutButtonContainer}>
@@ -321,21 +399,15 @@ class MainNavBar extends Component {
 
     const { url = '' } = this.props.match;
 
-    const parsed = qs.parse(this.props.location.search);
+    // const parsed = qs.parse(this.props.location.search);
 
-    const { searchInput = '' } = parsed;
+    const { searchInput } = this.state;
 
     return (
       <nav className={Style.mainNavBar}>
         <div className={Style.navBarContent}>
           {this.renderSideNavMenu()}
-          <NavLink
-            exact
-            to="/"
-            className={cx(Style.mainHeaderNavLink, Style.logo)}
-          >
-            DRIPVERSE
-          </NavLink>
+
           {/* <div style={{ display: 'flex', alignItems: 'center' }}>
             
             <NavLink
@@ -379,55 +451,92 @@ class MainNavBar extends Component {
               </NavLink>
             )}
           </div> */}
-
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            {this.props.user && (
-              <div className={Style.userAccountContainer}>
-                <NavLink className={Style.userIcon} exact to="/user/listings">
-                  <UserIcon />
-                </NavLink>
-                {(this.props.notifCount && this.props.notifCount.total) !==
-                  0 && (
-                  <div className={Style.notifCount}>
-                    {this.props.notifCount.total}
+          {url === '/search' ? (
+            <InstantSearch
+              indexName="test_PRODUCTS"
+              searchClient={searchClient}
+              className={Style.formFieldContainer}
+            >
+              <Configure
+                hitsPerPage={8}
+                distinct={true}
+                // filters={`productCategory:${this.state.resellItemInfo.productType}`}
+              />
+              <form
+                onSubmit={this.onClickSearch}
+                className={Style.searchContainerWithButton}
+              >
+                <div className={Style.searchContainer}>
+                  {/* <label className={Style.searchInputContainer}>
+                    <input
+                      className={Style.searchInput}
+                      maxLength="80"
+                      autoCorrect="off"
+                      autoCapitalize="off"
+                      spellCheck={false}
+                      placeholder="Search Product, Brand, Designer, SKU ..."
+                      onChange={e => this.onChangeSearchInput(e.target.value)}
+                      value={searchInput}
+                      autoFocus
+                    />
+                  </label>
+                  <div className={Style.searchInputOverlay}>
+                    <span className={Style.searchLogo}>
+                      <SearchIcon />
+                    </span>
+                    <button
+                      className={Style.cancelSearchButton}
+                      onClick={() => this.removeSearch()}
+                    >
+                      <CloseIcon />
+                    </button>
+                  </div> */}
+                  <SearchInput
+                    onChange={this.onChangeSearchInput}
+                    value={this.state.searchInput}
+                    onProductSelection={this.onProductSelection}
+                    onSuggestionCleared={this.onSuggestionCleared}
+                  />
+                </div>
+                <button className={Style.searchButton} type={'submit'}>
+                  Search
+                </button>
+              </form>
+            </InstantSearch>
+          ) : (
+            <React.Fragment>
+              <NavLink
+                exact
+                to="/"
+                className={cx(Style.mainHeaderNavLink, Style.logo)}
+              >
+                DRIPVERSE
+              </NavLink>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                {this.props.user && (
+                  <div className={Style.userAccountContainer}>
+                    <NavLink
+                      className={Style.userIcon}
+                      exact
+                      to="/user/listings"
+                    >
+                      <UserIcon />
+                    </NavLink>
+                    {(this.props.notifCount && this.props.notifCount.total) !==
+                      0 && (
+                      <div className={Style.notifCount}>
+                        {this.props.notifCount.total}
+                      </div>
+                    )}
                   </div>
                 )}
-              </div>
-            )}
 
-            {url === '/search' ? (
-              <div className={Style.searchContainer}>
-                <label className={Style.searchInputContainer}>
-                  <input
-                    className={Style.searchInput}
-                    maxLength="80"
-                    autoCorrect="off"
-                    autoCapitalize="off"
-                    spellCheck={false}
-                    placeholder="Search Product, Brand, Designer, SKU ..."
-                    onChange={e => this.onChangeSearchInput(e.target.value)}
-                    value={searchInput}
-                    autoFocus
-                  />
-                </label>
-                <div className={Style.searchInputOverlay}>
-                  <span className={Style.searchLogo}>
-                    <SearchIcon />
-                  </span>
-                  <button
-                    className={Style.cancelSearchButton}
-                    onClick={() => this.removeSearch()}
-                  >
-                    <CloseIcon />
-                  </button>
-                </div>
+                <NavLink exact to="/search">
+                  <SearchIcon />
+                </NavLink>
               </div>
-            ) : (
-              <NavLink exact to="/search">
-                <SearchIcon />
-              </NavLink>
-            )}
-          </div>
+            </React.Fragment>
+          )}
         </div>
       </nav>
     );

@@ -171,6 +171,19 @@ class EditProfile extends Component {
       <div className={Style.container}>
         <div className={Style.title}>Edit Profile</div>
         <div className={Style.form}>
+          <p className={Style.formInputLabel}>
+            Approx. Local Marketplace Location
+          </p>
+          <div style={{ display: 'flex' }}>
+            <LocationSearchInput
+              address={address}
+              latitude={lat}
+              longitude={lng}
+              onSelectLocation={this.onSelectLocation}
+            />
+          </div>
+
+          <br />
           <p className={Style.formInputLabel}>Name</p>
           <input
             className={Style.formInput}
@@ -206,16 +219,7 @@ class EditProfile extends Component {
           )}
 
           <br />
-          <p className={Style.formInputLabel}>
-            Approx. Local Marketplace Location
-          </p>
-          <LocationSearchInput
-            address={address}
-            latitude={lat}
-            longitude={lng}
-            onSelectLocation={this.onSelectLocation}
-          />
-          <br />
+
           <p className={Style.formInputLabel}>Buying/Selling Country</p>
           <div className={Style.countrySelector}>
             <select

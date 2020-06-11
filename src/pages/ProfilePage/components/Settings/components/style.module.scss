@@ -3,15 +3,14 @@
 }
 
 .title {
-  font-size: 20px;
-  color: #938cfc;
+  font-size: 22px;
+  color: white;
   font-weight: 500;
   margin-bottom: 20px;
 }
 
 .form {
-  background: white;
-  padding: 40px;
+  padding: 0px;
 }
 
 .formInputLabel {
@@ -21,8 +20,7 @@
 }
 
 .formInput {
-  font-family: -apple-system, BlinkMacSystemFont, Helvetica, Arial, 'Segoe UI',
-    Roboto, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  font-family: Baskerville;
   font-weight: 400;
   font-style: normal;
   letter-spacing: normal;
@@ -30,37 +28,47 @@
   text-transform: none;
   color: inherit;
   text-decoration: none;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 25px;
-  color: #000;
+  color: white;
   display: block;
   box-sizing: border-box;
-  padding: 10px 18px;
   width: 100%;
-  height: auto;
-  border: 1px solid black;
-  border-radius: 6px;
+  height: 40px;
+  border-bottom: 2px solid white;
   outline: 0;
   margin: 0;
+  padding: 0px 20px;
   resize: vertical;
-  background-color: var(--colors--white-background);
+  background: transparent !important;
   background-image: none;
+  box-shadow: none;
+  -webkit-border-radius: 0px;
+
+  ::placeholder {
+    color: #919496;
+    font-family: Baskerville;
+    padding: 0px;
+  }
 }
 
 .countrySelector {
+  font-family: Baskerville;
   -webkit-box-align: center;
   align-items: center;
-  background: #fff;
-  border: 1px solid black;
-  border-radius: 6px;
+  background: transparent !important;
+  background-image: none;
+  border: 0px;
+  border-bottom: 2px solid white !important;
   display: -webkit-box;
   display: flex;
   height: 40px;
-  margin: auto 0 auto auto;
-  outline: none;
+  outline: none !important;
   padding: 0 12px;
   position: relative;
-  width: 100%;
+  font-size: 16px;
+  color: white;
+  -webkit-border-radius: 0px;
 
   &::before {
     border-left: 6px solid transparent;
@@ -90,43 +98,39 @@
   margin: 0 -12px 0 -42px;
   outline: none;
   padding-left: 42px;
+  color: white;
+  font-family: Baskerville;
 }
 
 .buttonsRow {
-  border-top: 1px solid #efefef;
   margin-top: 40px;
   padding: 30px 0 0;
+  justify-content: center;
+  display: flex;
 }
 
 .saveButton {
-  font-size: 12px;
-  line-height: 1;
-  border-radius: 500px;
-  padding: 10px 32px;
-  color: #fff;
-  background-color: #938cfc;
-  transition-duration: 0.3s;
-  border-width: 0;
-  letter-spacing: 2px;
-  min-width: 160px;
+  padding: 10px;
+  font-family: Baskerville;
+  background: #919496;
+  color: white;
+  border-radius: 10px;
   text-transform: uppercase;
-  white-space: normal;
-  display: inline-block;
-  margin-bottom: 0;
-  font-weight: 700;
+  font-size: 16px;
+}
+
+.stripeMessage {
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: white;
   text-align: center;
-  vertical-align: middle;
-  -ms-touch-action: manipulation;
-  touch-action: manipulation;
-  cursor: pointer;
-  background-image: none;
-  border: 1px solid transparent;
+  padding: 20px;
 }
 
 .cancelButton {
   margin-right: 20px;
   float: right !important;
-  color: #000;
+  color: white;
   font-size: 12px;
   line-height: 1;
   border-radius: 500px;
@@ -171,13 +175,6 @@
   border-bottom: 1px solid black;
 }
 
-.shippingListItem {
-  border-left: 1px solid black;
-  border-right: 1px solid black;
-  border-top: 1px solid black;
-  padding: 20px;
-}
-
 .shippingListItemContent {
   flex-direction: row;
   -webkit-box-pack: start;
@@ -188,9 +185,54 @@
 }
 
 .addNewButton {
-  font-size: 10px;
+  font-size: 12px;
   line-height: 15px;
   letter-spacing: 1.7px;
   text-transform: uppercase;
-  margin-top: 24px;
+  margin: 24px 0px;
+  color: white;
+  text-decoration: underline;
+}
+
+.shippingList {
+  width: 80%;
+  max-height: 220px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  margin: 24px auto 0px;
+  padding: 0px;
+}
+
+.shippingListItem {
+  padding: 20px;
+}
+
+.ListItemButton {
+  flex-direction: row;
+  -webkit-box-pack: start;
+  justify-content: flex-start;
+  -webkit-box-align: center;
+  align-items: center;
+  display: flex;
+  color: white;
+
+  & > svg {
+    fill: white;
+    margin-right: 10px;
+  }
+}
+
+@media (min-width: 40em) {
+  .form {
+    padding: 20px;
+  }
+
+  .buttonsRow {
+    justify-content: space-around;
+    display: flex;
+  }
+
+  .stripeMessage {
+    font-size: 20px;
+  }
 }

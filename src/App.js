@@ -72,7 +72,7 @@ class App extends React.Component {
                   path="/localMarketplace"
                   component={ROUTES('localMarketplacePage')}
                 />
-                <Route exact path="/myList" component={ROUTES('myListPage')} />
+                {/* <Route exact path="/myList" component={ROUTES('myListPage')} /> */}
                 <Route
                   exact
                   path="/localMarketplace/:listingID"
@@ -98,7 +98,7 @@ class App extends React.Component {
                   path="/stripeRedirect"
                   component={ROUTES('stripeRedirectPage')}
                 />
-                <Route exact path="/:username" component={ROUTES('userPage')} />
+                {/* <Route exact path="/:username" component={ROUTES('userPage')} /> */}
                 <Route exact path="/" component={ROUTES('notFound')} />
               </Switch>
               <ToastContainer transition={Flip} />

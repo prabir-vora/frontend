@@ -9,31 +9,17 @@ export default class ShopProductTemplate extends Component {
     return (
       <div className={Style.gridCellWrapper}>
         <div className={Style.gridCellContent}>
-          <div>
-            <div className={Style.gridCell}>
-              <div className={Style.gridCellImage}>
-                <a title={name} href={`/shop/${productSlug}`}>
+          <a title={name} href={`/shop/${productSlug}`}>
+            <div>
+              <div className={Style.gridCell}>
+                <div className={Style.gridCellImage}>
                   <Img src={original_image_url} className={Style.gridImage} />
-                </a>
-              </div>
+                </div>
 
-              <div
-                style={{
-                  textAlign: 'center',
-                  fontFamily:
-                    'Druk Wide Web,futura-pt,HelveticaNeue-Light,Helvetica Neue Light,Helvetica Neue,Helvetica,Arial,Lucida Grande,sans-serif',
-
-                  fontSize: '11px',
-                  fontWeight: '800',
-                  textTransform: 'uppercase',
-                }}
-              >
-                <a title={name} href={`/shop/${productSlug}`}>
-                  {name}
-                </a>
+                <div className={Style.productName}>{name}</div>
               </div>
             </div>
-          </div>
+          </a>
         </div>
       </div>
     );

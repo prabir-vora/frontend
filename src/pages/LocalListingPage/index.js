@@ -493,7 +493,7 @@ class LocalListingPage extends Component {
               >
                 Message
               </Button>
-              <Button
+              {/* <Button
                 className={
                   isAddedToList
                     ? cx(Style.myListButton, Style.active)
@@ -505,7 +505,7 @@ class LocalListingPage extends Component {
                 }
               >
                 <FavoriteIcon />
-              </Button>
+              </Button> */}
             </div>
           </div>
           <div className={Style.mediaContainer}>

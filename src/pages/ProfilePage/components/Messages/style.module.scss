@@ -6,38 +6,66 @@
   justify-content: center;
 }
 
+.mobileTitle {
+  font-size: 35px;
+  text-transform: uppercase;
+  font-weight: 400;
+  margin: 20px 0px 0px 0px;
+  text-align: center;
+}
+
+.layout {
+  width: 100%;
+}
+
 .messageSelectionContainer {
   display: flex;
-  align-items: stretch;
+  align-items: center;
   border: 0;
   border-radius: 0;
   margin: 0;
+  justify-content: center;
 }
 
-.selectionButton {
-  padding: 16px 0;
-  position: relative;
-  flex: 1;
-  padding: 21px 0 20px;
-  border: 0;
-  background-color: black;
-  text-align: center;
-  font-weight: 600;
-  font-size: 13px;
-  text-transform: uppercase;
+.messageSelectionLabel {
+  display: flex;
+  justify-content: left;
+  box-align: center;
+  align-items: center;
+  line-height: 1.5;
+  letter-spacing: 0px;
+  height: 60px;
   color: white;
+  font-size: 16px;
+  border-width: 0px;
   cursor: pointer;
-  transition-duration: 250ms;
-  transition-property: font-weight, background-color, color;
-  border: 1px solid #e1e1e1;
-
-  &.activeSelection {
-    background-color: rgb(34, 35, 32) !important;
-    color: white !important;
-    border-bottom: 2px solid white;
-    // border-bottom: 1px solid #e1e1e1;
-  }
+  margin: 0px 10px;
 }
+
+// .selectionButton {
+//   padding: 16px 0;
+//   position: relative;
+//   flex: 1;
+//   padding: 21px 0 20px;
+//   border: 0;
+//   background-color: black;
+//   text-align: center;
+//   font-weight: 600;
+//   font-size: 13px;
+//   text-transform: uppercase;
+//   color: white;
+//   cursor: pointer;
+//   transition-duration: 250ms;
+//   transition-property: font-weight, background-color, color;
+//   border: 1px solid #e1e1e1;
+
+//   &.activeSelection {
+//     background-color: rgb(34, 35, 32) !important;
+//     color: white !important;
+//     border-bottom: 2px solid white;
+//     // border-bottom: 1px solid #e1e1e1;
+//   }
+// }
 
 .seperator {
   display: none;
@@ -46,16 +74,38 @@
 .conversationItem {
   margin-top: 30px;
   border-top: 1px solid #b3b3b3;
-
-  padding: 20px 35px;
+  padding: 10px;
   display: flex;
   align-items: center;
   align-content: center;
   cursor: pointer;
 }
 
+.conversationImage {
+  width: 75px;
+  height: 100px;
+}
+
+.message {
+  color: white;
+  text-align: center;
+  font-size: 14px;
+  margin-right: 10px;
+}
+
 .listingDetails {
   width: 30%;
+}
+
+.listingDetailsContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100px;
+}
+
+.productName {
+  font-size: 10px;
 }
 
 .listingInfo {
@@ -64,7 +114,7 @@
   justify-content: center;
   padding: 0 1%;
   color: white;
-  margin-left: 20px;
+  margin-left: 0px;
 }
 
 .lastMessage {
@@ -111,7 +161,8 @@
 .replyButton {
   width: 100px;
   height: 30px;
-  background: rgb(147, 140, 252);
+  background: #919496;
+  text-transform: uppercase;
   color: white;
   font-weight: 600;
   margin-bottom: 20px;
@@ -123,22 +174,27 @@
 
 .logItem {
   display: flex;
-  padding: 22px 80px;
+  padding: 20px;
 }
 
 .logSender {
   display: flex;
   flex-direction: row;
-  width: 256px;
+  width: 100px;
   margin-right: 24px;
   font-weight: bold;
 }
 
 .logItemContent {
   flex: 1;
-  width: 490px;
-  margin-right: 42px;
   font-size: 14px;
+  margin-right: 10px;
+  font-size: 14px;
+}
+
+.logItemTimestamp {
+  margin-left: auto;
+  font-size: 12px;
 }
 
 .profilePictureURL {
@@ -149,6 +205,8 @@
 }
 
 .senderDetails {
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .noMessages {
@@ -160,18 +218,84 @@
 }
 
 .unreadAlert {
-  top: 0px;
-  right: 0px;
-  color: white;
-  background-color: #c00;
-  width: 10px;
-  min-width: 10px;
-  min-height: 10px;
-  height: 10px;
-  border-radius: 50%;
-  line-height: 10px;
-  font-size: 10px;
-  text-align: center;
-  cursor: pointer;
-  font-family: Roboto, Arial, sans-serif;
+  display: none;
+}
+
+@media (min-width: 40em) {
+  .layout {
+    width: 80%;
+  }
+
+  .conversationImage {
+    width: 100px;
+    height: 100px;
+  }
+
+  .listingInfo {
+    margin-left: 20px;
+  }
+
+  .productName {
+    font-size: 13px;
+  }
+
+  .conversationItem {
+    padding: 20px 35px;
+  }
+
+  .messageSelectionLabel {
+    font-size: 22px;
+  }
+
+  .mobileTitle {
+    display: none;
+  }
+
+  .unreadAlert {
+    display: block;
+    top: 0px;
+    right: 0px;
+    color: white;
+    background-color: #c00;
+    width: 10px;
+    min-width: 10px;
+    min-height: 10px;
+    height: 10px;
+    border-radius: 50%;
+    line-height: 10px;
+    font-size: 10px;
+    text-align: center;
+    cursor: pointer;
+    font-family: Roboto, Arial, sans-serif;
+  }
+
+  .message {
+    color: white;
+    text-align: center;
+    font-size: 16px;
+    margin-right: 10px;
+  }
+
+  .logItem {
+    display: flex;
+    padding: 22px 80px;
+  }
+
+  .logSender {
+    width: 256px;
+  }
+
+  .logItemContent {
+    font-size: 16px;
+    margin-right: 40px;
+  }
+
+  .senderDetails {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .listingDetailsContainer {
+    width: auto;
+  }
 }

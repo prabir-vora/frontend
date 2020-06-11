@@ -31,6 +31,8 @@ import {
   connectRange,
 } from 'react-instantsearch-dom';
 
+import qs from 'query-string';
+
 import { LocationSearchInput } from 'fields';
 
 import Select from 'react-select';
@@ -829,6 +831,18 @@ export default class LocalListingsPage extends Component {
     showMobileFilterContainer: false,
   };
 
+  componentDidMount() {
+    console.log(this.props);
+    const parsed = qs.parse(this.props.location.search);
+    const { searchInput = '' } = parsed;
+
+    if (searchInput !== '') {
+      this.setState({
+        searchInput,
+      });
+    }
+  }
+
   toggleIndividualFilter = filterType => {
     switch (filterType) {
       case 'sortBy':
@@ -868,15 +882,25 @@ export default class LocalListingsPage extends Component {
     const { user } = this.props;
     let filters;
 
+    const { searchInput = '' } = this.state;
+
     filters = user
       ? `productCategory:${this.state.productCategory} AND (NOT reseller_username:${user.username})`
       : `productCategory:${this.state.productCategory}`;
 
     return (
       <div className={Style.pageContent}>
-        <div className={Style.pageTitle}>
-          <h1 className={Style.titleLarge}>Local Marketplace</h1>
-        </div>
+        {searchInput ? (
+          <div className={Style.pageTitle}>
+            <h1 className={Style.searchTitle}>
+              {`Search Results for "${searchInput}"`}
+            </h1>
+          </div>
+        ) : (
+          <div className={Style.pageTitle}>
+            <h1 className={Style.titleLarge}>Local Marketplace</h1>
+          </div>
+        )}
         <div>
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <LocationSearchInput
@@ -1250,6 +1274,7 @@ export default class LocalListingsPage extends Component {
                   aroundLatLng={`${this.props.latitude},${this.props.longitude}`}
                   aroundRadius={this.state.selectedRadius.value}
                   getRankingInfo={true}
+                  query={`${searchInput}`}
                 />
               </div>
               <div className={Style.filterResultsArea}>

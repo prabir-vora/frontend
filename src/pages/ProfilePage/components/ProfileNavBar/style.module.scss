@@ -1,7 +1,42 @@
 .navBarContainer {
-  margin: 3em 0px;
+  display: none;
+}
+
+.navBarContainerMobile {
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+  width: 100%;
+  z-index: 2;
   display: flex;
-  justify-content: center;
+  background: black;
+  height: 60px;
+}
+
+.navBarIndMobile {
+  width: 25%;
+  display: flex;
+}
+
+.navBarItemMobile {
+  font-size: 17px;
+  font-weight: 600;
+  margin: 0px 40px;
+  color: #aaaaaa;
+  padding-bottom: 5px;
+  text-transform: capitalize;
+  position: relative;
+
+  & > svg {
+    fill: grey;
+    position: relative;
+  }
+
+  &.activeMobile {
+    & > svg {
+      fill: white;
+    }
+  }
 }
 
 .navBarItem {
@@ -15,15 +50,20 @@
 
   &.active {
     border-radius: 0;
-    border-bottom: 1px solid #938cfc;
+    border-bottom: 1px solid white;
     color: white;
   }
 }
 
 .notifCount {
+  display: none;
+}
+
+.notifCountMobile {
+  display: block;
   position: absolute;
-  top: 0px;
-  right: 0px;
+  top: 50%;
+  right: 50%;
   color: white;
   background-color: #c00;
   width: 18px;
@@ -34,4 +74,36 @@
   text-align: center;
   cursor: pointer;
   font-family: Roboto, Arial, sans-serif;
+  top: 5px;
+  right: -10px;
+}
+
+@media (min-width: 40em) {
+  .navBarContainer {
+    display: block;
+    margin: 3em 0px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .navBarContainerMobile {
+    display: none;
+  }
+
+  .notifCount {
+    display: block;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    color: white;
+    background-color: #c00;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    line-height: 18px;
+    font-size: 10px;
+    text-align: center;
+    cursor: pointer;
+    font-family: Roboto, Arial, sans-serif;
+  }
 }

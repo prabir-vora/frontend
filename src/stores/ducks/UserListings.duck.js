@@ -28,17 +28,22 @@ const fetchUserListings = page => dispatch => {
         fetchUserListings(page: ${page}) {
             data {
               id
-            askingPrice
-            condition
-            availability
-            size
-            slug
-            product {
-              id
-              name
-              original_image_url
-            }
-            images
+              askingPrice
+              condition
+              availability
+              size
+              slug
+              product {
+                id
+                name
+                original_image_url
+                brand {
+                  id
+                  name
+                }
+              }
+              images
+              purchased_at
             }
           }
           

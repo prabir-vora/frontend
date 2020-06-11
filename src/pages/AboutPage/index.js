@@ -3,10 +3,16 @@ import { MainNavBar, MainFooter } from 'components';
 
 import Style from './style.module.scss';
 
+import { FAQIcon, ContactUsIcon } from 'assets/Icons';
+
 export default class AboutPage extends Component {
   render() {
     return (
-      <div>
+      <div
+        style={{
+          background: 'linear-gradient(100deg, #111010 0%, #4b4b4b 99%)',
+        }}
+      >
         <MainNavBar />
         <div className={Style.pageLayout}>
           <div className={Style.pageContent}>
@@ -20,77 +26,37 @@ export default class AboutPage extends Component {
                   textAlign: 'center',
                   fontSize: '28px',
                   fontWeight: '400',
+                  color: '#cecece',
                 }}
               >
-                Our mission is to{' '}
-                <span style={{ fontWeight: 'bold', color: '#938cfc' }}>
+                Our mission is to provide the best experience for shopping{' '}
+                <span style={{ fontWeight: 'bold', color: '#E3E3E3' }}>
                   {' '}
-                  democratize{' '}
+                  authentic streetwear{' '}
                 </span>{' '}
-                the buying and selling of sneakers and apparel{' '}
-                <span style={{ fontWeight: 'bold', color: '#938cfc' }}>
+                . With us you can buy and sell sneakers and apparel both{' '}
+                <span style={{ fontWeight: 'bold', color: '#E3E3E3' }}>
                   {' '}
                   globally{' '}
                 </span>{' '}
                 and
-                <span style={{ fontWeight: 'bold', color: '#938cfc' }}>
+                <span style={{ fontWeight: 'bold', color: '#E3E3E3' }}>
                   {' '}
                   locally.{' '}
                 </span>{' '}
               </h2>
-              <br />
-              <h2
-                style={{
-                  width: '600px',
-                  textAlign: 'center',
-                  fontSize: '28px',
-                  fontWeight: '400',
-                }}
-              >
-                We are determined to create the{' '}
-                <span style={{ fontWeight: 'bold', color: '#938cfc' }}>
-                  {' '}
-                  cheapest{' '}
-                </span>
-                way for the buyer and seller interaction to occur, while making
-                sure the product is{' '}
-                <span style={{ fontWeight: 'bold', color: '#938cfc' }}>
-                  authentic.
-                </span>
-              </h2>
+            </div>
+            <div className={Style.linksContainer}>
+              <a href={'/faqs'} className={Style.link}>
+                <FAQIcon />
+                <h1>FAQs</h1>
+              </a>
+              <a href={'/contactUs'} className={Style.link}>
+                <ContactUsIcon />
+                <h1>Contact Us</h1>
+              </a>
             </div>
             <div className={Style.ribbonsContainer}>
-              <div className={Style.sellerContainer}>
-                <h3 className={Style.toContainer}>
-                  To <span className={Style.toRibbon}>Sellers</span>
-                </h3>
-                <h2
-                  style={{
-                    width: '600px',
-                    textAlign: 'center',
-                    fontSize: '28px',
-                    fontWeight: '400',
-                  }}
-                >
-                  We believe it is unfair to have a large 3rd party fees for
-                  every resell interaction.
-                </h2>
-                <h4
-                  style={{
-                    width: '600px',
-                    textAlign: 'center',
-                    fontSize: '18px',
-                    fontWeight: '400',
-                  }}
-                >
-                  With our Reseller Program sell for as low as 3%, simply to
-                  help us run our platform. Get your own branded page and get
-                  discovered on our Resellers page{' '}
-                  <a className={Style.learnMore} href="/">
-                    Learn More about Selling on Dripverse
-                  </a>
-                </h4>
-              </div>
               <br />
               <div className={Style.buyerContainer}>
                 <h3 className={Style.toContainer}>
@@ -104,9 +70,8 @@ export default class AboutPage extends Component {
                     fontWeight: '400',
                   }}
                 >
-                  Join a community of fashion lovers, hypebeasts or whatever you
-                  indentify as. Get products for lower price. Find authentic
-                  products globally and locally.
+                  Shop 100% authentic new and used products globally. Find
+                  listings near you on our one-of-a-kind local marketplace.
                 </h2>
                 <h4
                   style={{
@@ -116,10 +81,38 @@ export default class AboutPage extends Component {
                     fontWeight: '400',
                   }}
                 >
-                  Ordering from a reputed reseller? Skip the authentication
-                  process and get it shipped directly. Do not trust the seller,
-                  ask for authentication. Find everything from unique and
-                  vintage pieces to commoditized products.
+                  <a className={Style.learnMore} href="/shop">
+                    Shop Now
+                  </a>
+                </h4>
+              </div>
+              <br />
+              <div className={Style.sellerContainer}>
+                <h3 className={Style.toContainer}>
+                  To <span className={Style.toRibbon}>Sellers</span>
+                </h3>
+                <h2
+                  style={{
+                    width: '600px',
+                    textAlign: 'center',
+                    fontSize: '28px',
+                    fontWeight: '400',
+                  }}
+                >
+                  Sell both New and Used sneakers and apparel starting at a 5%
+                  seller rate.
+                </h2>
+                <h4
+                  style={{
+                    width: '600px',
+                    textAlign: 'center',
+                    fontSize: '18px',
+                    fontWeight: '400',
+                  }}
+                >
+                  <a className={Style.learnMore} href="/">
+                    Learn More about Selling on Dripverse
+                  </a>
                 </h4>
               </div>
             </div>

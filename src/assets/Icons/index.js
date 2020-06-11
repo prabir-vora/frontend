@@ -45,22 +45,34 @@ import { ReactComponent as RadioButtonUncheckedIcon } from './RadioButtonUncheck
 import { ReactComponent as SortIcon } from './SortIcon.svg';
 import { ReactComponent as UserIcon } from './UserIcon.svg';
 import { ReactComponent as FavoriteIcon } from './FavoriteIcon.svg';
+import { ReactComponent as MessagesIcon } from './MessagesIcon.svg';
+import { ReactComponent as SettingsIcon } from './SettingsIcon.svg';
+import { ReactComponent as EditProfileIcon } from './EditProfileIcon.svg';
+import { ReactComponent as PasswordIcon } from './PasswordIcon.svg';
+import { ReactComponent as SellerSettingsIcon } from './SellerSettingsIcon.svg';
+import { ReactComponent as HomeNavIcon } from './HomeNavIcon.svg';
+import { ReactComponent as FAQIcon } from './FAQIcon.svg';
+import { ReactComponent as ContactUsIcon } from './ContactUsIcon.svg';
 
 export {
+  HomeNavIcon,
   AddPhotoIcon,
   ArrowIcon,
   BrandsNavIcon,
   BuyIcon,
   CashOutIcon,
   CreateListingIcon,
+  ContactUsIcon,
   ChatIcon,
   CheckIcon,
   CloseIcon,
   CrossIcon,
   DollarIcon,
+  EditProfileIcon,
   EngageMessagesIcon,
   ExpandMoreIcon,
   ExpandLessIcon,
+  FAQIcon,
   FavoriteIcon,
   FollowersCountIcon,
   GridViewIcon,
@@ -70,10 +82,12 @@ export {
   ListViewIcon,
   LocationNavIcon,
   MenuIcon,
+  MessagesIcon,
   MyListNavIcon,
   NavigateNextIcon,
   NavigatePreviousIcon,
   NetworkIcon,
+  PasswordIcon,
   PencilIcon,
   RadioButtonCheckedIcon,
   RadioButtonUncheckedIcon,
@@ -83,6 +97,8 @@ export {
   SortIcon,
   PackageIcon,
   PlusIcon,
+  SellerSettingsIcon,
+  SettingsIcon,
   SearchIcon,
   SneakerIcon,
   ShareIcon,

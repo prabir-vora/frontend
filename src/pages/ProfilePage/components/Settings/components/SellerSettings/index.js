@@ -10,6 +10,8 @@ import qs from 'query-string';
 
 import { RadioButton, Button } from 'fields';
 
+import { RadioButtonCheckedIcon, RadioButtonUncheckedIcon } from 'assets/Icons';
+
 const stripeConnectButton = require('assets/Images/blue-on-dark.png');
 
 class SellerSettings extends Component {
@@ -43,6 +45,12 @@ class SellerSettings extends Component {
     });
   }
 
+  onCancel = () => {
+    this.setState({
+      activeShippingID: this.props.user.activeSellerAddressID,
+    });
+  };
+
   onGetSubmitBtnStatus = () => {
     if (this.state.activeShippingID !== this.props.user.activeSellerAddressID) {
       return 'active';
@@ -72,24 +80,20 @@ class SellerSettings extends Component {
         alignItems: 'center',
       }}
     >
-      <div
-        style={{
-          marginBottom: '20px',
-          fontSize: '20px',
-          color: 'black',
-          textAlign: 'center',
-          padding: '20px',
-        }}
-      >
+      <div className={Style.stripeMessage}>
         Your seller payment account is all setup and ready for payouts.
       </div>
       <a
         style={{
-          color: 'black',
+          color: 'white',
           textAlign: 'center',
           marginTop: '20px',
-          textDecoration: 'underline',
-          width: '100%',
+          width: '200px',
+          fontSize: '14px',
+          background: '#919496',
+          textTransform: 'uppercase',
+          borderRadius: '10px',
+          padding: '10px',
         }}
         href="https://dashboard.stripe.com/dashboard"
         target="_blank"
@@ -119,22 +123,22 @@ class SellerSettings extends Component {
           const addressLabel = `${address1} ${address2}, ${city_locality}, ${state_province}, ${country_code}, ${postal_code}`;
 
           return (
-            <div className={Style.ShippingListItem} key={address.id}>
-              <div className={Style.ShippingListItemContent}>
-                <RadioButton
-                  checked={address.id === this.state.activeShippingID}
-                  id={address.id}
-                  label={addressLabel}
-                  onClick={() =>
-                    this.setState(
-                      {
-                        activeShippingID: address.id,
-                      },
-                      () => console.log(this.state),
-                    )
-                  }
-                />
-              </div>
+            <div className={Style.shippingListItem} key={address.id}>
+              <button
+                onClick={() =>
+                  this.setState({
+                    activeShippingID: address.id,
+                  })
+                }
+                className={Style.ListItemButton}
+              >
+                {address.id === this.state.activeShippingID ? (
+                  <RadioButtonCheckedIcon />
+                ) : (
+                  <RadioButtonUncheckedIcon />
+                )}
+                {addressLabel}
+              </button>
             </div>
           );
         })}
@@ -184,8 +188,6 @@ class SellerSettings extends Component {
           <p className={Style.formInputLabel}>Seller Address</p>
           {this.renderSellerAddressComponent()}
         </div>
-        <br />
-        <br />
         <div className={Style.buttonsRow}>
           <Button
             className={Style.saveButton}

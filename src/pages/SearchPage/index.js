@@ -34,6 +34,14 @@ const searchClient = algoliasearch(
 );
 
 function ShopHits(props) {
+  if (props.hits.length === 0) {
+    return (
+      <div className={Style.noResultsContainer}>
+        <h1 className={Style.noResultsTitle}>Sorry, no results found</h1>
+      </div>
+    );
+  }
+
   return (
     <div className={Style.resultsGrid}>
       {props.hits.map(hit => {
@@ -44,6 +52,14 @@ function ShopHits(props) {
 }
 
 function LocalHits(props) {
+  if (props.hits.length === 0) {
+    return (
+      <div className={Style.noResultsContainer}>
+        <h1 className={Style.noResultsTitle}>Sorry, no results found</h1>
+      </div>
+    );
+  }
+
   return (
     <div className={Style.resultsGrid}>
       {props.hits.map(hit => {
@@ -70,9 +86,15 @@ class SearchPage extends Component {
       return this.props.history.push({ pathname: seeAll });
     }
 
-    const query = qs.stringify({ searchInput, seeAll });
+    console.log(seeAll);
 
-    this.props.history.push({ search: query });
+    const query = qs.stringify({ searchInput });
+
+    if (seeAll === 'shop') {
+      this.props.history.push({ pathname: '/shop', search: query });
+    } else {
+      this.props.history.push({ pathname: '/localMarketplace', search: query });
+    }
   };
 
   renderLocalSearchResults = searchInput => {
@@ -85,7 +107,7 @@ class SearchPage extends Component {
         searchClient={searchClient}
       >
         <div className={Style.filterResultsArea}>
-          <div style={{ display: 'flex', width: '100%' }}>
+          <div className={Style.searchContainerHeader}>
             <h2 style={{ marginBottom: '30px' }}>Listings Near you</h2>
             <button
               className={Style.seeAllButton}
@@ -168,12 +190,18 @@ class SearchPage extends Component {
       );
     }
     return (
-      <div>
+      <div
+        style={{
+          background:
+            'linear-gradient(rgb(136, 131, 128) 0%, rgb(43, 41, 40) 99%)',
+          overflowX: 'hidden',
+        }}
+      >
         <MainNavBar />
         <div className={Style.pageLayout}>
           <div className={Style.pageContent}>
             <div className={Style.pageTitle}>
-              <h1>
+              <h1 className={Style.titleLarge}>
                 {searchInput === ''
                   ? 'You may like'
                   : `Search Results for "${searchInput}"`}
@@ -184,8 +212,8 @@ class SearchPage extends Component {
               searchClient={searchClient}
             >
               <div className={Style.filterResultsArea}>
-                <div style={{ display: 'flex', width: '100%' }}>
-                  <h2 style={{ marginBottom: '30px' }}>Shop</h2>
+                <div className={Style.searchContainerHeader}>
+                  <h2 className={Style.searchTypeHeader}>Shop</h2>
                   <button
                     className={Style.seeAllButton}
                     onClick={() => this.onClickSeeAll('shop')}

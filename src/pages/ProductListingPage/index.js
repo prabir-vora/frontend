@@ -516,9 +516,9 @@ class ProductListingPage extends Component {
                 </div>
               )}
 
-              <Button className={Style.myListButton}>
+              {/* <Button className={Style.myListButton}>
                 <FavoriteIcon />
-              </Button>
+              </Button> */}
               <div className={Style.likeButtonContainer}>
                 <button
                   className={

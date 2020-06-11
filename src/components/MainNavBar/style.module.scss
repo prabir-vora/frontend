@@ -277,11 +277,17 @@
   margin: 0px;
 }
 
+.searchContainerWithButton {
+  display: flex;
+  width: 90%;
+}
+
 .searchContainer {
   position: relative;
   -webkit-box-flex: 0;
-  -ms-flex: 0 1 364px;
-  flex: 0 1 364px;
+  // -ms-flex: 0 1 364px;
+  // flex: 0 1 364px;
+  width: 100%;
   pointer-events: auto;
   -webkit-app-region: no-drag;
 }
@@ -297,7 +303,6 @@
   height: 40px;
   width: 100%;
   border: 0;
-  border-radius: 500px;
   text-overflow: ellipsis;
   font-size: 14px;
   line-height: 20px;
@@ -342,6 +347,17 @@
     height: 24;
     width: 24;
   }
+}
+
+.searchButton {
+  padding: 10px;
+  font-family: Baskerville;
+  background: #919496;
+  color: white;
+  text-transform: uppercase;
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 0px;
 }
 
 .userIcon {
@@ -414,6 +430,10 @@
   .logoAndSearchContainer {
     margin-right: auto;
     margin-left: 10px;
+  }
+
+  .searchButton {
+    font-size: 16px;
   }
 
   .mainHeaderNavLink {

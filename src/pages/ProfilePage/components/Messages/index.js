@@ -15,6 +15,8 @@ import UserDuck from 'stores/ducks/User.duck';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { ClipLoader } from 'react-spinners';
 
+import Switch from 'react-switch';
+
 class Messages extends Component {
   componentDidMount() {
     const { actionCreators } = ConversationDuck;
@@ -150,15 +152,13 @@ class Messages extends Component {
                 : `/${listingContext}/${slug}`
             }
           >
-            <div style={{ cursor: 'pointer', display: 'flex' }}>
+            <div className={Style.listingDetailsContainer}>
               <Img
-                src={images[0]}
-                style={{ width: '100px', height: '100px' }}
+                src={images[0] || product.original_image_url}
+                className={Style.conversationImage}
               />
               <div className={Style.listingInfo}>
-                <h4 style={{ width: '120px', fontSize: '12px' }}>
-                  {product.name}
-                </h4>
+                <h4 className={Style.productName}>{product.name}</h4>
               </div>
             </div>
           </a>
@@ -171,16 +171,7 @@ class Messages extends Component {
               alignItems: 'center',
             }}
           >
-            <p
-              style={{
-                color: 'white',
-                textAlign: 'center',
-                fontSize: '14px',
-                marginRight: '10px',
-              }}
-            >
-              {message}
-            </p>
+            <p className={Style.message}>{message}</p>
             {!isRead && <div className={Style.unreadAlert} />}
           </div>
         </div>
@@ -188,7 +179,7 @@ class Messages extends Component {
           <p style={{ marginBottom: '20px', fontSize: '12px' }}>
             {moment(createdAt).fromNow()}
           </p>
-          <p style={{ fontSize: '12px' }}>{senderUsername}</p>
+          <p className={Style.senderDetails}>{senderUsername}</p>
         </div>
       </div>
     );
@@ -229,13 +220,10 @@ class Messages extends Component {
                   : `/${listingContext}/${slug}`
               }
             >
-              <div style={{ cursor: 'pointer', display: 'flex' }}>
-                <Img
-                  src={images[0]}
-                  style={{ width: '100px', height: '100px' }}
-                />
+              <div className={Style.listingDetailsContainer}>
+                <Img src={images[0]} className={Style.conversationImage} />
                 <div className={Style.listingInfo}>
-                  <h4 style={{ fontSize: '12px' }}>{product.name}</h4>
+                  <h4 className={Style.productName}>{product.name}</h4>
                 </div>
               </div>
             </a>
@@ -247,22 +235,32 @@ class Messages extends Component {
             Reply
           </button>
         </div>
-        <div className={Style.ActivityLog}>
+        <div
+          className={Style.ActivityLog}
+          onClick={() => this.onConversationClick(id)}
+        >
           {activityLog.map(log => {
             const { senderID, createdAt, message } = log;
             let senderUsername = senderID === user.id ? 'me' : username;
             return (
               <div className={Style.logItem}>
                 <div className={Style.logSender}>
-                  <Img src={''} className={Style.profilePictureURL} />
-                  <div className={Style.senderDetails}>
-                    <p style={{ fontSize: '12px' }}>{senderUsername}</p>
-                    <p style={{ fontSize: '12px', fontWeight: '400' }}>
-                      {moment(createdAt).fromNow()}
-                    </p>
+                  <div
+                    style={{
+                      color: `${
+                        senderUsername === 'me' ? '#77f11c' : '#ff4500'
+                      }`,
+                    }}
+                    className={Style.senderDetails}
+                  >
+                    {senderUsername}
                   </div>
                 </div>
                 <div className={Style.logItemContent}>{message}</div>
+                <div className={Style.logItemTimestamp}>
+                  {' '}
+                  {moment(createdAt).fromNow()}
+                </div>
               </div>
             );
           })}
@@ -376,29 +374,42 @@ class Messages extends Component {
     const { messageSelection } = data;
     return (
       <div className={Style.conversationsContainer}>
-        <div style={{ width: '80%' }}>
+        <div className={Style.mobileTitle}>Messages</div>
+        <div className={Style.layout}>
           <div className={Style.messageSelectionContainer}>
-            <span
-              className={
-                messageSelection === 'buying'
-                  ? cx(Style.selectionButton, Style.activeSelection)
-                  : Style.selectionButton
-              }
+            <label
+              className={Style.messageSelectionLabel}
               onClick={() => this.toggleSelection('buying')}
             >
-              BUY MESSAGES
-            </span>
-            <span className={Style.seperator}></span>
-            <span
-              className={
-                messageSelection === 'selling'
-                  ? cx(Style.selectionButton, Style.activeSelection)
-                  : Style.selectionButton
-              }
+              Buy messages
+            </label>
+            <Switch
+              checked={messageSelection === 'selling' ? true : false}
+              onChange={value => {
+                if (value !== true) {
+                  this.toggleSelection('buying');
+                } else {
+                  this.toggleSelection('selling');
+                }
+              }}
+              onColor="#9A8686"
+              onHandleColor="#fff"
+              handleDiameter={30}
+              uncheckedIcon={false}
+              checkedIcon={false}
+              boxShadow="0px 1px 5px rgba(0, 0, 0, 0.6)"
+              activeBoxShadow="0px 0px 1px 5px rgba(0, 0, 0, 0.2)"
+              height={20}
+              width={48}
+              className="react-switch"
+              id="material-switch"
+            />
+            <label
+              className={Style.messageSelectionLabel}
               onClick={() => this.toggleSelection('selling')}
             >
-              SELL MESSAGES
-            </span>
+              Sell Messages
+            </label>
           </div>
           <div>{this.renderMessages()}</div>
         </div>
