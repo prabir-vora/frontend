@@ -33,16 +33,16 @@ class Orders extends Component {
     }
   };
 
-  onOrderClick = orderID => {
-    const { actionCreators } = OrdersDuck;
-    const { onClickOrder } = actionCreators;
+  // onOrderClick = orderID => {
+  //   const { actionCreators } = OrdersDuck;
+  //   const { onClickOrder } = actionCreators;
 
-    const { data } = this.props;
-    const { orderSelection } = data;
-    console.log(orderSelection);
+  //   const { data } = this.props;
+  //   const { orderSelection } = data;
+  //   console.log(orderSelection);
 
-    this.props.dispatch(onClickOrder(orderID, orderSelection));
-  };
+  //   this.props.dispatch(onClickOrder(orderID, orderSelection));
+  // };
 
   onMarkAsRead = async orderNumber => {
     const { actionCreators } = OrdersDuck;
@@ -80,7 +80,7 @@ class Orders extends Component {
   renderBuyOrders = () => {
     const { data } = this.props;
     const { buying } = data;
-    const { orders, loadingOrders, openOrders } = buying;
+    const { orders, loadingOrders } = buying;
 
     if (loadingOrders) {
       return (
@@ -102,17 +102,13 @@ class Orders extends Component {
         {orders.length === 0 && (
           <div className={Style.noMessages}>No Results</div>
         )}
-        {orders.map(order => {
-          console.log(orders);
-          const { id } = order;
-          return (
-            <React.Fragment>
-              {!openOrders.includes(id)
-                ? this.renderBuyOrderItem(order)
-                : this.renderActiveBuyOrderItem(order)}
-            </React.Fragment>
-          );
-        })}
+        <div className={Style.listView}>
+          {orders.map(order => {
+            console.log(orders);
+            const { id } = order;
+            return this.renderBuyOrderItem(order);
+          })}
+        </div>
       </InfiniteScroll>
     );
   };
@@ -120,7 +116,7 @@ class Orders extends Component {
   renderSellOrders = () => {
     const { data } = this.props;
     const { selling } = data;
-    const { orders, loadingOrders, openOrders } = selling;
+    const { orders, loadingOrders } = selling;
 
     if (loadingOrders) {
       return (
@@ -142,17 +138,13 @@ class Orders extends Component {
         {orders.length === 0 && (
           <div className={Style.noMessages}>No Results</div>
         )}
-        {orders.map(order => {
-          console.log(orders);
-          const { id } = order;
-          return (
-            <React.Fragment>
-              {!openOrders.includes(id)
-                ? this.renderSellOrderItem(order)
-                : this.renderActiveSellOrderItem(order)}
-            </React.Fragment>
-          );
-        })}
+        <div className={Style.listView}>
+          {orders.map(order => {
+            console.log(orders);
+            const { id } = order;
+            return this.renderSellOrderItem(order);
+          })}
+        </div>
       </InfiniteScroll>
     );
   };
@@ -174,53 +166,52 @@ class Orders extends Component {
     const { original_image_url, name, slug } = product;
 
     return (
-      <div
-        key={id}
-        className={Style.orderItem}
-        onClick={() => {
-          this.onOrderClick(id);
+      <a style={{ width: '100%' }} href={`/orders/${orderNumber}`}>
+        <div
+          key={id}
+          className={Style.orderItem}
+          onClick={() => {
+            // this.onOrderClick(id);
 
-          if (!buyerRead) {
-            this.onMarkAsRead(orderNumber);
-          }
-        }}
-      >
-        <div style={{ marginRight: '40px' }}>
-          <Img
-            src={original_image_url}
-            style={{ width: '120px', height: '120px' }}
-          />
-          <div style={{ maxWidth: 'fit-content' }}> {name}</div>
-        </div>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            marginRight: '40px',
+            if (!buyerRead) {
+              this.onMarkAsRead(orderNumber);
+            }
           }}
         >
-          <h4 style={{ margin: '10px 0', fontWeight: '400' }}>
-            Order Number: {orderNumber}
-          </h4>
-          <h4 style={{ margin: '10px 0', fontWeight: '400' }}>
-            Purchased On: {moment(purchased_at).format('MM-DD-YYYY')}
-          </h4>
-          <h4 style={{ margin: '10px 0', fontWeight: '400' }}>
-            Price: ${price_cents / 100}
-          </h4>
-        </div>
-        <div
-          style={{
-            marginLeft: 'auto',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <h3>Status: {this.renderBuyStatus(status)}</h3>
+          <div>
+            <Img src={original_image_url} className={Style.productImage} />
+          </div>
+
+          <div className={Style.orderDetailsContainer}>
+            <div className={Style.orderDetails}>
+              <div className={Style.productName}>
+                <h4>{name}</h4>
+              </div>
+              <div>
+                <div className={Style.orderDetailLabel}>
+                  Order Number: {orderNumber}
+                </div>
+                <div className={Style.orderDetailLabel}>
+                  Purchased On: {moment(purchased_at).format('MM-DD-YYYY')}
+                </div>
+                <div className={Style.orderDetailLabel}>
+                  Price: ${price_cents / 100}
+                </div>
+              </div>
+            </div>
+
+            <div
+              className={Style.statusContainer}
+              style={{ marginLeft: 'auto' }}
+            >
+              <div className={Style.orderStatus}>
+                {this.renderBuyStatus(status)}
+              </div>
+            </div>
+          </div>
           {!buyerRead && <div className={Style.unreadAlert} />}
         </div>
-      </div>
+      </a>
     );
   };
 
@@ -245,7 +236,7 @@ class Orders extends Component {
       <div
         key={id}
         className={Style.orderItemActive}
-        onClick={() => this.onOrderClick(id)}
+        // onClick={() => this.onOrderClick(id)}
       >
         <div style={{ width: '100%', display: 'flex' }}>
           <div
@@ -322,52 +313,51 @@ class Orders extends Component {
     const { original_image_url, name, slug } = product;
 
     return (
-      <div
-        key={id}
-        className={Style.orderItem}
-        onClick={() => {
-          this.onOrderClick(id);
-          if (!sellerRead) {
-            this.onMarkAsRead(orderNumber);
-          }
-        }}
-      >
-        <div style={{ marginRight: '40px' }}>
-          <Img
-            src={original_image_url}
-            style={{ width: '120px', height: '120px' }}
-          />
-          <div style={{ maxWidth: 'fit-content' }}>{name}</div>
-        </div>
+      <a style={{ width: '100%' }} href={`/sellOrders/${orderNumber}`}>
         <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            marginRight: '40px',
+          key={id}
+          className={Style.orderItem}
+          onClick={() => {
+            // this.onOrderClick(id);
+            if (!sellerRead) {
+              this.onMarkAsRead(orderNumber);
+            }
           }}
         >
-          <h4 style={{ margin: '10px 0', fontWeight: '400' }}>
-            Order Number: {orderNumber}
-          </h4>
-          <h4 style={{ margin: '10px 0', fontWeight: '400' }}>
-            Purchased On: {moment(purchased_at).format('MM-DD-YYYY')}
-          </h4>
-          <h4 style={{ margin: '10px 0', fontWeight: '400' }}>
-            Price: ${price_cents / 100}
-          </h4>
-        </div>
-        <div
-          style={{
-            marginLeft: 'auto',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <h3>Status: {this.renderSellStatus(status)}</h3>
+          <div>
+            <Img src={original_image_url} className={Style.productImage} />
+          </div>
+
+          <div className={Style.orderDetailsContainer}>
+            <div className={Style.orderDetails}>
+              <div className={Style.productName}>
+                <h4>{name}</h4>
+              </div>
+              <div>
+                <div className={Style.orderDetailLabel}>
+                  Order Number: {orderNumber}
+                </div>
+                <div className={Style.orderDetailLabel}>
+                  Purchased On: {moment(purchased_at).format('MM-DD-YYYY')}
+                </div>
+                <div className={Style.orderDetailLabel}>
+                  Price: ${price_cents / 100}
+                </div>
+              </div>
+            </div>
+            <div
+              className={Style.statusContainer}
+              style={{ marginLeft: 'auto' }}
+            >
+              <div className={Style.orderStatus}>
+                {this.renderSellStatus(status)}
+              </div>
+            </div>
+          </div>
+
           {!sellerRead && <div className={Style.unreadAlert} />}
         </div>
-      </div>
+      </a>
     );
   };
 
@@ -393,7 +383,7 @@ class Orders extends Component {
       <div
         key={id}
         className={Style.orderItemActive}
-        onClick={() => this.onOrderClick(id)}
+        // onClick={() => this.onOrderClick(id)}
       >
         <div style={{ width: '100%', display: 'flex' }}>
           <div
@@ -457,25 +447,19 @@ class Orders extends Component {
   renderBuyStatus = status => {
     switch (status) {
       case 'SELLER_PENDING':
-        return 'Awaiting confirmation from seller';
-      case 'SELLER_CONFIRMED':
-        return 'Seller has confirmed your order';
+        return 'Awaiting Seller confirmation.';
       case 'SELLER_CANCELLED':
-        return 'Seller has cancelled your order';
+        return 'Order cancelled by Seller';
       case 'SHIPPED_FOR_AUTHENTICATION':
-        return 'Order shipped for authentication';
+        return 'Shipped for authentication';
       case 'AUTHENTICATION_SUCCESSFUL':
-        return 'Order has been successfuly authenticated';
+        return 'Authentication successful';
       case 'AUTHENTICATION_FAILED':
-        return 'Order failed authentication';
+        return 'Authentication Failed';
       case 'SHIPPED_TO_USER':
-        return 'Order has been Shipped';
-      case 'SHIPMENT_ISSUE':
-        return 'Order has undergone a shipment issue';
-      case 'UNDER_REVIEW':
-        return 'Due to some problem, the order is under review';
+        return 'On its way';
       case 'REFUNDED':
-        return 'The order has been refunded';
+        return 'Order closed. Money refunded';
       default:
         return;
     }
@@ -504,7 +488,7 @@ class Orders extends Component {
       case 'REFUNDED':
         return 'The transaction has been reversed';
       case 'COMPLETE':
-        return 'COmplete';
+        return 'Complete';
       default:
         return;
     }

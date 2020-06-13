@@ -108,7 +108,7 @@ export default class ItemPurchased extends Component {
           </div>
           <div className={Style.OrderReviewSummaryDetailContent}>
             <div className={Style.OrderReviewSummaryDetailContentItem}>
-              <div>
+              <div style={{ minWidth: '200px' }}>
                 <div className={Style.priceSummary}>
                   <div>Subtotal</div>
                   <div>${price_cents / 100}</div>

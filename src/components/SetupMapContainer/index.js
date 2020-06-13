@@ -8,7 +8,7 @@ class MapContainer extends Component {
     return (
       <GoogleMap
         defaultZoom={13}
-        defaultCenter={this.props._geoloc}
+        center={this.props._geoloc}
         options={{
           streetViewControl: false,
           mapTypeControl: false,
@@ -17,7 +17,7 @@ class MapContainer extends Component {
       >
         <Circle
           radius={1000}
-          defaultCenter={this.props._geoloc}
+          center={this.props._geoloc}
           options={{
             strokeColor: '#FF0000',
             strokeOpacity: 0.8,

@@ -11,9 +11,13 @@ import {
   VerificationModal,
 } from './components';
 
+import { ShowConfirmNotif } from 'functions';
+
 import { withCookies } from 'react-cookie';
 
 class AppAuthContainer extends Component {
+  confirmNotif = null;
+
   async componentDidMount() {
     const { getSizing } = SizeDuck.actionCreators;
     this.props.dispatch(getSizing());
@@ -192,6 +196,37 @@ class AppAuthContainer extends Component {
     }
   };
 
+  onResendCode = async () => {
+    const { resendAuthCode } = UserDuck.actionCreators;
+    const { success } = await this.props.dispatch(resendAuthCode());
+
+    return { success };
+  };
+
+  onResetPassword = async email => {
+    const { resetPassword } = UserDuck.actionCreators;
+    const { success } = await this.props.dispatch(resetPassword(email));
+
+    return { success };
+  };
+
+  onSubmitResetPasswordInfo = async (email, resetToken, password) => {
+    const { onSubmitResetPasswordInfo } = UserDuck.actionCreators;
+
+    const { success, error } = await this.props.dispatch(
+      onSubmitResetPasswordInfo(email, resetToken, password),
+    );
+
+    if (success) {
+      this.confirmNotif = ShowConfirmNotif({
+        message: 'Password has been reset.',
+        type: 'success',
+      });
+    }
+
+    return { success, error };
+  };
+
   onSubmitUserSetup = async setupInfo => {
     const { userSetup, fetchUpdatedUser } = UserDuck.actionCreators;
     const { hideModal } = AppAuthDuck.actionCreators;
@@ -246,11 +281,15 @@ class AppAuthContainer extends Component {
             onClose={this.onCloseLoginModal}
             toggleToSignUp={this.toggleToSignUp}
             isLoggingIn={isLoggingIn}
+            onResetPassword={this.onResetPassword}
+            onSubmitResetPasswordInfo={this.onSubmitResetPasswordInfo}
           />
         )}
         {showVerificationModal && (
           <VerificationModal
             submitVerificationCode={this.submitVerificationCode}
+            user={this.props.user}
+            onResendCode={this.onResendCode}
           />
         )}
       </React.Fragment>

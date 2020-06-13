@@ -1,0 +1,589 @@
+// Copied from Order COmponents
+
+.formContainer {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  color: white;
+}
+
+.title {
+  text-transform: capitalize;
+  font-size: 30px;
+  text-align: center;
+  font-weight: 400;
+}
+
+.form {
+  padding: 20px;
+}
+
+.formInputLabel {
+  color: #919496;
+  font-weight: 400;
+  margin-bottom: 10px;
+}
+
+.formInput {
+  font-family: Baskerville;
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: normal;
+  text-align: inherit;
+  text-transform: none;
+  color: inherit;
+  text-decoration: none;
+  font-size: 16px;
+  line-height: 25px;
+  color: white;
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  height: 40px;
+  border-bottom: 2px solid white;
+  outline: 0;
+  margin: 0;
+  padding: 0px 20px;
+  resize: vertical;
+  background: transparent !important;
+  background-image: none;
+  box-shadow: none;
+  -webkit-border-radius: 0px;
+
+  ::placeholder {
+    color: #919496;
+    font-family: Baskerville;
+    padding: 0px;
+  }
+}
+
+.inputSelector {
+  font-family: Baskerville;
+  -webkit-box-align: center;
+  align-items: center;
+  background: transparent !important;
+  background-image: none;
+  border: 0px;
+  border-bottom: 2px solid white !important;
+  display: -webkit-box;
+  display: flex;
+  height: 40px;
+  outline: none !important;
+  padding: 0 12px;
+  position: relative;
+  font-size: 16px;
+  color: white;
+  -webkit-border-radius: 0px;
+
+  &::before {
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 0;
+    border-radius: 1px;
+    border-top: 6px solid #687282;
+    content: '';
+    height: 0;
+    position: absolute;
+    right: 12px;
+    width: 0;
+  }
+}
+
+.countrySelect {
+  width: 100%;
+}
+
+.regionSelect {
+  width: 100%;
+}
+
+.twoInputsContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.halfWidthInput {
+  position: relative;
+  width: 45%;
+}
+
+.buttonsContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.submitButton {
+  padding: 10px;
+  font-family: Baskerville;
+  width: 45%;
+  margin-right: 5%;
+  background: #919496;
+  color: white;
+  border-radius: 10px;
+  text-transform: uppercase;
+  font-size: 16px;
+  margin-bottom: 1em;
+  margin-top: 1em;
+}
+
+.orderStatus {
+  padding: 10px;
+  font-family: Baskerville;
+  background: #919496;
+  color: white;
+  border-radius: 10px;
+  text-transform: uppercase;
+  font-size: 16px;
+  margin-bottom: 1em;
+  margin-top: 1em;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+.errorMessage {
+  color: red;
+  font-size: 17px;
+  width: 100%;
+  text-align: center;
+}
+
+.OrderReviewSummaryDetail {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.OrderReviewTitleContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.OrderReviewSummaryDetailTitle {
+  color: white;
+  margin: 8px 16px;
+  border-top: none;
+  font-size: 20px;
+}
+
+.OrderReviewSummaryDetailContent {
+  display: flex;
+  flex: 3 1 0%;
+  padding: 16px 0px 0px;
+  max-width: 80%;
+  overflow: hidden;
+}
+
+.OrderReviewSummaryDetailContentItem {
+  text-overflow: ellipsis;
+  flex: 1 1 0%;
+  margin: 0px 0px 16px;
+  text-overflow: initial;
+  overflow: auto;
+}
+
+.addressLabel {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin: 0px 8px 0px 0px;
+  overflow: hidden;
+}
+
+.cardBrandImage {
+  width: 50px;
+  height: 30px;
+  margin-right: 10px;
+}
+
+.OrderReviewSummaryDetailEditLink {
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font: 10px Plain, sans-serif;
+  text-decoration: underline;
+  color: white;
+}
+
+.purchasedAt {
+  color: white;
+  font-size: 14px;
+  text-align: center;
+  margin: 20px;
+}
+
+.priceSummary {
+  display: flex;
+  -webkit-box-pack: justify;
+  justify-content: space-between;
+  margin: 0px 0px 8px;
+}
+
+.shippingList {
+  width: 80%;
+  max-height: 220px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  margin: 24px auto 0px;
+  padding: 0px;
+}
+
+.shippingListItem {
+  padding: 20px;
+}
+
+.ListItemButton {
+  flex-direction: row;
+  -webkit-box-pack: start;
+  justify-content: flex-start;
+  -webkit-box-align: center;
+  align-items: center;
+  display: flex;
+  color: white;
+
+  & > svg {
+    fill: white;
+    margin-right: 10px;
+  }
+}
+
+.addNewButton {
+  font-size: 12px;
+  line-height: 15px;
+  letter-spacing: 1.7px;
+  text-transform: uppercase;
+  margin: 24px 0px;
+  color: white;
+  text-decoration: underline;
+}
+
+@media (min-width: 40em) {
+  .form {
+    padding: 20px;
+  }
+
+  .OrderReviewSummaryDetail {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .title {
+    display: none;
+  }
+
+  .OrderReviewSummaryDetailTitle {
+    color: white;
+    margin: 8px 16px;
+    border-top: none;
+    font-size: 16px;
+  }
+
+  .OrderReviewSummaryDetailContent {
+    max-width: 100%;
+  }
+
+  .OrderReviewTitleContainer {
+    width: 100px;
+    flex-direction: column;
+    margin-top: 0px;
+  }
+}
+
+//   Copied from Orders Page
+
+.pageLayout {
+  display: flex;
+  position: relative;
+  box-align: center;
+  align-items: center;
+  flex-direction: column;
+  box-pack: start;
+  justify-content: flex-start;
+  flex: 1 1 0%;
+  color: white;
+  padding: 0 20px;
+}
+
+.noResultsTitle {
+  font-size: 25px;
+  font-weight: 400;
+  text-align: center;
+}
+
+.orderProgressContainer {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-align: center;
+  align-items: center;
+  justify-content: center;
+  min-height: 100px;
+  width: 100%;
+}
+
+.individualOrderProgress {
+  display: flex;
+  position: relative;
+  min-height: 35px;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.orderProgress {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0px 40px;
+  box-sizing: border-box;
+}
+
+.orderProgressLabel {
+  display: none;
+}
+
+.seperator {
+  height: 1px;
+  color: white;
+  background: white;
+  min-width: 33%;
+}
+
+.activeBullet {
+  height: 35px;
+  width: 35px;
+  background: grey;
+  border-radius: 50%;
+  position: relative;
+  border: 1px solid white;
+}
+
+.insideBullet {
+  position: absolute;
+  height: 5px;
+  width: 5px;
+  border-radius: 50%;
+  background: white;
+  top: 45%;
+  left: 45%;
+}
+
+.bullet {
+  height: 5px;
+  width: 5px;
+  background: white;
+  margin: 3px;
+  border-radius: 50%;
+}
+
+.orderProgressLabels {
+  display: flex;
+  width: 100%;
+  justify-content: space-evenly;
+}
+
+.orderLabel {
+  width: 150px;
+  text-align: center;
+}
+
+.productNameLarge {
+  display: none;
+}
+
+.productNameMobile {
+  padding: 20px;
+  box-sizing: border-box;
+  font-size: 20px;
+  margin-bottom: 40px;
+  width: 100%;
+  text-align: center;
+}
+
+.checkoutLayout {
+  display: flex;
+  flex-direction: column-reverse;
+  padding: 0px;
+}
+
+.resellItemContainer {
+  margin-top: 30px;
+  position: relative;
+  width: 100%;
+  padding: 0px 30px;
+  box-sizing: border-box;
+}
+
+.checkoutContainer {
+  position: relative;
+  width: 100%;
+  padding: 0px;
+}
+
+.contentContainer {
+  display: flex;
+  flex-direction: column-reverse;
+  position: relative;
+  box-align: center;
+  align-items: center;
+  box-pack: start;
+  justify-content: flex-start;
+}
+
+.imageContainer {
+  justify-content: center;
+  width: 100%;
+}
+
+.productImage {
+  width: 100%;
+  max-height: 150px;
+  height: 150px;
+  margin-bottom: 30px;
+}
+
+.detailsContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  text-align: center;
+  margin-right: 20px;
+}
+
+.detailsBlock {
+  margin-bottom: 30px;
+}
+
+.detailsTitle {
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.detailsContent {
+  font-size: 16px;
+  color: white;
+  font-weight: 700;
+}
+
+@media (min-width: 40em) {
+  .checkoutLayout {
+    margin: 50px 0px 120px;
+  }
+  .orderProgressContainer {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    box-align: center;
+    align-items: center;
+    justify-content: center;
+    min-height: 100px;
+    margin-bottom: 50px;
+  }
+
+  .orderProgress {
+    align-items: center;
+    width: 500px;
+    padding: 0px;
+  }
+
+  .orderProgressLabel {
+    display: block;
+    position: absolute;
+    left: -30px;
+  }
+
+  .seperator {
+    min-width: 200px;
+    max-width: 200px;
+  }
+
+  .checkoutLayout {
+    flex-direction: row;
+    padding: 2% 7%;
+    max-width: 100%;
+  }
+
+  .resellItemContainer {
+    position: relative;
+    width: 50%;
+    padding: 60px;
+    padding: 0px;
+    box-sizing: border-box;
+  }
+
+  .productNameLarge {
+    display: none;
+  }
+
+  .productNameMobile {
+    font-size: 40px;
+    width: 100%;
+    text-align: center;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    margin: 0px 8px 0px 0px;
+    overflow: hidden;
+  }
+
+  .productImage {
+    width: 100%;
+    max-height: 200px;
+    height: 200px;
+    margin-bottom: 0px;
+  }
+
+  .checkoutContainer {
+    position: relative;
+    width: 50%;
+    padding: 0px;
+    margin: 0px;
+  }
+
+  .detailsContainer {
+    margin-right: 40px;
+  }
+
+  .resellItemContainer {
+    margin-top: 0px;
+    position: relative;
+    width: 50%;
+  }
+
+  .contentContainer {
+    flex-direction: row;
+  }
+}
+
+@media (min-width: 60em) {
+  .checkoutContainer {
+    position: relative;
+    width: 40%;
+    padding: 0px;
+    margin: 0px;
+  }
+
+  .resellItemContainer {
+    margin-top: 0px;
+    position: relative;
+    width: 60%;
+  }
+
+  .productNameLarge {
+    display: block;
+    font-size: 40px;
+    margin-bottom: 20px;
+  }
+
+  .productNameMobile {
+    display: none;
+  }
+
+  .productImage {
+    max-height: 350px;
+    height: 350px;
+  }
+}

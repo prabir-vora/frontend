@@ -17,6 +17,9 @@ import {
 
 import AppAuthDuck from 'stores/ducks/AppAuth.duck';
 import UserDuck from 'stores/ducks/User.duck';
+import ConversationDuck from 'stores/ducks/Conversation.duck';
+import OrdersDuck from 'stores/ducks/Orders.duck';
+import UserListingsDuck from 'stores/ducks/UserListings.duck';
 
 import { withCookies } from 'react-cookie';
 
@@ -83,9 +86,9 @@ class MainNavBar extends Component {
 
   onProductSelection = selection => {
     console.log(selection);
-    const { slug } = selection;
+    const { productSlug } = selection;
 
-    this.props.history.push(`/shop/${slug}`);
+    this.props.history.push(`/shop/${productSlug}`);
     // this.setState(
     //   {
     //     resellItemInfo: immutable.set(
@@ -127,8 +130,14 @@ class MainNavBar extends Component {
     this.props.cookies.remove('jwt', { path: '/' });
     const { actionCreators } = UserDuck;
     const { logOutUser } = actionCreators;
+    const { clearMessages } = ConversationDuck.actionCreators;
+    const { clearOrders } = OrdersDuck.actionCreators;
+    const { clearListings } = UserListingsDuck.actionCreators;
     this.setState({ showNavbar: false });
     this.props.dispatch(logOutUser());
+    this.props.dispatch(clearMessages());
+    this.props.dispatch(clearOrders());
+    this.props.dispatch(clearListings());
   };
 
   sideNavigationMenu = () => (
@@ -453,12 +462,12 @@ class MainNavBar extends Component {
           </div> */}
           {url === '/search' ? (
             <InstantSearch
-              indexName="test_PRODUCTS"
+              indexName="test_PRODUCT_LISTINGS"
               searchClient={searchClient}
               className={Style.formFieldContainer}
             >
               <Configure
-                hitsPerPage={8}
+                hitsPerPage={6}
                 distinct={true}
                 // filters={`productCategory:${this.state.resellItemInfo.productType}`}
               />

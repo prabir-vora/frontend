@@ -36,6 +36,28 @@
   overflow-y: auto;
 }
 
+.SetupModal {
+  border: 1px solid #e1e1e1;
+  box-sizing: border-box;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  max-width: 343px;
+  height: auto;
+  max-height: 100%;
+  padding: 0;
+  width: 100%;
+  padding: 0px;
+  color: black;
+  font-family: Roboto, sans-serif;
+  background: #fff;
+  -webkit-overflow-scrolling: touch;
+  outline: none;
+
+  box-sizing: border-box;
+  box-shadow: 0 0 18px rgba(0, 0, 0, 0.4);
+  overflow-y: auto;
+}
+
 .close {
   cursor: pointer;
   position: absolute;
@@ -66,6 +88,33 @@
   justify-content: center;
 }
 
+.verificationHeader {
+  padding: 0 24px;
+  width: 100%;
+  min-height: 60px;
+  padding: 0 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.resendCodeButton {
+  padding: 10px;
+  font-family: Baskerville;
+  width: 45%;
+  margin-right: 5%;
+  background: #919496;
+  color: white;
+  border-radius: 10px;
+  text-transform: uppercase;
+  font-size: 16px;
+  margin-bottom: 1em;
+  margin-top: 1em;
+}
+
 .body {
   font-family: -apple-system, BlinkMacSystemFont, Helvetica, Arial, 'Segoe UI',
     Roboto, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
@@ -80,7 +129,7 @@
   text-decoration: none;
   font-size: 14px;
   line-height: 25px;
-  padding: 15px 24px;
+  padding: 25px;
   display: flex;
   flex-direction: column;
 }
@@ -97,6 +146,18 @@
 .ModalButton {
   padding: 14px 25px;
   width: 100%;
+  background: black;
+  color: white;
+  border-radius: 10px;
+  font-size: 14px;
+  margin-bottom: 1em;
+  margin-top: 1em;
+  font-family: Roboto, sans-serif;
+}
+
+.ModalButtonHalfWidth {
+  padding: 14px 25px;
+  width: 45%;
   background: black;
   color: white;
   border-radius: 10px;
@@ -143,10 +204,12 @@
 
 .validUsername {
   color: green;
+  font-size: 12px;
 }
 
 .invalidUsername {
   color: red;
+  font-size: 12px;
 }
 
 .countrySelector {

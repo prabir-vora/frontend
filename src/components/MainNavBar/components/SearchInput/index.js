@@ -67,7 +67,7 @@ const theme = {
 
 function Highlight(props) {
   const { hit } = props;
-  const { original_image_url, name, brand, colorway } = hit;
+  const { original_image_url, name, brand_name, colorway } = hit;
   return (
     <div className={Style.highlightItem}>
       <Img
@@ -76,7 +76,7 @@ function Highlight(props) {
         className={Style.highlightImage}
       />
       <div className={Style.highlighDescription}>
-        <p className={Style.highlightBrand}>{brand.name}</p>
+        <p className={Style.highlightBrand}>{brand_name}</p>
         <p className={Style.highlightName}>{name}</p>
         <p className={Style.highlightColorway}>{colorway}</p>
       </div>
@@ -154,6 +154,7 @@ class SearchInput extends Component {
       placeholder: 'Search Product, Brand, Designer, SKU ...',
       onChange: this.onChange,
       value,
+      autoFocus: true,
     };
 
     return (

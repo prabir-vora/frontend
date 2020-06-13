@@ -6,6 +6,20 @@
   justify-content: center;
 }
 
+.orderStatus {
+  font-family: Baskerville;
+  background: #919496;
+  color: white;
+  border-radius: 10px;
+  text-transform: uppercase;
+  font-size: 12px;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  margin-left: auto;
+  padding: 8px;
+  margin: 5px 0px;
+}
 // .orderSelectionContainer {
 //   display: flex;
 //   align-items: stretch;
@@ -13,6 +27,15 @@
 //   border-radius: 0;
 //   margin: 0;
 // }
+
+.listView {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  margin-top: 30px;
+}
 
 .mobileTitle {
   font-size: 35px;
@@ -76,14 +99,32 @@
 }
 
 .orderItem {
-  margin-top: 30px;
-  border-top: 1px solid #b3b3b3;
-
-  padding: 20px 35px;
-  display: flex;
+  width: 100%;
+  height: 200px;
+  margin-bottom: 20px;
   align-items: center;
-  align-content: center;
-  cursor: pointer;
+  display: flex;
+  position: relative;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.productImage {
+  width: 100px;
+  height: 100px;
+  margin-right: 20px;
+}
+
+.orderDetails {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.orderDetailLabel {
+  font-size: 11px;
+  margin-bottom: 10px;
+  color: #919496;
 }
 
 .orderItemActive {
@@ -95,12 +136,6 @@
   border-radius: 1.5px;
   box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.5);
   margin-top: 30px;
-  border-top: 1px solid #b3b3b3;
-}
-
-.orderDetails {
-  display: flex;
-  justify-content: space-around;
   border-top: 1px solid #b3b3b3;
 }
 
@@ -117,12 +152,20 @@
 }
 
 @media (min-width: 40em) {
+  .orderItem {
+    width: 100%;
+    height: 150px;
+  }
+
   .orderSelectionLabel {
     font-size: 22px;
   }
 
   .mobileTitle {
     display: none;
+  }
+  .orderItem {
+    margin-bottom: 40px;
   }
 
   .unreadAlert {
@@ -142,5 +185,41 @@
     cursor: pointer;
     font-family: Roboto, Arial, sans-serif;
     margin-left: 20px;
+  }
+  .orderDetailLabel {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  .productImage {
+    width: 150px;
+    height: 100px;
+    margin-right: 20px;
+  }
+
+  .orderStatus {
+    padding: 10px;
+    font-family: Baskerville;
+    background: #919496;
+    color: white;
+    border-radius: 10px;
+    text-transform: uppercase;
+    font-size: 15px;
+    margin-bottom: 1em;
+    margin-top: 1em;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    margin-left: auto;
+  }
+
+  .statusContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .orderDetailsContainer {
+    display: flex;
+    width: 100%;
   }
 }

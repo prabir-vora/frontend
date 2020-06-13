@@ -2,6 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { Route, Switch } from 'react-router-dom';
 import { ConnectedRouter } from 'connected-react-router';
+import ScrollToTop from './ScrollToTop';
 import ROUTES from './constants/routes';
 import 'react-toastify/dist/ReactToastify.min.css';
 import { ToastContainer, Flip } from 'react-toastify';
@@ -28,81 +29,96 @@ class App extends React.Component {
       <Provider store={store}>
         <Elements stripe={promise}>
           <ConnectedRouter history={history}>
-            <div style={{ height: 'auto' }}>
-              <AppAuthContainer />
-              <ClientModals />
-              {/* <MusicPlayer /> */}
-              <Switch>
-                <Route exact path="/" component={ROUTES('homePage')} />
-                <Route exact path="/about" component={ROUTES('aboutPage')} />
-                <Route exact path="/brands" component={ROUTES('brandsPage')} />
-                {/* <Route
+            <ScrollToTop>
+              <div style={{ height: 'auto' }}>
+                <AppAuthContainer />
+                <ClientModals />
+                {/* <MusicPlayer /> */}
+                <Switch>
+                  <Route exact path="/" component={ROUTES('homePage')} />
+                  <Route exact path="/about" component={ROUTES('aboutPage')} />
+                  <Route
+                    exact
+                    path="/brands"
+                    component={ROUTES('brandsPage')}
+                  />
+                  {/* <Route
                   path="/resellers"
                   component={ROUTES('resellerListPage')}
                 /> */}
-                {/* <Route
+                  {/* <Route
                   path="/resellers/:resellerID"
                   component={ROUTES('resellerTemplatePage')}
                 /> */}
-                <Route path="/search/" component={ROUTES('searchPage')} />
-                <Route exact path="/shop" component={ROUTES('shopPage')} />
-                <Route
-                  exact
-                  path="/shop/:productListingID"
-                  component={ROUTES('productListingPage')}
-                />
-                {/* <Route
+                  <Route path="/search/" component={ROUTES('searchPage')} />
+                  <Route exact path="/shop" component={ROUTES('shopPage')} />
+                  <Route
+                    exact
+                    path="/shop/:productListingID"
+                    component={ROUTES('productListingPage')}
+                  />
+                  {/* <Route
                   exact
                   path="/shop/listing/:listingID"
                   component={ROUTES('shopListingPage')}
                 /> */}
-                <Route exact path="/sell" component={ROUTES('sellPage')} />
-                <Route
-                  exact
-                  path="/sell/createListing"
-                  component={ROUTES('createListing')}
-                />
-                {/* <Route
+                  <Route exact path="/sell" component={ROUTES('sellPage')} />
+                  <Route
+                    exact
+                    path="/sell/createListing"
+                    component={ROUTES('createListing')}
+                  />
+                  {/* <Route
                   exact
                   path="/resellerSetup"
                   component={ROUTES('resellerSetupPage')}
                 /> */}
-                <Route
-                  exact
-                  path="/localMarketplace"
-                  component={ROUTES('localMarketplacePage')}
-                />
-                {/* <Route exact path="/myList" component={ROUTES('myListPage')} /> */}
-                <Route
-                  exact
-                  path="/localMarketplace/:listingID"
-                  component={ROUTES('localListingPage')}
-                />
-                <Route
-                  exact
-                  path="/photoGuidelines"
-                  component={ROUTES('photoGuidelinesPage')}
-                />
-                <Route
-                  exact
-                  path="/orders/:orderNumber/:formID?"
-                  component={ROUTES('orderPage')}
-                />
-                <Route
-                  path="/user/:activeNavBarID?/:settingsNavID?"
-                  component={ROUTES('profilePage')}
-                />
-                <Route path="/auth" component={ROUTES('authenticationPage')} />'
-                <Route path="/admin" component={ROUTES('adminPage')} />
-                <Route
-                  path="/stripeRedirect"
-                  component={ROUTES('stripeRedirectPage')}
-                />
-                {/* <Route exact path="/:username" component={ROUTES('userPage')} /> */}
-                <Route exact path="/" component={ROUTES('notFound')} />
-              </Switch>
-              <ToastContainer transition={Flip} />
-            </div>
+                  <Route
+                    exact
+                    path="/localMarketplace"
+                    component={ROUTES('localMarketplacePage')}
+                  />
+                  {/* <Route exact path="/myList" component={ROUTES('myListPage')} /> */}
+                  <Route
+                    exact
+                    path="/localMarketplace/:listingID"
+                    component={ROUTES('localListingPage')}
+                  />
+                  <Route
+                    exact
+                    path="/photoGuidelines"
+                    component={ROUTES('photoGuidelinesPage')}
+                  />
+                  <Route
+                    exact
+                    path="/orders/:orderNumber/:formID?"
+                    component={ROUTES('orderPage')}
+                  />
+                  <Route
+                    exact
+                    path="/sellOrders/:orderNumber"
+                    component={ROUTES('sellOrderPage')}
+                  />
+                  <Route
+                    path="/user/:activeNavBarID?/:settingsNavID?"
+                    component={ROUTES('profilePage')}
+                  />
+                  <Route
+                    path="/auth"
+                    component={ROUTES('authenticationPage')}
+                  />
+                  '
+                  <Route path="/admin" component={ROUTES('adminPage')} />
+                  <Route
+                    path="/stripeRedirect"
+                    component={ROUTES('stripeRedirectPage')}
+                  />
+                  {/* <Route exact path="/:username" component={ROUTES('userPage')} /> */}
+                  <Route exact path="/" component={ROUTES('notFound')} />
+                </Switch>
+                <ToastContainer transition={Flip} />
+              </div>
+            </ScrollToTop>
           </ConnectedRouter>
         </Elements>
       </Provider>

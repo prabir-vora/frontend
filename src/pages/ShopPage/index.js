@@ -291,7 +291,16 @@ function renderBrandRefinementList(props) {
     showBrandsFilter,
     toggleIndividualFilter,
     searchForItems,
+    defaultRefinement,
   } = props;
+
+  console.log(defaultRefinement);
+
+  if (defaultRefinement !== '') {
+    return null;
+  }
+
+  console.log('returned');
   return (
     <div>
       <div className={Style.IndividualFilterDesktop}>
@@ -794,13 +803,25 @@ class ShopPage extends Component {
     searchInput: '',
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     const parsed = qs.parse(this.props.location.search);
-    const { searchInput = '' } = parsed;
+    const { searchInput = '', brand = '' } = parsed;
 
     if (searchInput !== '') {
       this.setState({
         searchInput,
+      });
+    }
+
+    if (brand !== '') {
+      const { fetchShopBrand } = UserDuck.actionCreators;
+
+      const fetchedBrand = await fetchShopBrand(brand);
+
+      console.log(fetchedBrand);
+      this.setState({
+        brand,
+        fetchedBrand,
       });
     }
 
@@ -857,10 +878,44 @@ class ShopPage extends Component {
       this.setState({ isUserPresent: false });
     }
   }
+
+  renderShopTitle = (searchInput, brand) => {
+    if (searchInput) {
+      return (
+        <div className={Style.pageTitle}>
+          <h1 className={Style.searchTitle}>
+            {`Search Results for "${searchInput}"`}
+          </h1>
+        </div>
+      );
+    } else if (brand) {
+      const { fetchedBrand } = this.state;
+
+      return (
+        <div className={Style.pageTitle}>
+          {fetchedBrand && (
+            <img
+              src={fetchedBrand.imageURL}
+              style={{ width: '100px', height: '100px', objectFit: 'contain' }}
+            />
+          )}
+          <h1 className={Style.searchTitle}>{brand}</h1>
+        </div>
+      );
+    } else {
+      return (
+        <div className={Style.pageTitle}>
+          <h1 className={Style.titleLarge}>Shop All</h1>
+          <h4 className={Style.subtitle}>Find all the drip, right here.</h4>
+        </div>
+      );
+    }
+  };
+
   render() {
     const { user } = this.props;
 
-    const { searchInput } = this.state;
+    const { searchInput = '', brand = '' } = this.state;
 
     if (this.state.isUserPresent && !user) {
       return <LoadingScreen />;
@@ -893,20 +948,7 @@ class ShopPage extends Component {
         <MainNavBar />
         <div className={Style.pageLayout}>
           <div className={Style.pageContent}>
-            {searchInput ? (
-              <div className={Style.pageTitle}>
-                <h1 className={Style.searchTitle}>
-                  {`Search Results for "${searchInput}"`}
-                </h1>
-              </div>
-            ) : (
-              <div className={Style.pageTitle}>
-                <h1 className={Style.titleLarge}>Shop All</h1>
-                <h4 className={Style.subtitle}>
-                  Find all the drip, right here.
-                </h4>
-              </div>
-            )}
+            {this.renderShopTitle(searchInput, brand)}
             <div className={Style.algoliaContentWrapper}>
               <InstantSearch
                 indexName="test_PRODUCT_LISTINGS"
@@ -1021,6 +1063,7 @@ class ShopPage extends Component {
                         toggleIndividualFilter={this.toggleIndividualFilter}
                         searchable={true}
                         limit={20}
+                        defaultRefinement={brand}
                       />
                     </div>
                     <div>

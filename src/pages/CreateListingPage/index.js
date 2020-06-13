@@ -250,6 +250,18 @@ class CreateListingPage extends Component {
                   />
                   <div className={Style.selectedItemTitle}>
                     {this.state.resellItemInfo.product.name}
+                    <div
+                      style={{
+                        width: '100%',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        fontSize: '14px',
+                        margin: '20px 0px',
+                      }}
+                    >
+                      <p>{this.state.resellItemInfo.product.brand.name}</p>
+                      <p>{this.state.resellItemInfo.product.colorway}</p>
+                    </div>
                     <Button
                       className={Style.removeProductSelection}
                       onClick={() => {
@@ -474,23 +486,23 @@ class CreateListingPage extends Component {
       return { value: `${size}`, label: `${size}` };
     });
     return (
-      <Select
-        options={sizeDropDownValues}
-        value={size}
-        onChange={this.onSelectSize}
-        styles={{
-          // Fixes the overlapping problem of the component
-          menu: provided => ({
-            ...provided,
-            zIndex: 9999,
-            fontFamily: 'Arial',
-            border: '0 !important',
-            color: 'black',
-            maxWidth: '400px',
-            width: '400px',
-          }),
-        }}
-      />
+      <div className={Style.dropdownSizeMenu}>
+        <Select
+          options={sizeDropDownValues}
+          value={size}
+          onChange={this.onSelectSize}
+          styles={{
+            // Fixes the overlapping problem of the component
+            menu: provided => ({
+              ...provided,
+              zIndex: 9999,
+              fontFamily: 'Arial',
+              border: '0 !important',
+              color: 'black',
+            }),
+          }}
+        />
+      </div>
     );
   };
 

@@ -22,6 +22,8 @@ const actionTypes = createActionTypes(
 
     MARK_AS_READ_BUY: 'MARK_AS_READ_BUY',
     MARK_AS_READ_SELL: 'MARK_AS_READ_SELL',
+
+    CLEAR_ORDERS: 'CLEAR_ORDERS',
   },
   duckName,
 );
@@ -31,13 +33,11 @@ const initialState = {
   buying: {
     orders: [],
     loadingOrders: false,
-    openOrders: [],
     unread_count: 0,
   },
   selling: {
     orders: [],
     loadingOrders: false,
-    openOrders: [],
     unread_count: 0,
   },
 };
@@ -144,14 +144,14 @@ const toggleOrdersView = selection => dispatch => {
   dispatch(changeOrdersSelection(selection));
 };
 
-const onClickOrder = (orderID, orderSelection) => dispatch => {
-  console.log(orderID);
-  if (orderSelection === 'buying') {
-    dispatch(toggleBuyOrder(orderID));
-  } else {
-    dispatch(toggleSellOrder(orderID));
-  }
-};
+// const onClickOrder = (orderID, orderSelection) => dispatch => {
+//   console.log(orderID);
+//   if (orderSelection === 'buying') {
+//     dispatch(toggleBuyOrder(orderID));
+//   } else {
+//     dispatch(toggleSellOrder(orderID));
+//   }
+// };
 
 const markAsRead = (orderNumber, orderSelection) => dispatch => {
   if (orderSelection === 'buying') {
@@ -177,6 +177,16 @@ const markAsRead = (orderNumber, orderSelection) => dispatch => {
         resolve({ success: false });
       });
   });
+};
+
+const clearOrders = () => dispatch => {
+  dispatch(clearAllOrders());
+};
+
+const clearAllOrders = () => {
+  return {
+    type: actionTypes.CLEAR_ORDERS,
+  };
 };
 
 const changeOrdersSelection = selection => {
@@ -385,6 +395,20 @@ const reducer = (state = initialState, action) => {
           .value(),
       });
     }
+    case actionTypes.CLEAR_ORDERS: {
+      return Object.assign({}, state, {
+        selling: immutable
+          .wrap(state.selling)
+          .set('orders', [])
+          .set('loadingConversations', false)
+          .value(),
+        buying: immutable
+          .wrap(state.buying)
+          .set('orders', [])
+          .set('loadingConversations', false)
+          .value(),
+      });
+    }
     default:
       return state;
   }
@@ -394,10 +418,11 @@ export default {
   duckName,
   reducer,
   actionCreators: {
+    clearOrders,
     fetchBuyOrders,
     fetchSellOrders,
     toggleOrdersView,
-    onClickOrder,
+    // onClickOrder,
     markAsRead,
   },
 };

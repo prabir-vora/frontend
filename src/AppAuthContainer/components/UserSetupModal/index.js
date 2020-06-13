@@ -8,6 +8,8 @@ import { Button, TextInput, LocationSearchInput } from 'fields';
 
 import * as immutable from 'object-path-immutable';
 
+import SetupMapContainer from 'components/SetupMapContainer';
+
 export default class UserSetupModal extends Component {
   state = {
     setupInfo: {
@@ -15,8 +17,9 @@ export default class UserSetupModal extends Component {
       lat: '',
       lng: '',
       username: '',
-      country: 'US',
+      // country: 'US',
     },
+    page: 1,
     isUsernameValid: false,
   };
 
@@ -55,13 +58,14 @@ export default class UserSetupModal extends Component {
       });
   };
 
-  onCountryChange = e => {
-    this.setState({
-      setupInfo: immutable.set(this.state.setupInfo, 'country', e.target.value),
-    });
-  };
+  // onCountryChange = e => {
+  //   this.setState({
+  //     setupInfo: immutable.set(this.state.setupInfo, 'country', e.target.value),
+  //   });
+  // };
 
   onSelectLocation = (address, lat, lng) => {
+    console.log(address);
     this.setState({
       setupInfo: immutable
         .wrap(this.state.setupInfo)
@@ -85,6 +89,10 @@ export default class UserSetupModal extends Component {
 
   onSubmitSetupInfo = e => {
     e.preventDefault();
+    if (this.state.page === 1) {
+      return;
+    }
+
     this.props.onSubmitUserSetup(this.state.setupInfo);
   };
 
@@ -92,6 +100,110 @@ export default class UserSetupModal extends Component {
     return;
   }
 
+  renderSetupContent = () => {
+    if (this.state.page === 1) {
+      return (
+        <div className={ModalStyle.Form}>
+          <div style={{ marginBottom: '30px' }}>
+            <p className={ModalStyle.Message}>Select Username</p>
+            <TextInput
+              name={'username'}
+              onChange={value => this.onChangeUsernameValue(value)}
+              value={this.state.setupInfo['username']}
+              className={ModalStyle.formInput}
+            />
+            <p
+              className={
+                this.state.isUsernameValid
+                  ? ModalStyle.validUsername
+                  : ModalStyle.invalidUsername
+              }
+            >
+              {this.state.isUsernameValid
+                ? 'Username is Valid'
+                : 'Username is Invalid/Taken'}
+            </p>
+          </div>
+
+          <div>
+            <Button
+              className={ModalStyle.ModalButton}
+              onClick={() => {
+                this.setState({
+                  page: 2,
+                });
+              }}
+            >
+              Continue
+            </Button>
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <div className={ModalStyle.Form}>
+          <div style={{ marginBottom: '30px' }}>
+            <p className={ModalStyle.Message}>
+              Enter an approx. location to discover and create listings on our
+              Local Marketplace <br />
+              <span style={{ fontSize: '10px', color: '#2da4b1' }}>
+                Your data is confidential and not shared with third parties.{' '}
+              </span>
+            </p>
+
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <LocationSearchInput
+                address={this.state.setupInfo.address}
+                latitude={this.state.setupInfo.lat}
+                longitude={this.state.setupInfo.lng}
+                onSelectLocation={this.onSelectLocation}
+              />
+            </div>
+            <div>
+              {this.state.setupInfo.address && (
+                <SetupMapContainer
+                  _geoloc={{
+                    lat: this.state.setupInfo.lat,
+                    lng: this.state.setupInfo.lng,
+                  }}
+                  containerElement={
+                    <div
+                      style={{
+                        height: `150px`,
+                        width: '100%',
+                        margin: '20px 0px',
+                      }}
+                    />
+                  }
+                  mapElement={<div style={{ height: `100%` }} />}
+                />
+              )}
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+            <Button
+              onClick={() =>
+                this.setState({
+                  page: 1,
+                })
+              }
+              className={ModalStyle.ModalButtonHalfWidth}
+            >
+              Back
+            </Button>
+            <Button
+              className={ModalStyle.ModalButtonHalfWidth}
+              status={this.onDetermineButtonStatus()}
+              onClick={() => this.onSubmitSetupInfo()}
+            >
+              Submit
+            </Button>
+          </div>
+        </div>
+      );
+    }
+  };
   render() {
     console.log(this.state);
 
@@ -101,7 +213,7 @@ export default class UserSetupModal extends Component {
         // onAfterOpen={}
         // onRequestClose={}
         // style={}
-        className={ModalStyle.Modal}
+        className={ModalStyle.SetupModal}
         overlayClassName={ModalStyle.Overlay}
         contentLabel="Example Modal"
       >
@@ -110,100 +222,7 @@ export default class UserSetupModal extends Component {
         </div>
         <div className={ModalStyle.body}>
           <div className={ModalStyle.authContainer}>
-            <form className={ModalStyle.Form} onSubmit={this.onSubmitSetupInfo}>
-              <div style={{ marginBottom: '30px' }}>
-                <p className={ModalStyle.Message}>
-                  Select Username (Can be changed later)
-                </p>
-                <TextInput
-                  name={'username'}
-                  onChange={value => this.onChangeUsernameValue(value)}
-                  value={this.state.setupInfo['username']}
-                  className={ModalStyle.formInput}
-                />
-                <p
-                  className={
-                    this.state.isUsernameValid
-                      ? ModalStyle.validUsername
-                      : ModalStyle.invalidUsername
-                  }
-                >
-                  {this.state.isUsernameValid
-                    ? 'Username is Valid'
-                    : 'Username is Invalid/Taken'}
-                </p>
-              </div>
-
-              <div style={{ marginBottom: '30px' }}>
-                <p className={ModalStyle.Message}>
-                  Select approx. Location to find & create listings for Local
-                  Marketplace
-                </p>
-                <LocationSearchInput
-                  address={this.state.setupInfo.address}
-                  latitude={this.state.setupInfo.lat}
-                  longitude={this.state.setupInfo.lng}
-                  onSelectLocation={this.onSelectLocation}
-                />
-              </div>
-
-              <div>
-                <p className={ModalStyle.Message}>Select Buy/Sell Country</p>
-
-                <div className={ModalStyle.countrySelector}>
-                  <select
-                    class={ModalStyle.countrySelect}
-                    aria-label="country"
-                    value={this.state.setupInfo.country}
-                    onChange={value => this.onCountryChange(value)}
-                  >
-                    <option value="AU">Australia</option>
-                    <option value="AT">Austria</option>
-                    <option value="BE">Belgium</option>
-                    <option value="BR">Brazil</option>
-                    <option value="CA">Canada</option>
-                    <option value="CN">China</option>
-                    <option value="CZ">Czech Republic</option>
-                    <option value="DK">Denmark</option>
-                    <option value="FI">Finland</option>
-                    <option value="FR">France</option>
-                    <option value="DE">Germany</option>
-                    <option value="HK">Hong Kong</option>
-                    <option value="IN">India</option>
-                    <option value="ID">Indonesia</option>
-                    <option value="IT">Italy</option>
-                    <option value="JP">Japan</option>
-                    <option value="MY">Malaysia</option>
-                    <option value="MX">Mexico</option>
-                    <option value="NL">Netherlands</option>
-                    <option value="NO">Norway</option>
-                    <option value="NZ">New Zealand</option>
-                    <option value="PH">Philippines</option>
-                    <option value="PL">Poland</option>
-                    <option value="PT">Portugal</option>
-                    <option value="RU">Russia</option>
-                    <option value="SG">Singapore</option>
-                    <option value="ES">Spain</option>
-                    <option value="SE">Sweden</option>
-                    <option value="CH">Switzerland</option>
-                    <option value="TH">Thailand</option>
-                    <option value="GB">United Kingdom</option>
-                    <option value="US">United States</option>
-                    <option value="VN">Vietnam</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <Button
-                  className={ModalStyle.ModalButton}
-                  name="Submit"
-                  status={this.onDetermineButtonStatus()}
-                >
-                  Submit
-                </Button>
-              </div>
-            </form>
+            {this.renderSetupContent()}
           </div>
         </div>
       </ReactModal>

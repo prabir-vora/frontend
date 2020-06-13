@@ -36,6 +36,11 @@ const actionTypes = createActionTypes(
 
     USER_VERIFICATION_SUCCESS: 'USER_VERIFICATION_SUCCESS',
 
+    RESEND_AUTH_CODE: 'RESEND_AUTH_CODE',
+
+    RESET_PASSWORD: 'RESET_PASSWORD',
+    SUBMIT_RESET_PASSWORD: 'SUBMIT_RESET_PASSWORD',
+
     FETCH_CURRENT_USER_REQUEST: 'FETCH_CURRENT_USER_REQUEST',
     FETCH_CURRENT_USER_SUCCESS: 'FETCH_CURRENT_USER_SUCCESS',
     FETCH_CURRENT_USER_FAILURE: 'FETCH_CURRENT_USER_FAILURE',
@@ -139,6 +144,7 @@ const editProfileWithInput = () => {
           id
           name
           email
+          serviceName
           authCode
           username
           address
@@ -218,6 +224,7 @@ const createNewSellerAddressWithInput = () => {
           id
           name
           email
+          serviceName
           authCode
           username
           address
@@ -333,6 +340,7 @@ const saveStripeConnectAuthCode = code => dispatch => {
         user {
           id
           name
+          serviceName
           email
           authCode
           username
@@ -786,6 +794,31 @@ const fetchNotifCount = () => dispatch => {
   });
 };
 
+const fetchShopBrand = brand => {
+  return new Promise((resolve, reject) => {
+    fetchGraphQL(`
+      query {
+        fetchShopBrand(name: "${brand}") {
+          id
+          name
+          slug
+          imageURL
+        }
+      }
+    `)
+      .then(res => {
+        if (res !== null && res !== undefined && res.fetchShopBrand != null) {
+          resolve(res.fetchShopBrand);
+        } else {
+          resolve({});
+        }
+      })
+      .catch(e => {
+        resolve({});
+      });
+  });
+};
+
 const showNewAddressModalCreator = () => dispatch => {
   dispatch(showNewAddressModalAction());
 };
@@ -840,9 +873,94 @@ const userVerification = authCode => dispatch => {
   });
 };
 
+const resendAuthCode = () => dispatch => {
+  return new Promise((resolve, reject) => {
+    fetchGraphQL(`
+      mutation {
+        resendAuthCode 
+      }
+    `)
+      .then(res => {
+        if (res !== null && res !== undefined && res.resendAuthCode !== null) {
+          resolve({ success: true });
+          dispatch(resendAuthCodeSuccess());
+        } else {
+          resolve({ success: false });
+        }
+      })
+      .catch(err => {
+        resolve({ success: false });
+      });
+  });
+};
+
+const resetPassword = email => dispatch => {
+  return new Promise((resolve, reject) => [
+    fetchGraphQL(`
+      mutation {
+        resetPassword(email: "${email}")
+      }
+    `)
+      .then(res => {
+        if (res !== null && res !== undefined && res.resetPassword) {
+          resolve({ success: true });
+          dispatch(resetPasswordSuccess());
+        } else {
+          resolve({ success: false });
+        }
+      })
+      .catch(err => {
+        resolve({ success: false });
+      }),
+  ]);
+};
+
+const onSubmitResetPasswordInfo = (email, resetToken, password) => dispatch => {
+  return new Promise((resolve, reject) => [
+    fetchGraphQL(`
+      mutation {
+        forgotPasswordMatch(email: "${email}", resetToken: "${resetToken}", password: "${password}")
+      }
+    `)
+      .then(res => {
+        if (
+          res !== null &&
+          res !== undefined &&
+          res.forgotPasswordMatch === ''
+        ) {
+          resolve({ success: true, error: '' });
+          dispatch(onSubmitResetPasswordInfoSuccess());
+        } else {
+          resolve({ success: false, error: res.forgotPasswordMatch });
+        }
+      })
+      .catch(err => {
+        resolve({ success: false, error: 'Something went wrong.' });
+      }),
+  ]);
+};
+
 const userVerificationSuccess = () => {
   return {
     type: actionTypes.USER_VERIFICATION_SUCCESS,
+  };
+};
+
+const resendAuthCodeSuccess = () => {
+  return {
+    type: actionTypes.RESEND_AUTH_CODE,
+  };
+};
+
+const resetPasswordSuccess = () => {
+  return {
+    type: actionTypes.RESET_PASSWORD,
+  };
+};
+
+const onSubmitResetPasswordInfoSuccess = () => {
+  return {
+    type: actionTypes.SUBMIT_RESET_PASSWORD,
   };
 };
 
@@ -1139,6 +1257,7 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         user: null,
         isVerified: false,
+        notifCount: {},
       });
     }
     case actionTypes.FOLLOW_PRODUCT: {
@@ -1200,6 +1319,15 @@ const reducer = (state = initialState, action) => {
         user: immutable.set(state.user, 'authCode', 0),
       });
     }
+    case actionTypes.RESEND_AUTH_CODE: {
+      return state;
+    }
+    case actionTypes.RESET_PASSWORD: {
+      return state;
+    }
+    case actionTypes.SUBMIT_RESET_PASSWORD: {
+      return state;
+    }
     case actionTypes.SHOW_NEW_ADDRESS_MODAL: {
       return Object.assign({}, state, {
         showNewAddressModal: true,
@@ -1240,5 +1368,9 @@ export default {
     showNewAddressModalCreator,
     hideNewAddressModalCreator,
     fetchNotifCount,
+    fetchShopBrand,
+    resendAuthCode,
+    resetPassword,
+    onSubmitResetPasswordInfo,
   },
 };

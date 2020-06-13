@@ -9,6 +9,8 @@ const actionTypes = createActionTypes(
     FETCH_USER_LISTINGS_REQUEST: 'FETCH_USER_LISTINGS_REQUEST',
     FETCH_USER_LISTINGS_SUCCESS: 'FETCH_USER_LISTINGS_SUCCESS',
     FETCH_USER_LISTINGS_FAILURE: 'FETCH_USER_LISTINGS_FAILURE',
+
+    CLEAR_LISTINGS: 'CLEAR_LISTINGS',
   },
   duckName,
 );
@@ -68,6 +70,10 @@ const fetchUserListings = page => dispatch => {
   });
 };
 
+const clearListings = () => dispatch => {
+  dispatch(clearAllListings());
+};
+
 const fetchUserListingsRequest = () => {
   return {
     type: actionTypes.FETCH_USER_LISTINGS_REQUEST,
@@ -85,6 +91,12 @@ const fetchUserListingsSuccess = ({ data }) => {
 const fetchUserListingsFailure = () => {
   return {
     type: actionTypes.FETCH_USER_LISTINGS_FAILURE,
+  };
+};
+
+const clearAllListings = () => {
+  return {
+    type: actionTypes.CLEAR_LISTINGS,
   };
 };
 
@@ -107,6 +119,15 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         loadingListings: false,
       });
+
+    case actionTypes.CLEAR_LISTINGS: {
+      return Object.assign({}, state, {
+        listings: [],
+        hasMoreListings: true,
+        loadingListings: false,
+        nextPage: 1,
+      });
+    }
     default:
       return state;
   }
@@ -117,5 +138,6 @@ export default {
   reducer,
   actionCreators: {
     fetchUserListings,
+    clearListings,
   },
 };

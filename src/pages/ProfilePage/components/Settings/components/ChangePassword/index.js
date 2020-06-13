@@ -7,6 +7,8 @@ import { connect } from 'react-redux';
 import UserDuck from 'stores/ducks/User.duck';
 import { ShowConfirmNotif } from 'functions';
 
+import { ClipLoader } from 'react-spinners';
+
 class ChangePassword extends Component {
   confirmNotif = null;
 
@@ -14,6 +16,7 @@ class ChangePassword extends Component {
     currentPassword: '',
     newPassword: '',
     newPasswordConfirm: '',
+    isChangingPassword: false,
   };
 
   onChangeFieldValue = (fieldName, fieldValue) => {
@@ -47,6 +50,10 @@ class ChangePassword extends Component {
   };
 
   onChangePassword = async () => {
+    this.setState({
+      isChangingPassword: true,
+    });
+
     const { changePassword } = UserDuck.actionCreators;
     const { success } = await this.props.dispatch(
       changePassword(this.state.currentPassword, this.state.newPassword),
@@ -57,10 +64,16 @@ class ChangePassword extends Component {
         message: 'Password updated Successfully',
         type: 'success',
       });
+      this.setState({
+        isChangingPassword: false,
+      });
     } else {
       this.confirmNotif = ShowConfirmNotif({
         message: 'Password updated failed. Ensure correct password.',
         type: 'error',
+      });
+      this.setState({
+        isChangingPassword: false,
       });
     }
 
@@ -105,21 +118,36 @@ class ChangePassword extends Component {
               this.onChangeFieldValue(e.target.name, e.target.value)
             }
           />
-          <div className={Style.buttonsRow}>
-            <Button
-              status={this.onGetSubmitBtnStatus()}
-              className={Style.saveButton}
-              onClick={() => this.onChangePassword()}
+          {!this.state.isChangingPassword ? (
+            <div className={Style.buttonsRow}>
+              <Button
+                status={this.onGetSubmitBtnStatus()}
+                className={Style.saveButton}
+                onClick={() => this.onChangePassword()}
+              >
+                CHANGE PASSWORD
+              </Button>
+              <button
+                className={Style.cancelButton}
+                onClick={() => this.onCancel()}
+              >
+                CANCEL
+              </button>
+            </div>
+          ) : (
+            <div
+              style={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                marginTop: '20px',
+                alignItems: 'center',
+              }}
             >
-              CHANGE PASSWORD
-            </Button>
-            <button
-              className={Style.cancelButton}
-              onClick={() => this.onCancel()}
-            >
-              CANCEL
-            </button>
-          </div>
+              <ClipLoader width={'30px'} color={'#fff'} />
+              <div>Changing Password...</div>
+            </div>
+          )}
         </div>
       </div>
     );

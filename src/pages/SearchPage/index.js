@@ -11,8 +11,6 @@ import Style from './style.module.scss';
 
 import SearchProductTemplate from './components/SearchProductTemplate';
 import SearchLocalTemplate from './components/SearchLocalTemplate';
-import SeeAllShop from './components/SeeAllShop';
-import SeeAllLocal from './components/SeeAllLocal';
 
 import {
   InstantSearch,
@@ -108,7 +106,7 @@ class SearchPage extends Component {
       >
         <div className={Style.filterResultsArea}>
           <div className={Style.searchContainerHeader}>
-            <h2 style={{ marginBottom: '30px' }}>Listings Near you</h2>
+            <h2 className={Style.searchTypeHeader}>Listings Near you</h2>
             <button
               className={Style.seeAllButton}
               onClick={() => this.onClickSeeAll('localMarketplace')}
@@ -131,64 +129,12 @@ class SearchPage extends Component {
     );
   };
 
-  renderSeeAllTitle = (seeAll, searchInput) => {
-    switch (seeAll) {
-      case 'shop':
-        return `Shop results for "${searchInput}"`;
-      case 'localMarketplace':
-        return `Local Listings for "${searchInput}"`;
-      default:
-        return '';
-    }
-  };
-
-  renderSeeAllContent = (seeAll, searchInput) => {
-    const { user } = this.props;
-    if (seeAll === 'localMarketplace' && user === null) {
-      return null;
-    }
-    console.log(user);
-    const { _geoloc, address } = user;
-    const { lat, lng } = _geoloc;
-    switch (seeAll) {
-      case 'shop':
-        return <SeeAllShop searchInput={searchInput} />;
-      case 'localMarketplace':
-        return (
-          <SeeAllLocal
-            searchInput={searchInput}
-            address={address}
-            lat={lat}
-            lng={lng}
-          />
-        );
-      default:
-        return null;
-    }
-  };
-
   render() {
     console.log(this.props);
     const parsed = qs.parse(this.props.location.search);
     console.log(parsed);
     const { searchInput = '', seeAll = '' } = parsed;
 
-    if (seeAll !== '') {
-      return (
-        <div>
-          <MainNavBar />
-          <div className={Style.pageLayout}>
-            <div className={Style.pageContent}>
-              <div className={Style.pageTitle}>
-                <h1>{this.renderSeeAllTitle(seeAll, searchInput)}</h1>
-              </div>
-              {this.renderSeeAllContent(seeAll, searchInput)}
-            </div>
-          </div>
-          <MainFooter />
-        </div>
-      );
-    }
     return (
       <div
         style={{

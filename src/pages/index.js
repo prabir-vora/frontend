@@ -20,6 +20,7 @@ import LocalListingPage from './LocalListingPage';
 import UserPage from './UserPage';
 import MyListPage from './MyListPage';
 import AboutPage from './AboutPage';
+import SellOrderPage from './SellOrderPage';
 
 export {
   AboutPage,
@@ -37,6 +38,7 @@ export {
   ResellerSetupPage,
   ResellerTemplatePage,
   SearchPage,
+  SellOrderPage,
   ShopPage,
   ShopListingPage,
   StripeRedirectPage,

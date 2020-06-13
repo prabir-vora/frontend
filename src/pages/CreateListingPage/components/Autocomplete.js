@@ -41,7 +41,7 @@ const theme = {
     width: 280,
     border: '1px solid #aaa',
     backgroundColor: '#fff',
-    fontFamily: 'Helvetica, sans-serif',
+    fontFamily: 'Baskerville',
     fontWeight: 300,
     fontSize: 16,
     borderBottomLeftRadius: 4,
@@ -64,7 +64,7 @@ const theme = {
 
 function Highlight(props) {
   const { hit } = props;
-  const { original_image_url, name } = hit;
+  const { original_image_url, name, brand, colorway } = hit;
   return (
     <div className={Style.highlightItem}>
       <Img
@@ -74,6 +74,10 @@ function Highlight(props) {
       />
       <div className={Style.highlighDescription}>
         <p className={Style.highlightName}>{name}</p>
+        <div className={Style.detailsContainer}>
+          <p className={Style.highlightBrand}>{brand.name}</p>
+          <p className={Style.highlightColorway}>{colorway}</p>
+        </div>
       </div>
     </div>
   );

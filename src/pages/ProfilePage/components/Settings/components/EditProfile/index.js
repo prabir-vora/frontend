@@ -6,8 +6,12 @@ import UserDuck from 'stores/ducks/User.duck';
 
 import { LocationSearchInput, Button } from 'fields';
 
+import SetupMapContainer from 'components/SetupMapContainer';
+
 import * as immutable from 'object-path-immutable';
 import { ShowConfirmNotif } from 'functions';
+
+import { ClipLoader } from 'react-spinners';
 
 class EditProfile extends Component {
   confirmNotif = null;
@@ -16,12 +20,12 @@ class EditProfile extends Component {
     profile: {
       name: '',
       username: '',
-      password: undefined,
+      password: '',
       address: '',
       _geoloc: '',
-      country: '',
     },
     isUsernameValid: true,
+    savingProfile: false,
   };
 
   componentDidMount() {
@@ -30,7 +34,7 @@ class EditProfile extends Component {
       username,
       address,
       _geoloc,
-      country = 'US',
+      // country = 'US',
     } = this.props.user;
     this.setState(
       {
@@ -39,7 +43,8 @@ class EditProfile extends Component {
           username,
           address,
           _geoloc,
-          country,
+          password: '',
+          // country,
         },
       },
       () => console.log(this.state),
@@ -66,7 +71,8 @@ class EditProfile extends Component {
       this.state.profile.address === '' ||
       this.state.profile._geoloc.lat === '' ||
       this.state.lng === '' ||
-      this.state.profile.password === ''
+      (this.props.user.serviceName === 'password' &&
+        this.state.profile.password === '')
     ) {
       console.log('inactive');
       return 'inactive';
@@ -110,11 +116,11 @@ class EditProfile extends Component {
       });
   };
 
-  onCountryChange = e => {
-    this.setState({
-      profile: immutable.set(this.state.profile, 'country', e.target.value),
-    });
-  };
+  // onCountryChange = e => {
+  //   this.setState({
+  //     profile: immutable.set(this.state.profile, 'country', e.target.value),
+  //   });
+  // };
 
   onCancel = () => {
     const {
@@ -122,7 +128,7 @@ class EditProfile extends Component {
       username,
       address,
       _geoloc,
-      country = 'US',
+      // country = 'US',
     } = this.props.user;
     this.setState(
       {
@@ -131,7 +137,7 @@ class EditProfile extends Component {
           username,
           address,
           _geoloc,
-          country,
+          // country,
         },
       },
       () => console.log(this.state),
@@ -139,20 +145,33 @@ class EditProfile extends Component {
   };
 
   onSaveProfile = async () => {
-    const { editProfile } = UserDuck.actionCreators;
+    this.setState({
+      savingProfile: true,
+    });
+    const { editProfile, fetchUpdatedUser } = UserDuck.actionCreators;
     const { success } = await this.props.dispatch(
       editProfile(this.state.profile),
     );
 
     if (success) {
       this.confirmNotif = ShowConfirmNotif({
-        message: 'Profile updated Successfully',
+        message: 'Profile updated successfully',
         type: 'success',
+      });
+
+      await this.props.dispatch(fetchUpdatedUser());
+
+      this.setState({
+        savingProfile: false,
       });
     } else {
       this.confirmNotif = ShowConfirmNotif({
-        message: 'Profile updated failed. Ensure correct password.',
+        message: 'Profile update failed. Ensure correct password.',
         type: 'error',
+      });
+
+      this.setState({
+        savingProfile: false,
       });
     }
   };
@@ -163,10 +182,14 @@ class EditProfile extends Component {
       password,
       username,
       address,
-      lat,
-      lng,
-      country,
+      _geoloc,
+      // country,
     } = this.state.profile;
+
+    const { lat, lng } = _geoloc;
+
+    console.log(lat);
+    console.log(lng);
     return (
       <div className={Style.container}>
         <div className={Style.title}>Edit Profile</div>
@@ -181,6 +204,27 @@ class EditProfile extends Component {
               longitude={lng}
               onSelectLocation={this.onSelectLocation}
             />
+          </div>
+          <div>
+            {address && (
+              <SetupMapContainer
+                _geoloc={{
+                  lat: lat,
+                  lng: lng,
+                }}
+                containerElement={
+                  <div
+                    style={{
+                      height: `150px`,
+                      width: '100%',
+                      maxWidth: '400px',
+                      margin: '20px 0px',
+                    }}
+                  />
+                }
+                mapElement={<div style={{ height: `100%` }} />}
+              />
+            )}
           </div>
 
           <br />
@@ -218,7 +262,7 @@ class EditProfile extends Component {
             </p>
           )}
 
-          <br />
+          {/* <br />
 
           <p className={Style.formInputLabel}>Buying/Selling Country</p>
           <div className={Style.countrySelector}>
@@ -262,35 +306,54 @@ class EditProfile extends Component {
               <option value="US">United States</option>
               <option value="VN">Vietnam</option>
             </select>
-          </div>
+          </div> */}
           <br />
-          <p className={Style.formInputLabel}>Confirm Password</p>
-          <input
-            className={Style.formInput}
-            type="password"
-            name="password"
-            value={password || ''}
-            onChange={e =>
-              this.onChangeFieldValue(e.target.name, e.target.value)
-            }
-          />
+          {this.props.user.serviceName === 'password' && (
+            <React.Fragment>
+              <p className={Style.formInputLabel}>Confirm Password</p>
+              <input
+                className={Style.formInput}
+                type="password"
+                name="password"
+                value={password || ''}
+                onChange={e =>
+                  this.onChangeFieldValue(e.target.name, e.target.value)
+                }
+              />
+            </React.Fragment>
+          )}
           <br />
           <br />
-          <div className={Style.buttonsRow}>
-            <Button
-              className={Style.saveButton}
-              onClick={() => this.onSaveProfile()}
-              status={this.onGetSubmitBtnStatus()}
+          {!this.state.savingProfile ? (
+            <div className={Style.buttonsRow}>
+              <Button
+                className={Style.saveButton}
+                onClick={() => this.onSaveProfile()}
+                status={this.onGetSubmitBtnStatus()}
+              >
+                SAVE PROFILE
+              </Button>
+              <button
+                className={Style.cancelButton}
+                onClick={() => this.onCancel()}
+              >
+                CANCEL
+              </button>
+            </div>
+          ) : (
+            <div
+              style={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+
+                alignItems: 'center',
+              }}
             >
-              SAVE PROFILE
-            </Button>
-            <button
-              className={Style.cancelButton}
-              onClick={() => this.onCancel()}
-            >
-              CANCEL
-            </button>
-          </div>
+              <ClipLoader width={'30px'} color={'#fff'} />
+              <div>Saving Profile...</div>
+            </div>
+          )}
         </div>
       </div>
     );

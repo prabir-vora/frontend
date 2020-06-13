@@ -4,6 +4,8 @@ import MainFooter from 'components/MainFooter';
 
 import algoliasearch from 'algoliasearch';
 
+import { withRouter } from 'react-router-dom';
+
 import {
   InstantSearch,
   connectHits,
@@ -11,6 +13,8 @@ import {
 } from 'react-instantsearch-dom';
 
 import Style from './style.module.scss';
+
+import qs from 'query-string';
 
 const searchClient = algoliasearch(
   'UYWEM6FQPE',
@@ -25,7 +29,10 @@ function Hits(props) {
         const { _id, imageURL, name, slug } = hit;
         return (
           <div className={Style.gridCellWrapper}>
-            <div className={Style.gridCellContent}>
+            <div
+              className={Style.gridCellContent}
+              onClick={() => props.onClickBrand(name)}
+            >
               <div>
                 <div className={Style.gridCell}>
                   <div className={Style.gridCellImage}>
@@ -44,18 +51,13 @@ function Hits(props) {
                   <div
                     style={{
                       textAlign: 'center',
-                      fontFamily:
-                        'Druk Wide Web,futura-pt,HelveticaNeue-Light,Helvetica Neue Light,Helvetica Neue,Helvetica,Arial,Lucida Grande,sans-serif',
-
-                      fontSize: '13px',
-                      fontWeight: '800',
-                      textTransform: 'uppercase',
+                      fontSize: '18px',
+                      fontWeight: '500',
                       marginTop: '20px',
+                      color: '#919496',
                     }}
                   >
-                    <a title={name} href={`/brands/${slug}`}>
-                      {name}
-                    </a>
+                    {name}
                   </div>
                 </div>
               </div>
@@ -69,7 +71,13 @@ function Hits(props) {
 
 const CustomHits = connectHits(Hits);
 
-export default class BrandsPage extends Component {
+class BrandsPage extends Component {
+  onClickBrand = name => {
+    const query = qs.stringify({ brand: name });
+
+    this.props.history.push({ pathname: '/shop', search: query });
+  };
+
   render() {
     return (
       <div
@@ -88,7 +96,10 @@ export default class BrandsPage extends Component {
                 indexName="test_BRANDS"
                 searchClient={searchClient}
               >
-                <CustomHits style={{ width: '100%' }} />
+                <CustomHits
+                  style={{ width: '100%' }}
+                  onClickBrand={name => this.onClickBrand(name)}
+                />
                 <div className={Style.pagination}>
                   <Pagination
                     padding={2}
@@ -145,3 +156,5 @@ export default class BrandsPage extends Component {
     );
   }
 }
+
+export default withRouter(BrandsPage);

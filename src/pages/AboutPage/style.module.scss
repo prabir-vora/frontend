@@ -13,8 +13,10 @@
 .pageContent {
   min-height: calc(100vh - 90px);
   position: relative;
-  width: calc(100% - 180px);
+  width: 100%;
   align-items: center;
+  display: flex;
+  flex-direction: column;
 }
 
 .pageTitle {
@@ -29,36 +31,40 @@
   align-items: center;
 }
 
+.largeFont {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 400;
+  color: #cecece;
+}
+
 .ribbonsContainer {
-  margin-top: 80px;
+  margin-top: 30px;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
 .toContainer {
-  font-size: 45px;
+  font-size: 35px;
   font-weight: 700;
   line-height: 1.15556;
   z-index: 1;
 }
 
 .sellerContainer {
-  width: 50%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-left: auto;
-  margin-right: 60px;
   margin-bottom: 40px;
 }
 
 .buyerContainer {
-  width: 50%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-left: 60px;
 }
 
 .toRibbon {
@@ -85,7 +91,8 @@
 .linksContainer {
   display: flex;
   justify-content: center;
-  margin: 50px 0px;
+  margin: 25px 0px;
+  width: 100%;
 }
 
 .link {
@@ -96,8 +103,98 @@
   width: 50%;
 
   & > svg {
-    width: 100px;
-    height: 100px;
+    width: 50px;
+    height: 50px;
     fill: white;
+  }
+}
+
+.linkHeader {
+  font-size: 20px;
+}
+
+.toDescription {
+  text-align: center;
+  font-size: 18px;
+  max-width: 100%;
+  font-weight: 400;
+  overflow: hidden;
+  white-space: pre-line;
+  overflow-wrap: break-word;
+  padding: 0px 20px;
+  box-sizing: border-box;
+}
+
+@media (min-width: 40em) {
+  .pageContent {
+    min-height: calc(100vh - 90px);
+    width: calc(100% - 180px);
+  }
+
+  .largeFont {
+    width: 600px;
+    text-align: center;
+    font-size: 28px;
+    font-weight: 400;
+    color: #cecece;
+  }
+
+  .linksContainer {
+    margin: 50px 0px;
+  }
+
+  .link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+
+    & > svg {
+      width: 100px;
+      height: 100px;
+      fill: white;
+    }
+  }
+
+  .linkHeader {
+    font-size: 30px;
+  }
+
+  .ribbonsContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .buyerContainer {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 60px;
+  }
+
+  .sellerContainer {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: auto;
+    margin-right: 60px;
+    margin-bottom: 40px;
+  }
+
+  .toContainer {
+    font-size: 45px;
+    font-weight: 700;
+    line-height: 1.15556;
+    z-index: 1;
+  }
+
+  .toDescription {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 400;
   }
 }

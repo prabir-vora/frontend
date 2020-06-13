@@ -33,15 +33,23 @@ const actionTypes = createActionTypes(
     FETCH_ORDER_REQUEST: 'FETCH_ORDER_REQUEST',
     FETCH_ORDER_SUCCESS: 'FETCH_ORDER_SUCCESS',
     FETCH_ORDER_FAILURE: 'FETCH_ORDER_FAILURE',
+
+    FETCH_SELLER_ORDER_REQUEST: 'FETCH_SELLER_ORDER_REQUEST',
+    FETCH_SELLER_ORDER_SUCCESS: 'FETCH_SELLER_ORDER_SUCCESS',
+    FETCH__SELLER_ORDER_FAILURE: 'FETCH_SELLER_ORDER_FAILURE',
   },
   duckName,
 );
 
 const initialState = {
   currentOrderNumber: '',
+  currentSellerOrderNumber: '',
   ordersMap: {},
   error: '',
   isSaving: false,
+  isSavingSellerOrder: false,
+  sellerOrderError: '',
+  sellerOrdersMap: {},
 };
 
 const createOrder = listingID => dispatch => {
@@ -670,6 +678,84 @@ const fetchOrder = orderNumber => dispatch => {
   });
 };
 
+const fetchSellerOrder = orderNumber => dispatch => {
+  dispatch(fetchSellerOrderRequest());
+  return new Promise((resolve, reject) => {
+    fetchGraphQL(`
+            query {
+                fetchSellerOrder(orderNumber: "${orderNumber}") {
+                    order { 
+                      orderNumber
+                      resellItem {
+                          id
+                          product {
+                              id
+                              name
+                              slug 
+                              original_image_url
+                          }
+                          askingPrice
+                          condition
+                          size
+                          images
+                      }
+                      seller
+                      sellerAddress {
+                          id
+                          postal_code
+                          city_locality
+                          state_province
+                          country_code
+                          country
+                          address1
+                          address2
+                          name
+                          phone
+                      }
+                      status
+                      price_cents
+                      purchased_at
+                      seller_amount_made_cents
+                      seller_shipping_cents 
+                      platform_fees_seller_cents 
+                      applicationFeeRateCharged 
+                      sellerScoreDuringPurchase 
+                    }
+                    error
+                }
+            }
+        `)
+      .then(res => {
+        if (
+          res !== null &&
+          res !== undefined &&
+          res.fetchSellerOrder !== null &&
+          res.fetchSellerOrder !== undefined &&
+          res.fetchSellerOrder.order !== null &&
+          res.fetchSellerOrder.order !== undefined &&
+          res.fetchSellerOrder.error === ''
+        ) {
+          const { orderNumber } = res.fetchSellerOrder.order;
+          dispatch(
+            fetchSellerOrderSuccess(orderNumber, res.fetchSellerOrder.order),
+          );
+          resolve({
+            success: true,
+            message: 'Fetched Order Successfully',
+            orderNumber,
+          });
+        } else {
+          dispatch(fetchSellerOrderError(res.fetchSellerOrder.error));
+          resolve({ success: false, message: res.fetchSellerOrder.error });
+        }
+      })
+      .catch(err => {
+        dispatch(fetchSellerOrderError('Failed to fetch order'));
+        resolve({ success: false, message: 'Failed to fetch order' });
+      });
+  });
+};
+
 const createOrderRequest = () => {
   return {
     type: actionTypes.CREATE_ORDER_REQUEST,
@@ -796,6 +882,27 @@ const fetchOrderError = errorMessage => {
   };
 };
 
+const fetchSellerOrderRequest = () => {
+  return {
+    type: actionTypes.FETCH_SELLER_ORDER_REQUEST,
+  };
+};
+
+const fetchSellerOrderSuccess = (orderNumber, data) => {
+  return {
+    type: actionTypes.FETCH_SELLER_ORDER_SUCCESS,
+    payload: { orderNumber, data },
+  };
+};
+
+const fetchSellerOrderError = errorMessage => {
+  console.log(errorMessage);
+  return {
+    type: actionTypes.FETCH_SELLER_ORDER_FAILURE,
+    payload: { errorMessage },
+  };
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     //  --------> Mutations
@@ -886,6 +993,23 @@ const reducer = (state = initialState, action) => {
         isSaving: false,
         error: action.payload.errorMessage,
       });
+    case actionTypes.FETCH_SELLER_ORDER_REQUEST:
+      return Object.assign({}, state, {
+        isSavingSellerOrder: true,
+      });
+    case actionTypes.FETCH_SELLER_ORDER_SUCCESS:
+      return Object.assign({}, state, {
+        isSavingSellerOrder: false,
+        currentSellerOrderNumber: action.payload.orderNumber,
+        sellerOrdersMap: Object.assign({}, state.ordersMap, {
+          [action.payload.orderNumber]: action.payload.data,
+        }),
+      });
+    case actionTypes.FETCH_SELLER_ORDER_FAILURE:
+      return Object.assign({}, state, {
+        isSavingSellerOrder: false,
+        sellerOrderError: action.payload.errorMessage,
+      });
     default:
       return state;
   }
@@ -904,5 +1028,6 @@ export default {
     fetchNewSetupIntent,
     purchaseOrder,
     onPaymentSuccess,
+    fetchSellerOrder,
   },
 };

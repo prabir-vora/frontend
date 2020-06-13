@@ -16,6 +16,7 @@ import {
   LocalListingPage,
   LocalMarketplacePage,
   SearchPage,
+  SellOrderPage,
   ShopPage,
   ShopListingPage,
   SellPage,
@@ -59,6 +60,8 @@ const ROUTES = (routeName = '', props = {}) => {
       return AdminPage;
     case 'sellPage':
       return SellPage;
+    case 'sellOrderPage':
+      return SellOrderPage;
     case 'searchPage':
       return SearchPage;
     case 'shopPage':
