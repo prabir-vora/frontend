@@ -49,14 +49,12 @@ const getLocalListing = resellItemSlug => dispatch => {
                   colorway
                   releaseDate
                   slug
+                  original_image_url
                 }
                 reseller {
                     id
                     name
                     username
-                    imageURL
-                    isReseller
-                    resellerPageName
                     _geoloc {
                         lat
                         lng
@@ -66,6 +64,7 @@ const getLocalListing = resellItemSlug => dispatch => {
                 condition
                 size
                 images
+                slug
             }
         }`).then(res => {
       if (

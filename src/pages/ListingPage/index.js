@@ -11,6 +11,8 @@ import SizeDuck from 'stores/ducks/Size.duck';
 import UserDuck from 'stores/ducks/User.duck';
 import SellDuck from 'stores/ducks/Sell.duck';
 
+import isEqual from 'lodash.isequal';
+
 import { RadioButtonCheckedIcon, RadioButtonUncheckedIcon } from 'assets/Icons';
 
 // Fields
@@ -25,12 +27,13 @@ import {
 
 import Select from 'react-select';
 
-import Autocomplete from './components/Autocomplete';
+// import Autocomplete from './components/Autocomplete';
 
 import algoliasearch from 'algoliasearch/lite';
 import { InstantSearch, Configure } from 'react-instantsearch-dom';
 import { ShowConfirmNotif } from 'functions';
 import MainFooter from 'components/MainFooter';
+import { LoadingScreen } from 'components';
 
 const searchClient = algoliasearch(
   'UYWEM6FQPE',
@@ -38,16 +41,6 @@ const searchClient = algoliasearch(
 );
 
 const RESELL_ITEM_FIELDS = [
-  {
-    fieldKind: 'radio',
-    id: 'productType',
-    label: 'Select Product Type',
-    options: {
-      sneakers: { label: 'Sneakers' },
-      apparel: { label: 'Apparel' },
-    },
-    placeholder: '',
-  },
   {
     fieldKind: 'autocomplete',
     id: 'selectProduct',
@@ -103,23 +96,88 @@ const RESELL_ITEM_FIELDS = [
   },
 ];
 
-class CreateListingPage extends Component {
+class ListingPage extends Component {
   confirmNotif = null;
 
   state = {
-    resellItemInfo: {
-      productType: 'sneakers',
-      product: '',
-      condition: 'new',
-      conditionDetails: '',
-      askingPrice: '',
-      size: '',
-      availability: [],
-      images: [],
-    },
+    resellItemInfo: null,
     submitBtnStatus: 'inactive',
     query: '',
+    error: '',
   };
+
+  async componentDidMount() {
+    const { listingID } = this.props.match.params;
+    console.log(listingID);
+
+    const { actionCreators } = SellDuck;
+    const { getListing } = actionCreators;
+    const res = await this.props.dispatch(getListing(listingID));
+    console.log(res);
+    console.log('Success');
+    if (res.success) {
+      // this.confirmNotif = ShowConfirmNotif({
+      //   message,
+      //   type: 'success',
+      // });
+      if (this.props.listing !== null && this.props.listing !== undefined) {
+        console.log(this.props.listing);
+        const { currentSlug, listingsMap } = this.props.listing;
+        const resellItem = listingsMap[currentSlug];
+        console.log(resellItem);
+
+        const {
+          id,
+          condition,
+          conditionDetails,
+          askingPrice,
+          product,
+          size,
+          availability,
+          images,
+          sold,
+        } = resellItem;
+
+        if (sold) {
+          return this.setState({
+            error: 'cannot edit sold listing',
+            resellItemInfo: null,
+          });
+        }
+        this.setState(
+          {
+            resellItemInfo: immutable
+              .wrap({})
+              .set('id', id)
+              .set('condition', condition)
+              .set('conditionDetails', conditionDetails)
+              .set('askingPrice', askingPrice)
+              .set('size', {
+                label: size,
+                value: size,
+              })
+              .set('product', product)
+              .set('availability', availability)
+              .set('images', images)
+              .value(),
+          },
+          this.onGetButtonStatus,
+        );
+        // console.log(this.props.listing);
+      }
+    } else {
+      this.setState({
+        error: 'No listing found',
+        resellItemInfo: null,
+      });
+    }
+  }
+
+  // componentDidUpdate(prevProps, prevState) {
+  //   if (prevProps.listing !== this.props.listing) {
+  //     console.log(this.props.listing);
+  //   }
+  // }
 
   onUploadResellItemImages = imageURLs => {
     // console.log(imageURLs);
@@ -138,9 +196,7 @@ class CreateListingPage extends Component {
   onGetButtonStatus = () => {
     console.log(this.state);
     const {
-      productType,
       askingPrice,
-      product,
       condition,
       size,
       availability,
@@ -148,18 +204,31 @@ class CreateListingPage extends Component {
       images,
     } = this.state.resellItemInfo;
 
+    const { currentSlug, listingsMap } = this.props.listing;
+    const data = listingsMap[currentSlug];
+    console.log(this.state.resellItemInfo);
+    console.log(data);
+
     const conditionBased =
       (condition !== 'new' && conditionDetails !== '' && images.length !== 0) ||
       condition === 'new';
 
+    const difference =
+      askingPrice !== data.askingPrice ||
+      condition !== data.condition ||
+      size.value !== data.size ||
+      !isEqual(availability.sort(), data.availability.sort()) ||
+      !isEqual(images.sort(), data.images.sort());
+
+    console.log('difference', difference);
+
     console.log('condition based', conditionBased);
-    productType !== '' &&
     askingPrice !== '' &&
-    product !== '' &&
     condition !== '' &&
     size !== '' &&
     availability.length !== 0 &&
-    conditionBased
+    conditionBased &&
+    difference
       ? this.setState({ submitBtnStatus: 'active' })
       : this.setState({ submitBtnStatus: 'inactive' });
   };
@@ -167,9 +236,9 @@ class CreateListingPage extends Component {
   onSubmitListing = async () => {
     const reseller = this.props.user;
     const { resellItemInfo } = this.state;
-    const { submitListingInfo, showModal } = SellDuck.actionCreators;
-    await this.props.dispatch(submitListingInfo(resellItemInfo));
-    await this.props.dispatch(showModal('confirmListing'));
+    const { submitEditListingInfo, showModal } = SellDuck.actionCreators;
+    await this.props.dispatch(submitEditListingInfo(resellItemInfo));
+    await this.props.dispatch(showModal('confirmEditListing'));
   };
 
   onProductSelection = selection => {
@@ -230,66 +299,29 @@ class CreateListingPage extends Component {
     switch (fieldKind) {
       case 'autocomplete':
         return (
-          <InstantSearch
-            indexName="test_PRODUCTS"
-            searchClient={searchClient}
-            className={Style.formFieldContainer}
-          >
-            <div className={Style.formFieldContainer}>
-              <h4 className={Style.formFieldTitle}>{field.label}</h4>
-              <Configure
-                hitsPerPage={8}
-                distinct={true}
-                filters={`productCategory:${this.state.resellItemInfo.productType}`}
-              />
-              {!this.state.resellItemInfo.product ? (
-                <Autocomplete
-                  onProductSelection={this.onProductSelection}
-                  onSuggestionCleared={this.onSuggestionCleared}
-                />
-              ) : (
-                <div style={{ width: '100%', display: 'flex' }}>
-                  <Img
-                    src={this.state.resellItemInfo.product.original_image_url}
-                    className={Style.selectedItemImage}
-                  />
-                  <div className={Style.selectedItemTitle}>
-                    {this.state.resellItemInfo.product.name}
-                    <div
-                      style={{
-                        width: '100%',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        fontSize: '14px',
-                        margin: '20px 0px',
-                      }}
-                    >
-                      <p>{this.state.resellItemInfo.product.brand.name}</p>
-                      <p>{this.state.resellItemInfo.product.colorway}</p>
-                    </div>
-                    <Button
-                      className={Style.removeProductSelection}
-                      onClick={() => {
-                        this.setState(
-                          {
-                            resellItemInfo: immutable.set(
-                              this.state.resellItemInfo,
-                              'product',
-                              '',
-                            ),
-                          },
-                          this.onGetButtonStatus,
-                        );
-                      }}
-                    >
-                      Remove
-                    </Button>
-                  </div>
-                </div>
-              )}
+          <div style={{ width: '100%', display: 'flex' }}>
+            <Img
+              src={this.state.resellItemInfo.product.original_image_url}
+              className={Style.selectedItemImage}
+            />
+            <div className={Style.selectedItemTitle}>
+              {this.state.resellItemInfo.product.name}
+              <div
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  fontSize: '14px',
+                  margin: '20px 0px',
+                }}
+              >
+                <p>{this.state.resellItemInfo.product.brand.name}</p>
+                <p>{this.state.resellItemInfo.product.colorway}</p>
+              </div>
             </div>
-          </InstantSearch>
+          </div>
         );
+
       case 'radio':
         return (
           <div className={Style.formFieldContainer} key={id}>
@@ -496,17 +528,17 @@ class CreateListingPage extends Component {
   };
 
   renderSizeDropDown = () => {
-    const { productType, product, size } = this.state.resellItemInfo;
+    const { product, size } = this.state.resellItemInfo;
+
+    const { productCategory, gender, size_brand } = product;
 
     if (!product) {
       return (
         <p style={{ fontSize: '15px', color: 'white' }}>Select product first</p>
       );
     }
-    const { size_brand, gender } = product;
-
     const size_list =
-      this.props.sizing[productType][gender][size_brand]['us'] || [];
+      this.props.sizing[productCategory][gender][size_brand]['us'] || [];
 
     const sizeDropDownValues = size_list.map(size => {
       return { value: `${size}`, label: `${size}` };
@@ -553,13 +585,54 @@ class CreateListingPage extends Component {
   };
 
   render() {
+    console.log(this.props);
+    const { currentSlug, listingsMap } = this.props.listing;
+    const data = listingsMap[currentSlug];
+
+    if (this.state.error) {
+      return (
+        <div
+          style={{
+            background: 'linear-gradient(100deg, #111010 0%, #4b4b4b 99%)',
+          }}
+        >
+          <MainNavBar />
+          <div
+            style={{
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'flex-start',
+              minHeight: '100vh',
+              padding: '5% 0',
+              height: '100%',
+            }}
+          >
+            <h1 className={Style.noResultsTitle}>Sorry, {this.state.error}</h1>
+            <a style={{ textDecoration: 'underline' }} href="/user/listings">
+              Go back
+            </a>
+          </div>
+
+          <MainFooter />
+        </div>
+      );
+    }
+
+    if (this.state.resellItemInfo === null || this.props.sizing === undefined) {
+      return <LoadingScreen />;
+    }
+
+    console.log(this.state);
+
     return (
       <div className={Style.pageWrapper}>
         <MainNavBar />
         <div className={Style.pageLayout}>
           <div className={Style.pageContent}>
             <div className={Style.pageTitle}>
-              <h2 className={Style.titleLarge}>Create Listing</h2>
+              <h2 className={Style.titleLarge}>Edit Listing</h2>
             </div>
 
             <div className={Style.createListingForm}>
@@ -579,10 +652,11 @@ class CreateListingPage extends Component {
 const mapStateToProps = state => {
   return {
     user: state[UserDuck.duckName].user,
+    listing: state[SellDuck.duckName],
     sizing: state[SizeDuck.duckName].sizing.data,
   };
 };
 
-const x = withRouter(CreateListingPage);
+const x = withRouter(ListingPage);
 
 export default connect(mapStateToProps)(x);

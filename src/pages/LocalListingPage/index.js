@@ -38,6 +38,7 @@ class LocalListingPage extends Component {
     images: [],
     showDetailedImages: false,
     imageIndex: 0,
+    error: '',
   };
   async componentDidMount() {
     const { listingID } = this.props.match.params;
@@ -64,6 +65,9 @@ class LocalListingPage extends Component {
       }
     } else {
       console.log(message);
+      this.setState({
+        error: 'No Listing found',
+      });
     }
   }
 
@@ -99,12 +103,21 @@ class LocalListingPage extends Component {
   };
 
   openMessageModal = () => {
+    const { user } = this.props;
+
+    if (!user) {
+      const { actionCreators } = AppAuthDuck;
+      const { showModal } = actionCreators;
+      return this.props.dispatch(showModal('login'));
+    }
+
     const { actionCreators } = ConversationDuck;
     const { showMessageModal } = actionCreators;
 
     const { currentSlug, listingsMap } = this.props.localListing;
     const data = listingsMap[currentSlug];
     const { id } = data;
+
     this.props.dispatch(showMessageModal('localMarketplace', id));
   };
 
@@ -210,10 +223,16 @@ class LocalListingPage extends Component {
     let imageGalleryInput = [];
 
     const { images } = data;
+    console.log(data);
 
     images.forEach(pictureURL => {
       imageGalleryInput.push(pictureURL);
     });
+
+    if (images.length === 0) {
+      const { product } = data;
+      imageGalleryInput.push(product.original_image_url);
+    }
 
     return (
       <React.Fragment>
@@ -389,6 +408,38 @@ class LocalListingPage extends Component {
 
     const { listingID } = this.props.match.params;
 
+    if (this.state.error) {
+      return (
+        <div
+          style={{
+            background: 'linear-gradient(100deg, #111010 0%, #4b4b4b 99%)',
+            overflowX: 'hidden',
+          }}
+        >
+          <MainNavBar />
+          <div
+            style={{
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'flex-start',
+              minHeight: '100vh',
+              padding: '5% 0',
+              height: '100%',
+            }}
+          >
+            <h1 className={Style.noResultsTitle}>Sorry, {this.state.error}</h1>
+            <a style={{ textDecoration: 'underline' }} href="/localMarketplace">
+              Go to local Marketplace
+            </a>
+          </div>
+
+          <MainFooter />
+        </div>
+      );
+    }
+
     if (data === null || data === undefined) {
       return <LoadingScreen />;
     }
@@ -485,14 +536,21 @@ class LocalListingPage extends Component {
               />
             </div>
             <div className={Style.buttonsContainer}>
-              <Button
-                className={Style.buyButton}
-                onClick={() => {
-                  this.openMessageModal();
-                }}
-              >
-                Message
-              </Button>
+              {user && user.id !== data.reseller.id && (
+                <Button
+                  className={Style.buyButton}
+                  onClick={() => {
+                    this.openMessageModal();
+                  }}
+                >
+                  Message
+                </Button>
+              )}
+              {user && user.id === data.reseller.id && (
+                <a className={Style.editButton} href={`/listing/${data.slug}`}>
+                  Edit
+                </a>
+              )}
               {/* <Button
                 className={
                   isAddedToList

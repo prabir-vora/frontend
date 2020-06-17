@@ -363,7 +363,11 @@ class MainNavBar extends Component {
             </li>
             <li>
               <label
-                className={Style.navLink}
+                className={
+                  this.props.match.url === '/sell'
+                    ? cx(Style.navLink, Style.navLinkActive)
+                    : Style.navLink
+                }
                 onClick={() => this.protectedRouteClick('sell')}
               >
                 <SellNavIcon />

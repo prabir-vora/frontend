@@ -56,6 +56,10 @@ const actionTypes = createActionTypes(
     ORDER_STATUS_UPDATE_SUCCESS: 'ORDER_STATUS_UPDATE_SUCCESS',
     ORDER_STATUS_UPDATE_ERROR: 'ORDER_STATUS_UPDATE_ERROR',
 
+    CONFIRM_SELLER_TRANSFER_REQUEST: 'CONFIRM_SELLER_TRANSFER_REQUEST',
+    CONFIRM_SELLER_TRANSFER_SUCCESS: 'CONFIRM_SELLER_TRANSFER_SUCCESS',
+    CONFIRM_SELLER_TRANSFER_ERROR: 'CONFIRM_SELLER_TRANSFER_ERROR',
+
     // ------> Orders
     GET_ORDERS_REQUEST: 'GET_ORDERS_REQUEST',
     GET_ORDERS_SUCCESS: 'GET_ORDERS_SUCCESS',
@@ -264,22 +268,24 @@ const updateResellItemWithInputType = () => {
 const updateExistingResellItem = resellItemInfo => dispatch => {
   dispatch(updateExistingResellItemRequest());
 
-  const { product, reseller, askingPrice, size, id } = resellItemInfo;
-  const resellItemSlug = slugify(product.label + ' ' + reseller.label, {
-    replacement: '-',
-    lower: true, // convert to lower case, defaults to `false`
-  });
+  const {
+    product,
+    availability,
+    askingPrice,
+    size,
+    condition,
+    id,
+  } = resellItemInfo;
 
   const resellItem = immutable
-    .wrap(resellItemInfo)
-    .set('slug', resellItemSlug)
-    .set('product', product.value)
-    .set('reseller', reseller.value)
+    .wrap({})
     .set('size', size.value)
     .set('askingPrice', parseInt(askingPrice))
-    .del('productType')
-    .del('id')
+    .set('condition', condition)
+    .set('availability', availability)
     .value();
+
+  console.log(resellItem);
   return new Promise((resolve, reject) => {
     fetchGraphQL(updateResellItemWithInputType(), undefined, {
       resellItem,
@@ -499,6 +505,30 @@ const updateOrderStatus = (orderNumber, status) => dispatch => {
   });
 };
 
+const confirmSellerTransfer = orderNumber => dispatch => {
+  dispatch(confirmSellerTransferRequest());
+  return new Promise((resolve, reject) => {
+    fetchGraphQL(`
+      mutation {
+        completeSellerTransfer(orderNumber: "${orderNumber}") 
+      }
+    `)
+      .then(res => {
+        if (res.completeSellerTransfer) {
+          dispatch(confirmSellerTransferSuccess());
+          resolve({ success: true });
+        } else {
+          dispatch(confirmSellerTransferError());
+          resolve({ success: false });
+        }
+      })
+      .catch(err => {
+        dispatch(confirmSellerTransferError());
+        resolve({ success: false });
+      });
+  });
+};
+
 const getPurchasedOrders = (query = '', dateInput = 'allTime') => dispatch => {
   dispatch(getPurchasedOrdersRequest());
   return new Promise((resolve, reject) => {
@@ -564,6 +594,9 @@ const getPurchasedOrders = (query = '', dateInput = 'allTime') => dispatch => {
               applicationFeeRateCharged
               sellerScoreDuringPurchase
               purchased_at
+              sellerTransferComplete
+              sellerTransferDate
+              sellerTransferID
               buyerShipment {
                 id
                 status
@@ -832,6 +865,24 @@ const updateOrderStatusError = () => {
   };
 };
 
+const confirmSellerTransferRequest = () => {
+  return {
+    type: actionTypes.CONFIRM_SELLER_TRANSFER_REQUEST,
+  };
+};
+
+const confirmSellerTransferSuccess = () => {
+  return {
+    type: actionTypes.CONFIRM_SELLER_TRANSFER_SUCCESS,
+  };
+};
+
+const confirmSellerTransferError = () => {
+  return {
+    type: actionTypes.CONFIRM_SELLER_TRANSFER_ERROR,
+  };
+};
+
 const getPurchasedOrdersRequest = () => {
   return {
     type: actionTypes.GET_ORDERS_REQUEST,
@@ -1042,6 +1093,15 @@ const reducer = (state = initialState, action) => {
     case actionTypes.ORDER_STATUS_UPDATE_ERROR: {
       return state;
     }
+    case actionTypes.CONFIRM_SELLER_TRANSFER_REQUEST: {
+      return state;
+    }
+    case actionTypes.CONFIRM_SELLER_TRANSFER_SUCCESS: {
+      return state;
+    }
+    case actionTypes.CONFIRM_SELLER_TRANSFER_ERROR: {
+      return state;
+    }
     case actionTypes.GET_ORDERS_REQUEST: {
       return Object.assign({}, state, {
         orders: Object.assign({}, state.orders, { isFetching: true }),
@@ -1123,5 +1183,6 @@ export default {
     changeOrdersQuery,
     changeOrdersDateInput,
     updateOrderStatus,
+    confirmSellerTransfer,
   },
 };

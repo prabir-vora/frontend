@@ -76,8 +76,22 @@ class ProductListingPage extends Component {
     }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps, prevState) {
     ReactTooltip.rebuild();
+
+    if (prevProps.user !== this.props.user) {
+      const { currentSlug, listingsMap } = this.props.productListing;
+      const product = listingsMap[currentSlug];
+      if (!product) {
+        return;
+      }
+      this.constructSizeMap(product);
+      this.setState({
+        selectedResellItem: '',
+        selectedCondition: '',
+        selectedSize: '',
+      });
+    }
   }
 
   onClickLike = async productID => {
@@ -115,15 +129,15 @@ class ProductListingPage extends Component {
   onClickBuy = async () => {
     const { user } = this.props;
 
-    this.setState({
-      isCreatingOrder: true,
-    });
-
     if (!user) {
       const { actionCreators } = AppAuthDuck;
       const { showModal } = actionCreators;
       return this.props.dispatch(showModal('login'));
     }
+
+    this.setState({
+      isCreatingOrder: true,
+    });
 
     const { selectedResellItem } = this.state;
 
@@ -187,7 +201,15 @@ class ProductListingPage extends Component {
     let newSizeMap = {};
     let usedSizeMap = {};
 
-    resellItems.forEach(resellItem => {
+    const userFilteredResellItems = resellItems.filter(listing => {
+      if (this.props.user) {
+        return listing.reseller.id !== this.props.user.id;
+      } else {
+        return true;
+      }
+    });
+
+    userFilteredResellItems.forEach(resellItem => {
       const { id, condition, size, askingPrice } = resellItem;
 
       if (

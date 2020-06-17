@@ -10,7 +10,7 @@ import MessageModal from './MessageModal';
 import ReplyModal from './ReplyModal';
 import HowSellingWorksModal from './HowSellingWorksModal';
 import ConfirmListingModal from './ConfirmListingModal';
-import NewAddressModal from './NewAddressModal';
+import ConfirmEditListingModal from './ConfirmEditListingModal';
 import SellerSetupModal from './SellerSetupModal';
 
 import { ShowConfirmNotif } from 'functions';
@@ -163,20 +163,20 @@ class ClientModals extends Component {
     this.props.dispatch(hideModal('confirmListing'));
   };
 
+  onCloseConfirmEditListingModal = () => {
+    const { hideModal } = SellDuck.actionCreators;
+    this.props.dispatch(hideModal('confirmEditListing'));
+  };
+
   onCloseSellerSetupModal = () => {
     const { hideModal } = SellDuck.actionCreators;
     this.props.dispatch(hideModal('sellerSetup'));
   };
 
-  onCloseNewAddressModal = () => {
-    const { hideNewAddressModalCreator } = UserDuck.actionCreators;
-    this.props.dispatch(hideNewAddressModalCreator());
-  };
-
   onCreateListing = async () => {
     const reseller = this.props.user;
     const resellItemInfo = this.props.listingInfo;
-    const { createNewListing } = SellDuck.actionCreators;
+    const { createNewListing, hideModal } = SellDuck.actionCreators;
     const { created, message } = await this.props.dispatch(
       createNewListing(resellItemInfo, reseller),
     );
@@ -187,6 +187,8 @@ class ClientModals extends Component {
         type: 'success',
       });
 
+      await this.props.dispatch(hideModal('confirmListing'));
+
       this.props.history.goBack();
     } else {
       this.confirmNotif = ShowConfirmNotif({
@@ -196,18 +198,27 @@ class ClientModals extends Component {
     }
   };
 
-  onCreateNewSellerAddress = async address => {
-    const { createNewSellerAddress } = UserDuck.actionCreators;
-
+  onEditListing = async () => {
+    const listing = this.props.editListingInfo;
+    const { editListing, hideModal } = SellDuck.actionCreators;
     const { success, message } = await this.props.dispatch(
-      createNewSellerAddress(address),
+      editListing(listing),
     );
 
     if (success) {
-      this.onCloseNewAddressModal();
-    }
+      this.confirmNotif = ShowConfirmNotif({
+        message,
+        type: 'success',
+      });
 
-    return { success, message };
+      await this.props.dispatch(hideModal('confirmEditListing'));
+      this.props.history.goBack();
+    } else {
+      this.confirmNotif = ShowConfirmNotif({
+        message,
+        type: 'error',
+      });
+    }
   };
 
   render() {
@@ -217,8 +228,9 @@ class ClientModals extends Component {
       showReplyModal,
       showHowSellingWorksModal,
       showConfirmListingModal,
+      showConfirmEditListingModal,
       listingInfo,
-      showNewAddressModal,
+      editListingInfo,
       showSellerSetupModal,
       user,
     } = this.props;
@@ -255,18 +267,19 @@ class ClientModals extends Component {
             onSubmitListing={this.onCreateListing}
           />
         )}
+        {showConfirmEditListingModal && (
+          <ConfirmEditListingModal
+            listingInfo={editListingInfo}
+            onClose={this.onCloseConfirmEditListingModal}
+            onSubmitListing={this.onEditListing}
+          />
+        )}
         {showSellerSetupModal && (
           <SellerSetupModal
             onClose={this.onCloseSellerSetupModal}
             stripeConnectOnboardingUrl={this.state.stripeConnectOnboardingUrl}
             stripe_connect_account_status={stripe_connect_account_status}
             activeSellerAddressID={activeSellerAddressID}
-          />
-        )}
-        {showNewAddressModal && (
-          <NewAddressModal
-            onClose={this.onCloseNewAddressModal}
-            onCreateNewSellerAddress={this.onCreateNewSellerAddress}
           />
         )}
       </React.Fragment>
@@ -284,9 +297,11 @@ const mapStateToProps = state => {
     showHowSellingWorksModal: state[SellDuck.duckName].showHowSellingWorksModal,
     showConfirmListingModal: state[SellDuck.duckName].showConfirmListingModal,
     showSellerSetupModal: state[SellDuck.duckName].showSellerSetupModal,
+    showConfirmEditListingModal:
+      state[SellDuck.duckName].showConfirmEditListingModal,
     listingInfo: state[SellDuck.duckName].listingInfo,
+    editListingInfo: state[SellDuck.duckName].editListingInfo,
     user: state[UserDuck.duckName].user,
-    showNewAddressModal: state[UserDuck.duckName].showNewAddressModal,
   };
 };
 

@@ -40,9 +40,9 @@ export default class MainFooter extends Component {
           <li className={Style.footerLink}>
             <a>Sell</a>
           </li>
-          <li className={Style.footerLink}>
+          {/* <li className={Style.footerLink}>
             <div>Dripverse © 2020</div>
-          </li>
+          </li> */}
         </ul>
       </div>
     );

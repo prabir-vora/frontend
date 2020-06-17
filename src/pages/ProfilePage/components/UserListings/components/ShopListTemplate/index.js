@@ -36,19 +36,11 @@ class ShopListTemplate extends Component {
     return (
       <div className={Style.listItem}>
         {purchased_at && <div className={Style.soldTag}>Sold</div>}
-        <a
-          href={`/shop/listing/${slug}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a href={`/listing/${slug}`}>
           <Img src={original_image_url} className={Style.productImage} />
         </a>
         <div className={Style.listingDetails}>
-          <a
-            href={`/shop/listing/${slug}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a href={`/listing/${slug}`}>
             <div className={Style.productName}>
               <h4>{name}</h4>
             </div>

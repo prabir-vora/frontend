@@ -11,14 +11,24 @@ const actionTypes = createActionTypes(
 
     SUBMIT_LISTING_INFO: 'SUBMIT_LISTING_INFO',
 
+    SUBMIT_EDIT_LISTING_INFO: 'SUBMIT_EDIT_LISTING_INFO',
+
     CREATE_NEW_LISTING_REQUEST: 'CREATE_NEW_LISTING_REQUEST',
     CREATE_NEW_LISTING_SUCCESS: 'CREATE_NEW_LISTING_SUCCESS',
     CREATE_NEW_LISTING_FAILURE: 'CREATE_NEW_LISTING_FAILURE',
+
+    EDIT_LISTING_REQUEST: 'EDIT_LISTING_REQUEST',
+    EDIT_LISTING_SUCCESS: 'EDIT_LISTING_SUCCESS',
+    EDIT_LISTING_FAILURE: 'EDIT_LISTING_FAILURE',
 
     //  -----> Brands
     GET_BRANDS_REQUEST: 'GET_BRANDS_REQUEST',
     GET_BRANDS_SUCCESS: 'GET_BRANDS_SUCCESS',
     GET_BRANDS_ERROR: 'GET_BRANDS_ERROR',
+
+    GET_LISTING_REQUEST: 'GET_LISTING_REQUEST',
+    GET_LISTING_SUCCESS: 'GET_LISTING_SUCCESS',
+    GET_LISTING_ERROR: 'GET_LISTING_ERROR',
   },
   duckName,
 );
@@ -27,8 +37,15 @@ const initialState = {
   showHowSellingWorksModal: false,
   showConfirmListingModal: false,
   showSellerSetupModal: false,
+  showConfirmEditListingModal: false,
   listingInfo: null,
   creatingNewListing: false,
+  currentSlug: '',
+  listingsMap: {},
+  error: '',
+  isFetching: false,
+  editListingInfo: null,
+
   // brands: {
   //   data: [],
   //   errorMessage: {},
@@ -42,6 +59,11 @@ const submitListingInfo = listingInfo => dispatch => {
   return;
 };
 
+const submitEditListingInfo = listingInfo => dispatch => {
+  dispatch(setEditListingInfo(listingInfo));
+  return;
+};
+
 const showModal = modalType => dispatch => {
   switch (modalType) {
     case 'howSellingWorks':
@@ -49,6 +71,9 @@ const showModal = modalType => dispatch => {
       return;
     case 'confirmListing':
       dispatch(showConfirmListingModal());
+      return;
+    case 'confirmEditListing':
+      dispatch(showConfirmEditListingModal());
       return;
     case 'sellerSetup':
       dispatch(showSellerSetupModal());
@@ -65,6 +90,9 @@ const hideModal = modalType => dispatch => {
       return;
     case 'confirmListing':
       dispatch(hideConfirmListingModal());
+      return;
+    case 'confirmEditListing':
+      dispatch(hideConfirmEditListingModal());
       return;
     case 'sellerSetup':
       dispatch(hideSellerSetupModal());
@@ -86,9 +114,15 @@ const createListingWithInputType = () => {
 
 const createNewListing = (resellItemInfo, reseller) => dispatch => {
   dispatch(createNewListingRequest());
-  const { product, askingPrice, size } = resellItemInfo;
+  const {
+    product,
+    askingPrice,
+    size,
+    conditionDetails,
+    condition,
+  } = resellItemInfo;
   const listingSlug = slugify(
-    product.name + ' ' + reseller.name + ' ' + Date.now(),
+    product.name + ' ' + reseller.username + ' ' + Date.now(),
     {
       replacement: '-',
       lower: true, // convert to lower case, defaults to `false`
@@ -101,6 +135,7 @@ const createNewListing = (resellItemInfo, reseller) => dispatch => {
     .set('product', product._id)
     .set('reseller', reseller.id)
     .set('askingPrice', parseInt(askingPrice))
+    .set('conditionDetails', condition === 'new' ? '' : conditionDetails)
     .set('size', size.value)
     .del('productType')
     .value();
@@ -128,6 +163,61 @@ const createNewListing = (resellItemInfo, reseller) => dispatch => {
       .catch(err => {
         dispatch(createNewListingError(err.response));
         resolve({ created: false, message: 'Failed to Create Resell Item' });
+      });
+  });
+};
+
+const editListingWithInputType = () => {
+  return `
+          mutation($id: ID!, $listing: EditListingInput!) {
+                  editListing(id: $id, listing: $listing) 
+              }
+          `;
+};
+
+const editListing = editListingInfo => dispatch => {
+  dispatch(editListingRequest());
+  const {
+    id,
+    askingPrice,
+    size,
+    conditionDetails,
+    condition,
+  } = editListingInfo;
+
+  const listing = immutable
+    .wrap(editListingInfo)
+    .set('askingPrice', parseInt(askingPrice))
+    .set('conditionDetails', condition === 'new' ? '' : conditionDetails)
+    .set('size', size.value)
+    .del('product')
+    .del('id')
+    .value();
+  return new Promise((resolve, reject) => {
+    fetchGraphQL(editListingWithInputType(), undefined, {
+      id,
+      listing,
+    })
+      .then(res => {
+        if (
+          res !== null &&
+          res !== undefined &&
+          res.editListing !== null &&
+          res.editListing !== undefined
+        ) {
+          dispatch(editListingSuccess());
+          resolve({
+            success: true,
+            message: 'Edited Listings Successfully',
+          });
+        } else {
+          dispatch(editListingError());
+          resolve({ success: false, message: 'Failed to Edit Resell Item' });
+        }
+      })
+      .catch(err => {
+        dispatch(editListingError(err.response));
+        resolve({ success: false, message: 'Failed to Edit Resell Item' });
       });
   });
 };
@@ -169,9 +259,93 @@ const getAllBrands = () => dispatch => {
   });
 };
 
+const getListing = resellItemSlug => dispatch => {
+  dispatch(getListingRequest());
+  console.log(resellItemSlug);
+  return new Promise((resolve, reject) => {
+    fetchGraphQL(`
+        query {
+            getListing(slug: "${resellItemSlug}") {
+                id
+                product {
+                  id
+                  name
+                  productCategory
+                  gender
+                  original_image_url
+                  brand {
+                    name
+                  }
+                  colorway
+                  size_brand
+                }
+                askingPrice
+                condition
+                conditionDetails
+                availability
+                size
+                images
+                sold
+                purchased_at
+            }
+        }`)
+      .then(res => {
+        console.log(res);
+        if (res !== null && res !== undefined && res.getListing) {
+          dispatch(getListingSuccess(resellItemSlug, res.getListing));
+          resolve({
+            success: true,
+            message: 'Fetched Listing successfully',
+          });
+        } else {
+          dispatch(
+            getListingError(resellItemSlug, 'Could not fetch Product Listing'),
+          );
+          resolve({ success: false, message: 'Failed to fetch listing' });
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        dispatch(
+          getListingError(resellItemSlug, 'Could not fetch Product Listing'),
+        );
+        resolve({ success: false, message: 'Failed to fetch listing' });
+      });
+  });
+};
+
+const getListingRequest = () => {
+  return {
+    type: actionTypes.GET_LISTING_REQUEST,
+  };
+};
+
+const getListingSuccess = (listingSlug, data) => {
+  return {
+    type: actionTypes.GET_LISTING_SUCCESS,
+    payload: { listingSlug, data },
+  };
+};
+
+const getListingError = (listingSlug, errorMessage) => {
+  console.log(errorMessage);
+  return {
+    type: actionTypes.GET_LISTING_ERROR,
+    payload: { listingSlug, errorMessage },
+  };
+};
+
 const setListingInfo = listingInfo => {
   return {
     type: actionTypes.SUBMIT_LISTING_INFO,
+    payload: listingInfo,
+  };
+};
+
+const setEditListingInfo = listingInfo => {
+  console.log(listingInfo);
+  return {
+    type: actionTypes.SUBMIT_EDIT_LISTING_INFO,
     payload: listingInfo,
   };
 };
@@ -180,6 +354,13 @@ const showConfirmListingModal = () => {
   return {
     type: actionTypes.SHOW_MODAL,
     payload: 'showConfirmListingModal',
+  };
+};
+
+const showConfirmEditListingModal = () => {
+  return {
+    type: actionTypes.SHOW_MODAL,
+    payload: 'showConfirmEditListingModal',
   };
 };
 
@@ -194,6 +375,13 @@ const hideConfirmListingModal = () => {
   return {
     type: actionTypes.HIDE_MODAL,
     payload: 'showConfirmListingModal',
+  };
+};
+
+const hideConfirmEditListingModal = () => {
+  return {
+    type: actionTypes.HIDE_MODAL,
+    payload: 'showConfirmEditListingModal',
   };
 };
 
@@ -237,6 +425,25 @@ const createNewListingError = errorMessage => {
   };
 };
 
+const editListingRequest = () => {
+  return {
+    type: actionTypes.EDIT_LISTING_REQUEST,
+  };
+};
+
+const editListingSuccess = () => {
+  return {
+    type: actionTypes.EDIT_LISTING_SUCCESS,
+  };
+};
+
+const editListingError = errorMessage => {
+  return {
+    type: actionTypes.EDIT_LISTING_FAILURE,
+    payload: { errorMessage },
+  };
+};
+
 // QUERY Actions
 
 // brands
@@ -268,6 +475,10 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         listingInfo: action.payload,
       });
+    case actionTypes.SUBMIT_EDIT_LISTING_INFO:
+      return Object.assign({}, state, {
+        editListingInfo: action.payload,
+      });
     case actionTypes.SHOW_MODAL:
       return Object.assign({}, state, {
         [action.payload]: true,
@@ -287,6 +498,18 @@ const reducer = (state = initialState, action) => {
     case actionTypes.CREATE_NEW_LISTING_FAILURE:
       return Object.assign({}, state, {
         creatingNewListing: false,
+      });
+    case actionTypes.EDIT_LISTING_REQUEST:
+      return Object.assign({}, state, {
+        editingListing: true,
+      });
+    case actionTypes.EDIT_LISTING_SUCCESS:
+      return Object.assign({}, state, {
+        editingListing: false,
+      });
+    case actionTypes.EDIT_LISTING_FAILURE:
+      return Object.assign({}, state, {
+        editingListing: false,
       });
     // Brands
     case actionTypes.GET_BRANDS_REQUEST: {
@@ -311,6 +534,24 @@ const reducer = (state = initialState, action) => {
         }),
       });
     }
+    case actionTypes.GET_LISTING_REQUEST:
+      return Object.assign({}, state, {
+        isFetching: true,
+      });
+    case actionTypes.GET_LISTING_SUCCESS:
+      return Object.assign({}, state, {
+        isFetching: false,
+        currentSlug: action.payload.listingSlug,
+        listingsMap: Object.assign({}, state.listingsMap, {
+          [action.payload.listingSlug]: action.payload.data,
+        }),
+      });
+    case actionTypes.GET_LISTING_ERROR:
+      return Object.assign({}, state, {
+        isFetching: false,
+        error: action.payload.errorMessage,
+        currentSlug: action.payload.listingSlug,
+      });
     default:
       return state;
   }
@@ -321,9 +562,12 @@ export default {
   reducer,
   actionCreators: {
     createNewListing,
+    editListing,
     getAllBrands,
     showModal,
     hideModal,
     submitListingInfo,
+    submitEditListingInfo,
+    getListing,
   },
 };

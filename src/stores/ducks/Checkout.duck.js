@@ -46,6 +46,10 @@ const initialState = {
   currentSellerOrderNumber: '',
   ordersMap: {},
   error: '',
+  newShippingAdrressError: '',
+  newPaymentMethodError: '',
+  updateShippingAddressError: '',
+  updatePaymentMethodError: '',
   isSaving: false,
   isSavingSellerOrder: false,
   sellerOrderError: '',
@@ -935,7 +939,7 @@ const reducer = (state = initialState, action) => {
       });
     case actionTypes.CREATE_SHIPPING_ADDRESS_FAILURE:
       return Object.assign({}, state, {
-        error: action.payload.errorMessage,
+        newShippingAdrressError: action.payload.errorMessage,
       });
     case actionTypes.CREATE_PAYMENT_METHOD_REQUEST:
       return state;
@@ -948,7 +952,7 @@ const reducer = (state = initialState, action) => {
       });
     case actionTypes.CREATE_PAYMENT_METHOD_FAILURE:
       return Object.assign({}, state, {
-        error: action.payload.errorMessage,
+        newPaymentMethodError: action.payload.errorMessage,
       });
     case actionTypes.UPDATE_SHIPPING_ADDRESS_REQUEST:
       return state;
@@ -961,7 +965,7 @@ const reducer = (state = initialState, action) => {
       });
     case actionTypes.UPDATE_SHIPPING_ADDRESS_FAILURE:
       return Object.assign({}, state, {
-        error: action.payload.errorMessage,
+        updateShippingAddressError: action.payload.errorMessage,
       });
     case actionTypes.UPDATE_PAYMENT_METHOD_REQUEST:
       return state;
@@ -974,7 +978,7 @@ const reducer = (state = initialState, action) => {
       });
     case actionTypes.UPDATE_PAYMENT_METHOD_FAILURE:
       return Object.assign({}, state, {
-        error: action.payload.errorMessage,
+        updatePaymentMethodError: action.payload.errorMessage,
       });
     case actionTypes.FETCH_ORDER_REQUEST:
       return Object.assign({}, state, {

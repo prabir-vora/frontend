@@ -25,6 +25,8 @@ const actionTypes = createActionTypes(
     CREATE_NEW_SELLER_ADDRESS_SUCCESS: 'CREATE_NEW_SELLER_ADDRESS_SUCCESS',
     CREATE_NEW_SELLER_ADDRESS_FAILURE: 'CREATE_NEW_SELLER_ADDRESS_FAILURE',
 
+    UPDATE_SELLER_ADDRESS: 'UPDATE_SELLER_ADDRESS',
+
     FOLLOW_PRODUCT: 'FOLLOW_PRODUCT',
     UNFOLLOW_PRODUCT: 'UNFOLLOW_PRODUCT',
 
@@ -68,7 +70,6 @@ const actionTypes = createActionTypes(
 const initialState = {
   user: null,
   notifCount: {},
-  showNewAddressModal: false,
 };
 
 const userSetupWithInput = () => {
@@ -299,6 +300,30 @@ const createNewSellerAddress = address => dispatch => {
       .catch(e => {
         dispatch(createNewSellerAddressFailure());
         resolve({ success: false, message: 'Failed to add address' });
+      });
+  });
+};
+
+const updateSellerAddress = addressID => dispatch => {
+  return new Promise((resolve, reject) => {
+    fetchGraphQL(`
+      mutation {
+        updateSellerAddress(addressID: "${addressID}") 
+      }
+    `)
+      .then(res => {
+        console.log(res);
+        if (res !== null && res !== undefined && res.updateSellerAddress) {
+          dispatch(updateSellerAddressSuccess());
+          resolve({
+            success: true,
+          });
+        } else {
+          resolve({ success: false });
+        }
+      })
+      .catch(err => {
+        resolve({ success: false });
       });
   });
 };
@@ -819,14 +844,6 @@ const fetchShopBrand = brand => {
   });
 };
 
-const showNewAddressModalCreator = () => dispatch => {
-  dispatch(showNewAddressModalAction());
-};
-
-const hideNewAddressModalCreator = () => dispatch => {
-  dispatch(hideNewAddressModalAction());
-};
-
 const fetchIsUsernameValid = username => dispatch => {
   return new Promise((resolve, reject) => {
     fetchGraphQL(`
@@ -936,6 +953,46 @@ const onSubmitResetPasswordInfo = (email, resetToken, password) => dispatch => {
       })
       .catch(err => {
         resolve({ success: false, error: 'Something went wrong.' });
+      }),
+  ]);
+};
+
+const sendQueryWithInput = () => {
+  return `
+    mutation($query: UserQuery!) {
+      sendQuery(query: $query) 
+    }
+  `;
+};
+
+const sendQuery = async (contactInfo, isUserPresent, user) => {
+  let query = {};
+
+  if (isUserPresent) {
+    query = immutable
+      .wrap(query)
+      .set('email', user.email)
+      .set('name', user.name)
+      .set('message', contactInfo.message)
+      .set('username', user.username)
+      .value();
+  } else {
+    query = contactInfo;
+  }
+  return new Promise((resolve, reject) => [
+    fetchGraphQL(sendQueryWithInput(), undefined, {
+      query,
+    })
+      .then(res => {
+        console.log(res);
+        if (res !== null && res !== undefined && res.sendQuery !== undefined) {
+          resolve({ success: true });
+        } else {
+          resolve({ success: false });
+        }
+      })
+      .catch(e => {
+        resolve({ success: false });
       }),
   ]);
 };
@@ -1127,6 +1184,12 @@ const createNewSellerAddressSuccess = ({ user, success }) => {
 const createNewSellerAddressFailure = () => {
   return {
     type: actionTypes.CREATE_NEW_SELLER_ADDRESS_FAILURE,
+  };
+};
+
+const updateSellerAddressSuccess = () => {
+  return {
+    type: actionTypes.UPDATE_SELLER_ADDRESS,
   };
 };
 
@@ -1328,16 +1391,10 @@ const reducer = (state = initialState, action) => {
     case actionTypes.SUBMIT_RESET_PASSWORD: {
       return state;
     }
-    case actionTypes.SHOW_NEW_ADDRESS_MODAL: {
-      return Object.assign({}, state, {
-        showNewAddressModal: true,
-      });
+    case actionTypes.UPDATE_SELLER_ADDRESS: {
+      return state;
     }
-    case actionTypes.HIDE_NEW_ADDRESS_MODAL: {
-      return Object.assign({}, state, {
-        showNewAddressModal: false,
-      });
-    }
+
     default:
       return state;
   }
@@ -1365,12 +1422,12 @@ export default {
     changePassword,
     saveStripeConnectAuthCode,
     createNewSellerAddress,
-    showNewAddressModalCreator,
-    hideNewAddressModalCreator,
     fetchNotifCount,
     fetchShopBrand,
     resendAuthCode,
     resetPassword,
     onSubmitResetPasswordInfo,
+    updateSellerAddress,
+    sendQuery,
   },
 };

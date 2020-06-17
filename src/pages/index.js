@@ -21,13 +21,17 @@ import UserPage from './UserPage';
 import MyListPage from './MyListPage';
 import AboutPage from './AboutPage';
 import SellOrderPage from './SellOrderPage';
+import ListingPage from './ListingPage';
+import ContactUsPage from './ContactUsPage';
 
 export {
   AboutPage,
   AuthenticationPage,
   BrandsPage,
   CreateListingPage,
+  ContactUsPage,
   HomePage,
+  ListingPage,
   LocalListingPage,
   LocalMarketplacePage,
   OrderPage,

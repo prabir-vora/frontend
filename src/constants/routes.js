@@ -5,6 +5,7 @@ import {
   AdminPage,
   AuthenticationPage,
   BrandsPage,
+  ContactUsPage,
   HomePage,
   OrderPage,
   PhotoGuidelinesPage,
@@ -24,6 +25,7 @@ import {
   CreateListingPage,
   UserPage,
   MyListPage,
+  ListingPage,
 } from '../pages';
 
 const ROUTES = (routeName = '', props = {}) => {
@@ -38,6 +40,8 @@ const ROUTES = (routeName = '', props = {}) => {
       return OrderPage;
     case 'myListPage':
       return MyListPage;
+    case 'listingPage':
+      return ListingPage;
     case 'resellerListPage':
       return ResellerListPage;
     case 'resellerSetupPage':
@@ -74,6 +78,8 @@ const ROUTES = (routeName = '', props = {}) => {
       return CreateListingPage;
     case 'userPage':
       return UserPage;
+    case 'contactUsPage':
+      return ContactUsPage;
     default:
       return () => <div>404 not found</div>;
   }

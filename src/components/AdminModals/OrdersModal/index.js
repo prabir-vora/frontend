@@ -10,6 +10,7 @@ import AdminDuck from 'stores/ducks/Admin/Admin.duck';
 import { CenterModal, ModalBackButton } from 'fields';
 // import OrderFormFields from './orderFormFields';
 import ConfirmOrderStatusModal from '../ConfirmOrderStatusModal';
+import ConfirmTransferModal from '../ConfirmTransferModal';
 
 import Select from 'react-select';
 
@@ -47,6 +48,7 @@ class OrdersModal extends Component {
     showLoadingModal: false,
     status: '',
     showConfirmOrderStatusModal: false,
+    showConfirmTransferModal: false,
     // All the other fields to be taken in
   };
 
@@ -74,6 +76,12 @@ class OrdersModal extends Component {
 
   onShowConfirmOrderStatusModal = () =>
     this.setState({ showConfirmOrderStatusModal: true });
+
+  onShowConfirmTransferModal = () =>
+    this.setState({ showConfirmTransferModal: true });
+
+  onHideConfirmTransferModal = () =>
+    this.setState({ showConfirmTransferModal: false });
 
   onSelectOrderStatus = selectedOption => {
     this.setState({
@@ -114,6 +122,7 @@ class OrdersModal extends Component {
       purchased_at,
       buyerShipment,
       sellerShipment,
+      sellerTransferComplete,
     } = order;
 
     const { product } = resellItem;
@@ -140,6 +149,28 @@ class OrdersModal extends Component {
             >
               Update Status
             </button>
+          </div>
+          <div>
+            <h4>Seller transfer complete</h4>
+            <div>
+              {sellerTransferComplete ? 'Complete' : 'Transfer not done'}
+            </div>
+            {!sellerTransferComplete && (
+              <button
+                style={{
+                  color: 'black',
+                  background: 'orange',
+                  padding: '15px',
+                  margin: '15px',
+                  fontSize: '15px',
+                }}
+                onClick={() => {
+                  this.onShowConfirmTransferModal();
+                }}
+              >
+                Complete Transfer
+              </button>
+            )}
           </div>
           <div style={{ display: 'flex' }}>
             <h4 style={{ marginRight: '10px' }}>Buyer: {buyer.name}</h4>
@@ -311,10 +342,23 @@ class OrdersModal extends Component {
     this.props.onUpdateAfterOrderSaved(success);
   };
 
+  onConfirmTransfer = async orderNumber => {
+    const { actionCreators } = TestObjectsDuck;
+    const { confirmSellerTransfer } = actionCreators;
+    const { success } = await this.props.dispatch(
+      confirmSellerTransfer(orderNumber),
+    );
+
+    this.props.onUpdateAfterOrderSaved(success);
+  };
+
   render() {
     const { isInEditMode, order } = this.props;
     const { orderNumber } = order;
-    const { showConfirmOrderStatusModal } = this.state;
+    const {
+      showConfirmOrderStatusModal,
+      showConfirmTransferModal,
+    } = this.state;
     return (
       <CenterModal
         closeModalButtonLabel={<ModalBackButton />}
@@ -329,6 +373,13 @@ class OrdersModal extends Component {
             name={this.state.status.label}
             onUpdateOrderStatus={() => this.onUpdateOrderStatus(orderNumber)}
             onCloseModal={this.onHideConfirmOrderStatusModal}
+          />
+        )}
+        {showConfirmTransferModal && (
+          <ConfirmTransferModal
+            name={'Transfer'}
+            onConfirmTransfer={() => this.onConfirmTransfer(orderNumber)}
+            onCloseModal={this.onHideConfirmTransferModal}
           />
         )}
         {this.state.showLoadingModal && <div>Loading...</div>}

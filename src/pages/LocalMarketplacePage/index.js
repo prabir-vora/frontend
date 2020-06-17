@@ -74,6 +74,7 @@ class LocalMarketplace extends Component {
         style={{
           background:
             'linear-gradient(rgb(136, 131, 128) 0%, rgb(43, 41, 40) 99%)',
+          overflowX: 'hidden',
         }}
       >
         <MainNavBar />

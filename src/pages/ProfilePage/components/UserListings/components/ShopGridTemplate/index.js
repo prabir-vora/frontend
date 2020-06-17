@@ -28,12 +28,7 @@ export default class ShopGridTemplate extends Component {
       <div className={Style.gridCellWrapper}>
         {purchased_at && <div className={Style.soldTag}>Sold</div>}
         <div className={Style.gridCellContent}>
-          <a
-            title={name}
-            target="_blank"
-            rel="noopener noreferrer"
-            href={`/shop/listing/${slug}`}
-          >
+          <a title={name} href={`/listing/${slug}`}>
             <div>
               <div className={Style.gridCell}>
                 <div className={Style.gridCellImage}>

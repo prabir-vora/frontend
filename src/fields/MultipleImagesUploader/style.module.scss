@@ -28,14 +28,14 @@
 .closeButton {
   position: absolute;
   background: white;
-  color: white;
+  color: black;
   border: 1px solid black;
   padding: 5px;
   top: -10px;
   right: -10px;
   & > svg {
-    width: 10px;
-    height: 10px;
+    width: 15px;
+    height: 15px;
   }
 }
 

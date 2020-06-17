@@ -57,11 +57,11 @@ class App extends React.Component {
                     path="/shop/:productListingID"
                     component={ROUTES('productListingPage')}
                   />
-                  {/* <Route
-                  exact
-                  path="/shop/listing/:listingID"
-                  component={ROUTES('shopListingPage')}
-                /> */}
+                  <Route
+                    exact
+                    path="/listing/:listingID"
+                    component={ROUTES('listingPage')}
+                  />
                   <Route exact path="/sell" component={ROUTES('sellPage')} />
                   <Route
                     exact
@@ -112,6 +112,10 @@ class App extends React.Component {
                   <Route
                     path="/stripeRedirect"
                     component={ROUTES('stripeRedirectPage')}
+                  />
+                  <Route
+                    path="/contactUs"
+                    component={ROUTES('contactUsPage')}
                   />
                   {/* <Route exact path="/:username" component={ROUTES('userPage')} /> */}
                   <Route exact path="/" component={ROUTES('notFound')} />

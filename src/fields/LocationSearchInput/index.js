@@ -112,6 +112,7 @@ class LocationSearchInput extends React.Component {
                       placeholder:
                         'Search by town/city, neighbourhood or postcode.',
                       className: 'Demo__search-input',
+                      autoComplete: 'new-password',
                     })}
                   />
                   {this.state.address.length > 0 && (

@@ -326,6 +326,17 @@
   font-size: 20px;
 }
 
+.editButton {
+  background: white;
+  color: black;
+  width: 150px;
+  height: 40px;
+  font-size: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .errorMessage {
   font-size: 20px;
   font-weight: 400;
