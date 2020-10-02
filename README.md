@@ -1,4 +1,6 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Project DRIPVERSE — MAY 2020 - JULY 2020
+
+Frontend of Web app for reselling sneakers and apparel. Built using MERN Stack. Conprises of frontend of Full stack Web app I built. Used Graphql and Redux along with REACT. 
 
 ## Available Scripts
 
